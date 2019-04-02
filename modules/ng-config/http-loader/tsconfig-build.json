@@ -1,0 +1,24 @@
+{
+  "extends": "../tsconfig-build.json",
+
+  "compilerOptions": {
+    "baseUrl": ".",
+    "rootDir": "../",
+    "outDir": "../../../dist/packages/ng-config",
+
+    "paths": {
+      "@dagonmetric/ng-config": [ "../../../dist/packages/ng-config" ]
+    },
+  },
+  "files": [
+    "public_api.ts"
+  ],
+  "angularCompilerOptions": {
+    "annotateForClosureCompiler": true,
+    "strictMetadataEmit": true,
+    "skipTemplateCodegen": true,
+    "fullTemplateTypeCheck": true,
+    "flatModuleOutFile": "http-loader.js",
+    "flatModuleId": "@dagonmetric/ng-config/http-loader"
+  }
+}
