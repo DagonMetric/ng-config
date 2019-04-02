@@ -1,0 +1,34 @@
+{
+  "$schema": "./node_modules/@dagonmetric/angular-build/schemas/schema.json#",
+  "libs": [{
+      "extends": "ngb:lib-default",
+      "name": "ng-config",
+      "root": "modules/ng-config",
+      "outputPath": "dist/packages/ng-config",
+      "libraryName": "baf.ngConfig"
+    },
+    {
+      "extends": "ngb:lib-default",
+      "name": "ng-config-http-loader",
+      "root": "modules/ng-config/http-loader",
+      "outputPath": "dist/packages/ng-config",
+      "libraryName": "baf.ngConfig.httpLoader",
+      "externals": {
+        "@dagonmetric/ng-config": "baf.ngConfig"
+      }
+    },
+    {
+      "extends": "ngb:lib-default",
+      "name": "ng-config-cache-http-loader",
+      "root": "modules/ng-config-cache-http-loader",
+      "outputPath": "dist/packages/ng-config-cache-http-loader",
+      "libraryName": "baf.ngConfig.cacheHttpLoader",
+      "externals": {
+        "@dagonmetric/ng-cache": "baf.ngCache",
+        "@dagonmetric/ng-config": "baf.ngConfig",
+        "@dagonmetric/ng-config/http-loader": "baf.ngConfig.httpLoader"
+      }
+    }    
+  ],
+  "apps": []
+}
