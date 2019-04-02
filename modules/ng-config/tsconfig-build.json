@@ -1,0 +1,22 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "rootDir": ".",
+    "outDir": "../../dist/packages/ng-config",
+
+    // don't auto-discover @types/node, it results in a ///<reference in the .d.ts output
+    "types": []
+  },
+  "files": [
+    "public_api.ts"
+  ],
+  "angularCompilerOptions": {
+    "annotateForClosureCompiler": true,
+    "strictMetadataEmit": true,
+    "skipTemplateCodegen": true,
+    "fullTemplateTypeCheck": true,
+    "flatModuleOutFile": "ng-config.js",
+    "flatModuleId": "@dagonmetric/ng-config"
+  }
+}
