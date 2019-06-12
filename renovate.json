@@ -1,0 +1,70 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "timezone": "Asia/Yangon",
+  "schedule": [
+    "after 11pm every weekday",
+    "before 6am every weekday",
+    "after 11pm every weekend",
+    "before 6am every weekend"
+  ],
+  "packageFiles": ["package.json"],
+  "rangeStrategy": "replace",
+  "packageRules": [
+    {
+      "packagePatterns": [
+        "^@angular-devkit\/.*"
+      ],
+      "groupName": "angular-devkit",
+      "rangeStrategy": "replace"
+    },
+    {
+      "packagePatterns": [
+        "^@angular\/.*"
+      ],
+      "groupName": "angular",
+      "rangeStrategy": "replace"
+    },
+    {
+      "packagePatterns": [
+        "^@dagonmetric\/.*"
+      ],
+      "groupName": "dagonmetric",
+      "rangeStrategy": "replace"
+    },
+    {
+      "packagePatterns": [
+        "^@types\/.*"
+      ],
+      "excludePackageNames": ["@types/node"],
+      "groupName": "types",
+      "rangeStrategy": "replace"
+    },
+    {
+      "packageNames": ["@types/node"],
+      "rangeStrategy": "replace",
+      "schedule": "on the last day of the month"
+    },
+    {
+      "packagePatterns": ["^jasmine.*"],
+      "groupName": "jasmine",
+      "rangeStrategy": "replace"
+    },
+    {
+      "packagePatterns": ["^karma.*"],
+      "groupName": "karma",
+      "rangeStrategy": "replace"
+    },
+    {
+      "packagePatterns": ["^protractor.*"],
+      "groupName": "protractor",
+      "rangeStrategy": "replace"
+    },
+    {
+      "packageNames": ["typescript"],
+      "updateTypes": ["patch"],
+      "rangeStrategy": "replace"
+    }
+  ]
+}

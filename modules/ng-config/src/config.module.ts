@@ -1,26 +1,47 @@
-import { APP_INITIALIZER, ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
+/**
+ * @license
+ * Copyright DagonMetric. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found under the LICENSE file in the root directory of this source tree.
+ */
 
-import { ConfigService, ENABLE_DEBUG_LOGGING } from './config.service';
+import { APP_INITIALIZER, ModuleWithProviders, NgModule } from '@angular/core';
 
+import { ConfigPipe } from './config.pipe';
+import { CONFIG_OPTIONS, ConfigOptions, ConfigService } from './config.service';
+import { JsonObject } from './json-object';
+
+export function configAppInitializerFactory(configService: ConfigService): () => Promise<JsonObject> {
+    // tslint:disable-next-line:no-unnecessary-local-variable
+    const res = async () => configService.load().toPromise();
+
+    return res;
+}
+
+/**
+ * The NGMODULE for providing ConfigService and load settings with APP_INITIALIZER.
+ */
 @NgModule({
+    declarations: [
+        ConfigPipe
+    ],
     providers: [
         ConfigService
     ]
 })
 export class ConfigModule {
-    constructor(@Optional() @SkipSelf() parentModule: ConfigModule) {
-        if (parentModule) {
-            throw new Error('ConfigModule has already been loaded, import in root module only.');
-        }
-    }
-
-    static forRoot(config: { enableDebugLogging?: boolean } = {}): ModuleWithProviders {
+    /**
+     * Call this method to load configuration with APP_INITIALIZER.
+     * @param options An option object for ConfigService.
+     */
+    static init(options: ConfigOptions = {}): ModuleWithProviders {
         return {
             ngModule: ConfigModule,
             providers: [
                 {
-                    provide: ENABLE_DEBUG_LOGGING,
-                    useValue: config.enableDebugLogging
+                    provide: CONFIG_OPTIONS,
+                    useValue: options
                 },
                 {
                     provide: APP_INITIALIZER,
@@ -31,12 +52,4 @@ export class ConfigModule {
             ]
         };
     }
-}
-
-// tslint:disable-next-line:no-any
-export function configAppInitializerFactory(configService: ConfigService): () => Promise<any> {
-    // tslint:disable-next-line:no-unnecessary-local-variable
-    const res = async () => configService.load();
-
-    return res;
 }

@@ -1,34 +1,66 @@
 {
-  "$schema": "./node_modules/@dagonmetric/angular-build/schemas/schema.json#",
+  "$schema": "./node_modules/@dagonmetric/angular-build/src/schemas/schema.json#",
   "libs": [{
-      "extends": "ngb:lib-default",
+    "extends": "ngb:lib-default",
       "name": "ng-config",
       "root": "modules/ng-config",
       "outputPath": "dist/packages/ng-config",
-      "libraryName": "baf.ngConfig"
+      "libraryName": "ngConfig",
+      "envOverrides": {
+        "prod": {
+          "copy": [
+            "README.md",
+            "../../LICENSE"
+          ],
+          "bundles": true,
+          "packageJsonCopy": true
+        }
+      }
     },
     {
       "extends": "ngb:lib-default",
       "name": "ng-config-http-loader",
       "root": "modules/ng-config/http-loader",
       "outputPath": "dist/packages/ng-config",
-      "libraryName": "baf.ngConfig.httpLoader",
+      "libraryName": "ngConfig.httpLoader",
       "externals": {
-        "@dagonmetric/ng-config": "baf.ngConfig"
+        "@dagonmetric/ng-config": "ngConfig"
+      },
+      "envOverrides": {
+        "prod": {
+          "copy": [
+            {
+              "from": "README.md",
+              "to": "http-loader/README.md"
+            }
+          ],
+          "bundles": true,
+          "packageJsonCopy": true
+        }
       }
     },
     {
       "extends": "ngb:lib-default",
-      "name": "ng-config-cache-http-loader",
-      "root": "modules/ng-config-cache-http-loader",
-      "outputPath": "dist/packages/ng-config-cache-http-loader",
-      "libraryName": "baf.ngConfig.cacheHttpLoader",
+      "name": "ng-config-static-loader",
+      "root": "modules/ng-config/static-loader",
+      "outputPath": "dist/packages/ng-config",
+      "libraryName": "ngConfig.staticLoader",
       "externals": {
-        "@dagonmetric/ng-cache": "baf.ngCache",
-        "@dagonmetric/ng-config": "baf.ngConfig",
-        "@dagonmetric/ng-config/http-loader": "baf.ngConfig.httpLoader"
+        "@dagonmetric/ng-config": "ngConfig"
+      },
+      "envOverrides": {
+        "prod": {
+          "copy": [
+            {
+              "from": "README.md",
+              "to": "static-loader/README.md"
+            }
+          ],
+          "bundles": true,
+          "packageJsonCopy": true
+        }
       }
-    }    
+    }
   ],
   "apps": []
 }

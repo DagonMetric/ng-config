@@ -1,69 +1,144 @@
-// tslint:disable:no-any
-// tslint:disable:no-unsafe-any
+/**
+ * @license
+ * Copyright DagonMetric. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found under the LICENSE file in the root directory of this source tree.
+ */
 
-import { isPlatformBrowser } from '@angular/common';
-import { Inject, Injectable, InjectionToken, Optional, PLATFORM_ID } from '@angular/core';
+import { Inject, Injectable, InjectionToken, Optional } from '@angular/core';
 
-import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
+import { map, share, take, tap } from 'rxjs/operators';
 
 import { ConfigLoader } from './config-loader';
 import { CONFIG_LOADER } from './config-loader-token';
+import { JsonObject, JsonValue } from './json-object';
 
 export interface ConfigLoadingContext {
-    data: { [key: string]: any };
+    data: JsonObject;
     loading: boolean;
     loaded: boolean;
 }
 
-export const ENABLE_DEBUG_LOGGING = new InjectionToken<boolean>('EnableDebugLogging');
+/**
+ * Options for 'ConfigService'.
+ */
+export interface ConfigOptions {
+    /**
+     * Set true to log debug information.
+     */
+    trace?: boolean;
+}
 
+export const CONFIG_OPTIONS = new InjectionToken<ConfigOptions>('ConfigOptions');
+
+/**
+ * The core config service.
+ */
 @Injectable({
     providedIn: 'root'
 })
 export class ConfigService {
     readonly loadEvent: Observable<ConfigLoadingContext>;
 
-    private readonly _cachedSettings: { [key: string]: any } = {};
+    private readonly _options: ConfigOptions;
+    private readonly _cachedSettings: JsonObject = {};
     private readonly _onLoad = new BehaviorSubject<ConfigLoadingContext>({ data: {}, loading: false, loaded: false });
-    private readonly _isBrowser: boolean;
+    private readonly _fetchRequests: { [key: string]: Observable<JsonObject> } = {};
+
     private _loading = false;
     private _completed = false;
-    private _syncCompleted = false;
-    private _isMSIe: boolean | undefined;
 
+    /**
+     * Get the loader names.
+     */
     get loaderNames(): string[] {
         if (!this._configLoaders || !this._configLoaders.length) {
             return [];
         }
 
-        return this._configLoaders.map(configLoader => configLoader.source);
+        return this._configLoaders.map(configLoader => configLoader.name);
     }
 
-    constructor(@Inject(PLATFORM_ID) platformId: Object,
+    constructor(
         @Optional() @Inject(CONFIG_LOADER) private readonly _configLoaders?: ConfigLoader[],
-        @Optional() @Inject(ENABLE_DEBUG_LOGGING) private readonly _enableDebugLogging?: boolean) {
-        this._isBrowser = isPlatformBrowser(platformId);
+        @Optional() @Inject(CONFIG_OPTIONS) options?: ConfigOptions) {
+        this._options = options || {};
         this.loadEvent = this._onLoad.asObservable();
-
-        this.loadSync(false);
     }
 
-    async load(reLoad?: boolean): Promise<{ [key: string]: any }> {
-        const shouldLoadAsync = this.loadSync(reLoad);
-        if (!shouldLoadAsync) {
-            return Promise.resolve(this._cachedSettings);
+    /**
+     * The method to load and cache config data.
+     * @param reLoad Flag to force reload the configuration.
+     * @returns Returns the observable of loaded config data.
+     * @throws {Error} Throws error if no 'CONFIG_LOADER' provided.
+     */
+    load(reLoad?: boolean): Observable<JsonObject> {
+        if (!this._configLoaders || !this._configLoaders.length) {
+            throw new Error('No configuration loader available.');
         }
 
         if (this._completed && !reLoad) {
             this.log('Configuration already loaded.');
 
-            return Promise.resolve(this._cachedSettings);
+            return of(this._cachedSettings);
         }
 
-        if (!this._configLoaders || !this._configLoaders.length) {
+        if (!this._loading) {
+            this.log('Cconfiguration loading started.');
+
+            this._loading = true;
+            this._completed = false;
+
+            this._onLoad.next({
+                data: {},
+                loading: true,
+                loaded: false
+            });
+        }
+
+        const obs = forkJoin(
+            this._configLoaders.map(configLoader => {
+                const loaderName = configLoader.name;
+
+                if (!reLoad && this._fetchRequests[loaderName]) {
+                    return this._fetchRequests[loaderName];
+                }
+
+                const loaderObs = configLoader.load().pipe(
+                    tap(config => {
+                        this.log(loaderName, config);
+                    }),
+                    share()
+                );
+
+                this._fetchRequests[loaderName] = loaderObs.pipe(
+                    take(1),
+                    share()
+                );
+
+                return loaderObs;
+            })
+        ).pipe(
+            map(configs => {
+                let mergedConfig: JsonObject = {};
+
+                configs.forEach(config => {
+                    mergedConfig = { ...mergedConfig, ...config };
+                });
+
+                return mergedConfig;
+            })
+        );
+
+        obs.subscribe((config) => {
+            Object.assign(this._cachedSettings, config);
+
             this._completed = true;
-            this.log('No configuration loader available.');
+            this._loading = false;
+
+            this.log('Configuration loading completed.');
 
             this._onLoad.next({
                 data: this._cachedSettings,
@@ -71,187 +146,51 @@ export class ConfigService {
                 loaded: true
             });
 
-            return Promise.resolve(this._cachedSettings);
-        }
+        }, () => {
+            this._completed = false;
+            this._loading = false;
+        });
 
-        this.log('Cconfiguration async loading started.');
-
-        if (!this._loading) {
-            this._loading = true;
-
-            this._onLoad.next({
-                data: this._cachedSettings,
-                loading: true,
-                loaded: false
-            });
-        }
-
-        const asyncLoaders = this._configLoaders.filter(configLoader => configLoader.async);
-
-        return forkJoin(asyncLoaders.map(configLoader => configLoader.load()
-            .pipe(
-                tap(data => {
-                    Object.assign(this._cachedSettings, data);
-                    this.log(configLoader.source, data);
-                })
-            )))
-            .pipe(
-                tap(configs => {
-                    configs.forEach(config => {
-                        Object.assign(this._cachedSettings, config);
-                    });
-
-                    this._completed = true;
-                    this._loading = false;
-
-                    this.log('Configuration async loading completed.');
-
-                    this._onLoad.next({
-                        data: this._cachedSettings,
-                        loading: false,
-                        loaded: true
-                    });
-                })
-            )
-            .toPromise();
+        return obs;
     }
 
+    /**
+     * Get settings by key.
+     * @param key The setting key.
+     * @param defaultValue The default value to return if setting not found.
+     */
     getSettings<T>(key: string, defaultValue?: T): T;
 
-    getSettings(key?: string | string[], defaultValue?: any): any;
+    /**
+     * Get settings by key.
+     * @param key The setting key.
+     * @param defaultValue The default value to return if setting not found.
+     */
+    getSettings(key: string, defaultValue?: JsonValue): JsonValue | undefined {
+        const keyArray = key.split(/\.|:/);
 
-    getSettings(key?: string | string[], defaultValue?: any): any {
-        if (!key || (Array.isArray(key) && !key[0])) {
-            return this._cachedSettings;
-        }
-
-        const keyArray = Array.isArray(key) ? key : key.split(/\.|:/);
-
-        let result = keyArray.reduce((acc: any, current: string) => acc && acc[current],
+        const result = keyArray.reduce((acc, current: string) => acc && acc[current],
             this._cachedSettings);
 
         if (result === undefined) {
-            result = defaultValue;
+            return defaultValue;
         }
 
         return result;
     }
 
-    private loadSync(reLoad?: boolean): boolean {
-        let shouldLoadAsync = false;
-
-        if (this._completed && !reLoad) {
-            this.log('Configuration already loaded.');
-
-            return shouldLoadAsync;
-        }
-
-        if (!this._configLoaders || !this._configLoaders.length) {
-            this._completed = true;
-
-            this.log('No configuration loader available.');
-
-            this._onLoad.next({
-                data: this._cachedSettings,
-                loading: false,
-                loaded: true
-            });
-
-            return shouldLoadAsync;
-        }
-
-        shouldLoadAsync = this._configLoaders.filter(configLoader => configLoader.async).length > 0;
-        const syncLoaders = this._configLoaders.filter(configLoader => !configLoader.async);
-
-        if (this._syncCompleted && !reLoad) {
-            return shouldLoadAsync;
-        }
-
-        if (!syncLoaders.length) {
-            return shouldLoadAsync;
-        }
-
-        this.log('Configuration sync loading started.');
-
-        if (!this._loading) {
-            this._loading = true;
-
-            this._onLoad.next({
-                data: this._cachedSettings,
-                loading: true,
-                loaded: false
-            });
-        }
-
-        forkJoin(syncLoaders.map(configLoader => configLoader.load()
-            .pipe(
-                tap(data => {
-                    Object.assign(this._cachedSettings, data);
-                    this.log(configLoader.source, data);
-                })
-            )))
-            .subscribe(configs => {
-                configs.forEach(config => {
-                    Object.assign(this._cachedSettings, config);
-                });
-
-                this._syncCompleted = true;
-                if (shouldLoadAsync) {
-                    this.log('Configuration sync loading completed.');
-                } else {
-                    this._completed = true;
-                    this._loading = false;
-
-                    this.log('Configuration sync loading completed.');
-
-                    this._onLoad.next({
-                        data: this._cachedSettings,
-                        loading: false,
-                        loaded: true
-                    });
-                }
-            });
-
-        return shouldLoadAsync;
-    }
-
-    private log(msg: string, data?: any): void {
-        if (!this._enableDebugLogging) {
+    private log(msg: string, data?: JsonObject): void {
+        if (!this._options.trace) {
             return;
         }
 
         if (data) {
-            if (this._isBrowser && !this.isMSIE()) {
-                // tslint:disable-next-line:no-console
-                console.log(`[ConfigService] ${msg}, data: `, data);
-            } else {
-                // tslint:disable-next-line:no-console
-                console.log(`[ConfigService] ${msg}, data: `, JSON.stringify(data));
-            }
+            // tslint:disable-next-line:no-console
+            console.log(`[ConfigService] ${msg}, data: `, data);
 
         } else {
-
             // tslint:disable-next-line:no-console
             console.log(`[ConfigService] ${msg}`);
         }
-    }
-
-    private isMSIE(): boolean {
-        if (typeof this._isMSIe === 'boolean') {
-            return this._isMSIe;
-        }
-
-        if (this._isBrowser && typeof document === 'object' && typeof window === 'object') {
-            const ua = window.navigator.userAgent ? window.navigator.userAgent : '';
-            if ((ua.indexOf('MSIE ') > -1 || ua.indexOf('Trident/'))) {
-                this._isMSIe = true;
-            } else {
-                this._isMSIe = false;
-            }
-        } else {
-            this._isMSIe = false;
-        }
-
-        return this._isMSIe;
     }
 }

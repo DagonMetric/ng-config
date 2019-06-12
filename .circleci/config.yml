@@ -1,0 +1,28 @@
+version: 2.1
+
+var_1: &docker_image circleci/node:10.16.0-browsers
+var_2: &cache_key v2.1-ng-config-{{ .Branch }}-{{ checksum "yarn.lock" }}-node-10.16.0
+
+jobs:
+  build:
+    working_directory: ~/ng-config
+    docker:
+      - image: *docker_image
+    steps:
+      - checkout
+      - restore_cache:
+          key: *cache_key
+      - run:
+          name: Install Dependencies
+          command: yarn install --frozen-lockfile --non-interactive
+      - save_cache:
+          key: *cache_key
+          paths:
+            - ~/.cache/yarn
+            - node_modules
+      - run:
+          name: Run Build
+          command: yarn build
+      - run:
+          name: Run Test
+          command: yarn test -c=ci

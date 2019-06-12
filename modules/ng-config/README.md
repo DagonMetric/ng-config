@@ -1,52 +1,20 @@
-ng-config
-=====================
+# Configuration Service Package for Angular
 
-Contains configuration service for [Angular](https://angular.io/) application.
+## Features
 
-Installation
----------------
+* Extendable `ConfigLoader` (see built-in [HttpConfigLoader](https://github.com/DagonMetric/ng-config/blob/master/modules/ng-config/http-loader/src/http-config-loader.ts) for implementation demo)
+* Latest versions of Angular are supported
+* Compatible with Angular Universal (Server Side Rendering - SSR)
+* Powered with RxJS
 
-```bash
-npm install @dagonmetric/ng-config
-```
+## Getting Started
 
-Setup
----------------
+* [Documentation](https://github.com/DagonMetric/ng-config/wiki)
 
-```typescript
-import { ConfigModule, ConfigStaticLoaderModule } from '@dagonmetric/ng-config';
+## Feedback and Contributing
 
-@NgModule({
-    imports: [
-        // Other module imports
+Check out the [Contributing](https://github.com/DagonMetric/ng-config/blob/master/CONTRIBUTING.md) page to see the best places to log issues and start discussions.
 
-        // Config
-        ConfigModule.forRoot(),
-        ConfigStaticLoaderModule.forRoot({ key1: 'value1' })
-    ]
-})
-export class AppModule { }
-```
+## License
 
-Usage
----------------
-
-```typescript
-import { Component } from '@angular/core';
-
-import { ConfigService } from '@dagonmetric/ng-config';
-
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html'
-})
-export class AppComponent {
-    constructor(private readonly _configService: ConfigService) {
-        const allSettings = this._configService.getSettings();
-        console.log('settings: ', allSettings);
-
-        const loggingSettings = this._configService.getSettings<LoggingOptions>('logging');
-        console.log('loggingSettings: ', loggingSettings);
-    }
-}
-```
+This repository is licensed with the [MIT](https://github.com/DagonMetric/ng-config/blob/master/LICENSE) license.

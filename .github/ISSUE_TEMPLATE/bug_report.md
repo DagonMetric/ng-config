@@ -5,7 +5,7 @@ about: Create a report to help us improve
 ---
 
 <!-- 
-This issue tracker is ONLY used for reporting bugs. NO NEW FEATURE ACCEPTED!
+This issue tracker is ONLY used for reporting bugs.
 
 Please fill in the *entire* template below. 
 -->
@@ -24,8 +24,8 @@ Please fill in the *entire* template below.
 
 ## Environment
 
-<!-- - OS: -->
-<!-- - Package Version: -->
+<!-- - OS version: -->
+<!-- - @dagonmetric/ng-config version: -->
 
 ## Additional context
 

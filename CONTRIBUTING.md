@@ -10,7 +10,7 @@ We use [Github issues](https://github.com/dagonmetric/ng-config/issues) to track
 
 ### Discussions
 
-[Gitter Channel](https://gitter.im/DagonMetric/ng-config) for ng-config discussions.
+[Gitter Channel](https://gitter.im/DagonMetric/general) for general DagonMetric's open source products discussion.
 
 ## Contributing code and content
 

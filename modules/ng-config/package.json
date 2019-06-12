@@ -1,11 +1,9 @@
 {
   "name": "@dagonmetric/ng-config",
   "version": "0.0.0-PLACEHOLDER",
-  "description": "Contains configuration service for Angular application.",
+  "description": "Configuration service package for Angular application.",
   "keywords": [
     "angular",
-    "angular6",
-    "angular7",
     "config",
     "configuration",
     "settings",
@@ -19,8 +17,8 @@
     "tslib": "^1.9.3"
   },
   "peerDependencies": {
-    "@angular/common": "^7.0.0 || ^8.0.0-beta.0",
-    "@angular/core": "^7.0.0 || ^8.0.0-beta.0",
-    "rxjs": "^6.0.0"
-  }
+    "@angular/core": "^8.0.0-beta.0",
+    "rxjs": "^6.4.0"
+  },
+  "sideEffects": false
 }

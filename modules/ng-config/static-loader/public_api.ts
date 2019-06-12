@@ -6,5 +6,5 @@
  * found under the LICENSE file in the root directory of this source tree.
  */
 
-export * from './src/http-config-loader';
-export * from './src/http-config-loader.module';
+export * from './src/static-config-loader';
+export * from './src/static-config-loader.module';

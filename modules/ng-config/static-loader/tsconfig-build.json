@@ -18,7 +18,7 @@
     "skipTemplateCodegen": true,
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true,
-    "flatModuleOutFile": "http-loader.js",
-    "flatModuleId": "@dagonmetric/ng-config/http-loader"
+    "flatModuleOutFile": "static-loader.js",
+    "flatModuleId": "@dagonmetric/ng-config/static-loader"
   }
 }
