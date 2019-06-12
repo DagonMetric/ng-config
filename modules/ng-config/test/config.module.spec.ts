@@ -70,6 +70,6 @@ describe('ConfigModule', () => {
     it("should load with 'APP_INITIALIZER'", () => {
         const configService = TestBed.get<ConfigService>(ConfigService) as ConfigService;
 
-        expect(configService.getSettings('name')).toBe('ng-config');
+        expect(configService.getValue('name')).toBe('ng-config');
     });
 });

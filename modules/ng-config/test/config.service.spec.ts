@@ -186,7 +186,7 @@ describe('ConfigService', () => {
         });
     });
 
-    describe('getSettings', () => {
+    describe('getValue', () => {
         it('should work with simple key', (done: DoneFn) => {
             TestBed.configureTestingModule({
                 providers: [
@@ -200,7 +200,7 @@ describe('ConfigService', () => {
 
             const configService = TestBed.get<ConfigService>(ConfigService) as ConfigService;
             configService.load().subscribe(() => {
-                expect(configService.getSettings('name')).toBe('ng-config');
+                expect(configService.getValue('name')).toBe('ng-config');
                 done();
             });
         });
@@ -218,7 +218,7 @@ describe('ConfigService', () => {
 
             const configService = TestBed.get<ConfigService>(ConfigService) as ConfigService;
             configService.load().subscribe(() => {
-                expect(configService.getSettings('obj.key1')).toBe('value1');
+                expect(configService.getValue('obj.key1')).toBe('value1');
                 done();
             });
         });
@@ -236,7 +236,7 @@ describe('ConfigService', () => {
 
             const configService = TestBed.get<ConfigService>(ConfigService) as ConfigService;
             configService.load().subscribe(() => {
-                expect(configService.getSettings('key1', 'defaultValue')).toBe('defaultValue');
+                expect(configService.getValue('key1', 'defaultValue')).toBe('defaultValue');
                 done();
             });
         });

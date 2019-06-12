@@ -22,7 +22,7 @@ export interface ConfigLoadingContext {
 }
 
 /**
- * Options for 'ConfigService'.
+ * Options for `ConfigService`.
  */
 export interface ConfigOptions {
     /**
@@ -34,7 +34,7 @@ export interface ConfigOptions {
 export const CONFIG_OPTIONS = new InjectionToken<ConfigOptions>('ConfigOptions');
 
 /**
- * The core config service.
+ * The core service for loading configuration from loaders and getting setting value from cached settings.
  */
 @Injectable({
     providedIn: 'root'
@@ -51,7 +51,7 @@ export class ConfigService {
     private _completed = false;
 
     /**
-     * Get the loader names.
+     * The property to get the loader names.
      */
     get loaderNames(): string[] {
         if (!this._configLoaders || !this._configLoaders.length) {
@@ -155,18 +155,18 @@ export class ConfigService {
     }
 
     /**
-     * Get settings by key.
+     * The method to get setting value by key.
      * @param key The setting key.
      * @param defaultValue The default value to return if setting not found.
      */
-    getSettings<T>(key: string, defaultValue?: T): T;
+    getValue<T>(key: string, defaultValue?: T): T;
 
     /**
-     * Get settings by key.
+     * The method to get setting value by key.
      * @param key The setting key.
      * @param defaultValue The default value to return if setting not found.
      */
-    getSettings(key: string, defaultValue?: JsonValue): JsonValue | undefined {
+    getValue(key: string, defaultValue?: JsonValue): JsonValue | undefined {
         const keyArray = key.split(/\.|:/);
 
         const result = keyArray.reduce((acc, current: string) => acc && acc[current],

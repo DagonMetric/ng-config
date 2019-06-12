@@ -13,7 +13,7 @@ import { CONFIG_LOADER } from '@dagonmetric/ng-config';
 import { HTTP_CONFIG_LOADER_OPTIONS, HttpConfigLoader, HttpConfigLoaderOptions } from './http-config-loader';
 
 /**
- * The NGMODULE for providing HttpConfigLoader.
+ * The `NGMODULE` for providing `HttpConfigLoader`.
  */
 @NgModule({
     providers: [

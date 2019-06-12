@@ -20,7 +20,7 @@ export function configAppInitializerFactory(configService: ConfigService): () =>
 }
 
 /**
- * The NGMODULE for providing ConfigService and load settings with APP_INITIALIZER.
+ * The `NGMODULE` for providing `ConfigService` and `ConfigPipe`. Call `init` method to load configuration with `APP_INITIALIZER` factory.
  */
 @NgModule({
     declarations: [

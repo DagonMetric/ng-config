@@ -14,6 +14,6 @@ export class ConfigPipe implements PipeTransform {
     constructor(private readonly _configService: ConfigService) { }
 
     transform(value: string): JsonValue | undefined {
-        return this._configService.getSettings(value);
+        return this._configService.getValue(value);
     }
 }

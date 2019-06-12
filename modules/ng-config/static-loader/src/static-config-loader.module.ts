@@ -13,7 +13,7 @@ import { CONFIG_DATA, StaticConfigLoader } from './static-config-loader';
 import { CONFIG_LOADER, JsonObject } from '@dagonmetric/ng-config';
 
 /**
- * The NGMODULE for providing StaticConfigLoader.
+ * The `NGMODULE` for providing `StaticConfigLoader`.
  */
 @NgModule({
     providers: [
