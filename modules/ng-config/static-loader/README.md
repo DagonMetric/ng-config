@@ -1,6 +1,6 @@
 # StaticConfigLoaderModule
 
-Implements [ConfigLoader](https://github.com/DagonMetric/ng-translit/blob/master/modules/ng-config/src/config-loader.ts) for providing static config data.
+Implements [ConfigLoader](https://github.com/DagonMetric/ng-config/blob/master/modules/ng-config/src/config-loader.ts) for providing static config data.
 
 ## Getting Started
 

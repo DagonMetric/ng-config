@@ -1,6 +1,6 @@
 # HttpConfigLoaderModule
 
-Implements an HTTP client API for [ConfigLoader](https://github.com/DagonMetric/ng-translit/blob/master/modules/ng-config/src/config-loader.ts) that relies on the Angular `HttpClient`.
+Implements an HTTP client API for [ConfigLoader](https://github.com/DagonMetric/ng-config/blob/master/modules/ng-config/src/config-loader.ts) that relies on the Angular `HttpClient`.
 
 ## Getting Started
 
