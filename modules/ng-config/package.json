@@ -3,12 +3,14 @@
   "version": "0.0.0-PLACEHOLDER",
   "description": "Configuration service package for Angular application.",
   "keywords": [
-    "angular",
-    "config",
-    "configuration",
-    "settings",
-    "angular config service",
-    "angular config loader"
+    "angular-config-service",
+    "angular-configuration-service",
+    "angular-settings-service",
+    "angular-config-loader",
+    "config-service",
+    "configuration-service",
+    "settings-service",
+    "angular"
   ],
   "author": "",
   "license": "",
