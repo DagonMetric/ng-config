@@ -3,7 +3,6 @@
     "target": "es2015",
     "module": "esnext",
     "moduleResolution": "node",
-
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
 
@@ -13,13 +12,11 @@
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-
     "strictNullChecks": true,
     "stripInternal": true,
     "strictPropertyInitialization": true,
 
     "sourceMap": true,
-
     "importHelpers": true,
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
@@ -36,7 +33,7 @@
     "plugins": [
       {
         "name": "typescript-tslint-plugin",
-        "configFile": "tslint.json",
+        "configFile": "tslint.json"
       }
     ]
   }
