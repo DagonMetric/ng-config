@@ -18,7 +18,6 @@
     "rimraf": "rimraf",
     "lint": "ng lint",
     "build": "ngb build --env.prod",
-    "build:ng": "ng build ng-config --prod && ng build ng-config-http-loader --prod",
     "test": "ng test"
   },
   "dependencies": {
