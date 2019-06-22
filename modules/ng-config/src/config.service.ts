@@ -17,8 +17,7 @@ import { JsonObject, JsonValue } from './json-object';
 
 export interface ConfigLoadingContext {
     data: JsonObject;
-    loading: boolean;
-    loaded: boolean;
+    status?: 'loading' | 'loaded';
 }
 
 /**
@@ -44,7 +43,7 @@ export class ConfigService {
 
     private readonly _options: ConfigOptions;
     private readonly _cachedSettings: JsonObject = {};
-    private readonly _onLoad = new BehaviorSubject<ConfigLoadingContext>({ data: {}, loading: false, loaded: false });
+    private readonly _onLoad = new BehaviorSubject<ConfigLoadingContext>({ data: {}});
     private readonly _fetchRequests: { [key: string]: Observable<JsonObject> } = {};
 
     private _loading = false;
@@ -93,8 +92,7 @@ export class ConfigService {
 
             this._onLoad.next({
                 data: {},
-                loading: true,
-                loaded: false
+                status: 'loading'
             });
         }
 
@@ -142,8 +140,7 @@ export class ConfigService {
 
             this._onLoad.next({
                 data: this._cachedSettings,
-                loading: false,
-                loaded: true
+                status: 'loaded'
             });
 
         }, () => {
