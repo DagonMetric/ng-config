@@ -42,10 +42,10 @@ export class ConfigService {
     readonly loadEvent: Observable<ConfigLoadingContext>;
 
     private readonly _options: ConfigOptions;
-    private readonly _cachedSettings: JsonObject = {};
     private readonly _onLoad = new BehaviorSubject<ConfigLoadingContext>({ data: {} });
     private readonly _fetchRequests: { [key: string]: Observable<JsonObject> } = {};
 
+    private _cachedSettings: JsonObject = {};
     private _loading = false;
     private _completed = false;
 
@@ -131,7 +131,7 @@ export class ConfigService {
         );
 
         obs.subscribe((config) => {
-            Object.assign(this._cachedSettings, config);
+            this._cachedSettings = config;
 
             this._completed = true;
             this._loading = false;
