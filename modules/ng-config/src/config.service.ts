@@ -43,7 +43,7 @@ export class ConfigService {
 
     private readonly _options: ConfigOptions;
     private readonly _cachedSettings: JsonObject = {};
-    private readonly _onLoad = new BehaviorSubject<ConfigLoadingContext>({ data: {}});
+    private readonly _onLoad = new BehaviorSubject<ConfigLoadingContext>({ data: {} });
     private readonly _fetchRequests: { [key: string]: Observable<JsonObject> } = {};
 
     private _loading = false;
