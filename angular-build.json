@@ -9,7 +9,7 @@
       "envOverrides": {
         "prod": {
           "copy": [
-            "README.md",
+            "../../README.md",
             "../../LICENSE"
           ],
           "bundles": true,
@@ -29,12 +29,6 @@
       },
       "envOverrides": {
         "prod": {
-          "copy": [
-            {
-              "from": "README.md",
-              "to": "http-loader/README.md"
-            }
-          ],
           "bundles": true,
           "packageJsonCopy": true
         }
@@ -51,12 +45,6 @@
       },
       "envOverrides": {
         "prod": {
-          "copy": [
-            {
-              "from": "README.md",
-              "to": "static-loader/README.md"
-            }
-          ],
           "bundles": true,
           "packageJsonCopy": true
         }
