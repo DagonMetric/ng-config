@@ -1,11 +1,11 @@
 version: 2.1
 
-var_1: &docker_image circleci/node:10.16.0-browsers
-var_2: &cache_key v2.1-ng-config-{{ .Branch }}-{{ checksum "yarn.lock" }}-node-10.16.0
+var_1: &docker_image circleci/node:lts-browsers
+var_2: &cache_key v2.1-repo-{{ .Branch }}-{{ checksum "yarn.lock" }}-node-lts
 
 jobs:
   build:
-    working_directory: ~/ng-config
+    working_directory: ~/repo
     docker:
       - image: *docker_image
     steps:
