@@ -29,6 +29,7 @@
       },
       "envOverrides": {
         "prod": {
+          "copy": [],
           "bundles": true,
           "packageJsonCopy": true
         }
@@ -45,6 +46,7 @@
       },
       "envOverrides": {
         "prod": {
+          "copy": [],
           "bundles": true,
           "packageJsonCopy": true
         }
