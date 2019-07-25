@@ -1,4 +1,4 @@
-# Configuration Service for Angular
+# Configuration Settings Service for Angular
 
 [![Build Status](https://dev.azure.com/DagonMetric/ng-config/_apis/build/status/DagonMetric.ng-config?branchName=master)](https://dev.azure.com/DagonMetric/ng-config/_build/latest?definitionId=9&branchName=master)
 [![CircleCI](https://circleci.com/gh/DagonMetric/ng-config/tree/master.svg?style=svg)](https://circleci.com/gh/DagonMetric/ng-config/tree/master)
@@ -6,7 +6,7 @@
 [![npm version](https://img.shields.io/npm/v/@dagonmetric/ng-config.svg)](https://www.npmjs.com/package/@dagonmetric/ng-config)
 [![Gitter](https://badges.gitter.im/DagonMetric/general.svg)](https://gitter.im/DagonMetric/general?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-Configuration/setting service for Angular applications.
+Configuration/settings service for Angular applications.
 
 ## Features
 
