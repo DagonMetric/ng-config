@@ -8,9 +8,8 @@
 
 import { Observable } from 'rxjs';
 
-import { JsonObject } from './json-object';
-
 export interface ConfigLoader {
     readonly name: string;
-    load(): Observable<JsonObject>;
+    // tslint:disable-next-line: no-any
+    load(): Observable<{ [key: string]: any }>;
 }

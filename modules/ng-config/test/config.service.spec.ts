@@ -9,7 +9,6 @@ import { delay } from 'rxjs/operators';
 import { ConfigLoader } from '../src/config-loader';
 import { CONFIG_LOADER } from '../src/config-loader-token';
 import { CONFIG_OPTIONS, ConfigService } from '../src/config.service';
-import { JsonObject } from '../src/json-object';
 
 /**
  * Test loader that implements ConfigLoader.
@@ -29,7 +28,8 @@ export class TestConfigLoader implements ConfigLoader {
         return 'TestConfigLoader';
     }
 
-    load(): Observable<JsonObject> {
+    // tslint:disable-next-line: no-any
+    load(): Observable<{ [key: string]: any }> {
         this._settings.counter++;
 
         if (this._settings.counter > 10) {

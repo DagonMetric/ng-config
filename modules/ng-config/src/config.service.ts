@@ -6,6 +6,8 @@
  * found under the LICENSE file in the root directory of this source tree.
  */
 
+// tslint:disable: no-any
+
 import { Inject, Injectable, InjectionToken, Optional } from '@angular/core';
 
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
@@ -13,10 +15,9 @@ import { map, share, take, tap } from 'rxjs/operators';
 
 import { ConfigLoader } from './config-loader';
 import { CONFIG_LOADER } from './config-loader-token';
-import { JsonObject, JsonValue } from './json-object';
 
 export interface ConfigLoadingContext {
-    data: JsonObject;
+    data: { [key: string]: any };
     status?: 'loading' | 'loaded';
 }
 
@@ -43,9 +44,9 @@ export class ConfigService {
 
     private readonly _options: ConfigOptions;
     private readonly _onLoad = new BehaviorSubject<ConfigLoadingContext>({ data: {} });
-    private readonly _fetchRequests: { [key: string]: Observable<JsonObject> } = {};
+    private readonly _fetchRequests: { [key: string]: Observable<{ [key: string]: any }> } = {};
 
-    private _cachedSettings: JsonObject = {};
+    private _cachedSettings: { [key: string]: any } = {};
     private _loading = false;
     private _completed = false;
 
@@ -73,7 +74,7 @@ export class ConfigService {
      * @returns Returns the observable of loaded config data.
      * @throws {Error} Throws error if no 'CONFIG_LOADER' provided.
      */
-    load(reLoad?: boolean): Observable<JsonObject> {
+    load(reLoad?: boolean): Observable<{ [key: string]: any }> {
         if (!this._configLoaders || !this._configLoaders.length) {
             throw new Error('No configuration loader available.');
         }
@@ -120,7 +121,7 @@ export class ConfigService {
             })
         ).pipe(
             map(configs => {
-                let mergedConfig: JsonObject = {};
+                let mergedConfig: { [key: string]: any } = {};
 
                 configs.forEach(config => {
                     mergedConfig = { ...mergedConfig, ...config };
@@ -163,9 +164,10 @@ export class ConfigService {
      * @param key The setting key.
      * @param defaultValue The default value to return if setting not found.
      */
-    getValue(key: string, defaultValue?: JsonValue): JsonValue | undefined {
+    getValue(key: string, defaultValue?: any): any {
         const keyArray = key.split(/\.|:/);
 
+        // tslint:disable-next-line: no-unsafe-any
         const result = keyArray.reduce((acc, current: string) => acc && acc[current],
             this._cachedSettings);
 
@@ -176,7 +178,7 @@ export class ConfigService {
         return result;
     }
 
-    private log(msg: string, data?: JsonObject): void {
+    private log(msg: string, data?: { [key: string]: any }): void {
         if (!this._options.trace) {
             return;
         }

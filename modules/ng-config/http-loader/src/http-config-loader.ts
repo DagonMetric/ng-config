@@ -11,7 +11,7 @@ import { Inject, Injectable, InjectionToken, Injector, Optional } from '@angular
 
 import { Observable } from 'rxjs';
 
-import { ConfigLoader, JsonObject } from '@dagonmetric/ng-config';
+import { ConfigLoader } from '@dagonmetric/ng-config';
 
 /**
  * The options for HttpConfigLoader.
@@ -55,7 +55,9 @@ export class HttpConfigLoader implements ConfigLoader {
         return this._endpoint;
     }
 
-    load(): Observable<JsonObject> {
-        return this._httpClient.get<JsonObject>(this._endpoint);
+    // tslint:disable-next-line: no-any
+    load(): Observable<{ [key: string]: any }> {
+        // tslint:disable-next-line: no-any
+        return this._httpClient.get<{ [key: string]: any }>(this._endpoint);
     }
 }

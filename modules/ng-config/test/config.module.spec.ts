@@ -10,7 +10,6 @@ import { ConfigLoader } from '../src/config-loader';
 import { CONFIG_LOADER } from '../src/config-loader-token';
 import { ConfigModule } from '../src/config.module';
 import { CONFIG_OPTIONS, ConfigOptions, ConfigService } from '../src/config.service';
-import { JsonObject } from '../src/json-object';
 
 /**
  * Test loader that implements ConfigLoader.
@@ -29,7 +28,8 @@ export class TestConfigLoader implements ConfigLoader {
         return 'TestConfigLoader';
     }
 
-    load(): Observable<JsonObject> {
+    // tslint:disable-next-line: no-any
+    load(): Observable<{ [key: string]: any }> {
         return of(this._settings).pipe(delay(10));
     }
 }

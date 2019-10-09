@@ -6,13 +6,15 @@
  * found under the LICENSE file in the root directory of this source tree.
  */
 
+// tslint:disable: no-any
+
 import { Inject, Injectable, InjectionToken, Optional } from '@angular/core';
 
 import { Observable, of } from 'rxjs';
 
-import { ConfigLoader, JsonObject } from '@dagonmetric/ng-config';
+import { ConfigLoader } from '@dagonmetric/ng-config';
 
-export const CONFIG_DATA = new InjectionToken<JsonObject>('ConfigData');
+export const CONFIG_DATA = new InjectionToken<Object>('ConfigData');
 
 /**
  * The config loader for providing static config data.
@@ -21,9 +23,10 @@ export const CONFIG_DATA = new InjectionToken<JsonObject>('ConfigData');
     providedIn: 'root'
 })
 export class StaticConfigLoader implements ConfigLoader {
-    readonly settings: JsonObject = {};
 
-    constructor(@Optional() @Inject(CONFIG_DATA) settings?: JsonObject) {
+    readonly settings: { [key: string]: any } = {};
+
+    constructor(@Optional() @Inject(CONFIG_DATA) settings?: Object) {
         if (settings) {
             this.settings = settings;
         }
@@ -33,7 +36,7 @@ export class StaticConfigLoader implements ConfigLoader {
         return 'StaticConfigLoader';
     }
 
-    load(): Observable<JsonObject> {
+    load(): Observable<{ [key: string]: any }> {
         return of(this.settings);
     }
 }

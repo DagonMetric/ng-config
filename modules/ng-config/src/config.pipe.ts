@@ -1,7 +1,6 @@
 import { Injectable, Pipe, PipeTransform } from '@angular/core';
 
 import { ConfigService } from './config.service';
-import { JsonValue } from './json-object';
 
 /**
  * The config pipe to get setting value by key.
@@ -13,7 +12,8 @@ import { JsonValue } from './json-object';
 export class ConfigPipe implements PipeTransform {
     constructor(private readonly _configService: ConfigService) { }
 
-    transform(value: string): JsonValue | undefined {
+    // tslint:disable-next-line: no-any
+    transform(value: string): any {
         return this._configService.getValue(value);
     }
 }

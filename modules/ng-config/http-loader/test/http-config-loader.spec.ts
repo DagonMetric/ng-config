@@ -4,8 +4,6 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 
 import { inject, TestBed } from '@angular/core/testing';
 
-import { JsonObject } from '../../src';
-
 import { HttpConfigLoader } from '../src/http-config-loader';
 
 describe('HttpConfigLoader', () => {
@@ -48,7 +46,8 @@ describe('HttpConfigLoader', () => {
                     }
                 };
 
-                configLoader.load().subscribe((data: JsonObject) => {
+                // tslint:disable-next-line: no-any
+                configLoader.load().subscribe((data: { [key: string]: any }) => {
                     expect(data).toEqual(mockSettings);
                     expect(data.name).toEqual('ng-config');
                 });

@@ -10,9 +10,9 @@ import { APP_INITIALIZER, ModuleWithProviders, NgModule } from '@angular/core';
 
 import { ConfigPipe } from './config.pipe';
 import { CONFIG_OPTIONS, ConfigOptions, ConfigService } from './config.service';
-import { JsonObject } from './json-object';
 
-export function configAppInitializerFactory(configService: ConfigService): () => Promise<JsonObject> {
+// tslint:disable-next-line: no-any
+export function configAppInitializerFactory(configService: ConfigService): () => Promise<{ [key: string]: any }> {
     // tslint:disable-next-line:no-unnecessary-local-variable
     const res = async () => configService.load().toPromise();
 
