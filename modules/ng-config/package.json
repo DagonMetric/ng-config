@@ -2,6 +2,16 @@
   "name": "@dagonmetric/ng-config",
   "version": "0.0.0-PLACEHOLDER",
   "description": "Configuration/setting service for Angular applications.",
+  "author": "DagonMetric",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dagonmetric/ng-config.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Dagonmetric/ng-config/issues"
+  },
+  "homepage": "https://github.com/Dagonmetric/ng-config",
   "keywords": [
     "ng-config",
     "angular-config",
@@ -14,16 +24,6 @@
     "settings-service",
     "angular"
   ],
-  "author": "",
-  "license": "",
-  "repository": {
-    "type": "git",
-    "url": "ssh://git@github.com/Dagonmetric/ng-config.git"
-  },
-  "bugs": {
-    "url": "https://github.com/Dagonmetric/ng-config/issues"
-  },
-  "homepage": "https://github.com/Dagonmetric/ng-config",
   "dependencies": {
     "tslib": "^1.10.0"
   },

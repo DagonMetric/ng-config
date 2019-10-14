@@ -1,9 +1,16 @@
 {
   "name": "ng-config",
   "version": "2.2.0",
-  "private": true,
   "author": "DagonMetric",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dagonmetric/ng-config.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Dagonmetric/ng-config/issues"
+  },
+  "homepage": "https://github.com/Dagonmetric/ng-config",
   "scripts": {
     "ng": "ng",
     "ngb": "ngb",
