@@ -131,7 +131,7 @@ export class ConfigService {
             })
         );
 
-        obs.subscribe((config) => {
+        obs.subscribe(config => {
             this._cachedSettings = config;
 
             this._completed = true;

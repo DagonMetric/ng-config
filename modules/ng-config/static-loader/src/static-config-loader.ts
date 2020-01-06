@@ -14,6 +14,7 @@ import { Observable, of } from 'rxjs';
 
 import { ConfigLoader } from '@dagonmetric/ng-config';
 
+// tslint:disable-next-line: ban-types
 export const CONFIG_DATA = new InjectionToken<Object>('ConfigData');
 
 /**
@@ -26,6 +27,7 @@ export class StaticConfigLoader implements ConfigLoader {
 
     readonly settings: { [key: string]: any } = {};
 
+    // tslint:disable-next-line: ban-types
     constructor(@Optional() @Inject(CONFIG_DATA) settings?: Object) {
         if (settings) {
             this.settings = settings;
