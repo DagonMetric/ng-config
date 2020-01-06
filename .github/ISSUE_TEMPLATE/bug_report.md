@@ -10,11 +10,11 @@ This issue tracker is ONLY used for reporting bugs.
 Please fill in the *entire* template below. 
 -->
 
-## Current behavior
+## Current Behavior
 
 <!-- Describe the current behavior. -->
 
-## Expected behavior
+## Expected Behavior
 
 <!-- Describe what the desired behavior would be. -->
 
@@ -24,9 +24,8 @@ Please fill in the *entire* template below.
 
 ## Environment
 
-<!-- - OS version: -->
-<!-- - @dagonmetric/ng-config version: -->
+<!-- - Library package version: -->
 
-## Additional context
+## Additional Context
 
 <!-- Anything else relevant? -->
