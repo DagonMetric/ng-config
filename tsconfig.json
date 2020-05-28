@@ -28,13 +28,6 @@
 
     "paths": {
       "@dagonmetric/ng-config": [ "./modules/ng-config" ]
-    },
-
-    "plugins": [
-      {
-        "name": "typescript-tslint-plugin",
-        "configFile": "tslint.json"
-      }
-    ]
+    }
   }
 }
