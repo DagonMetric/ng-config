@@ -9,7 +9,7 @@
 import { Observable } from 'rxjs';
 
 export interface ConfigLoader {
+    readonly order: number;
     readonly name: string;
-    // tslint:disable-next-line: no-any
-    load(): Observable<{ [key: string]: any }>;
+    load(): Observable<{ [key: string]: unknown }>;
 }
