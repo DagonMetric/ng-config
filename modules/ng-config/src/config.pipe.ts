@@ -10,10 +10,9 @@ import { ConfigService } from './config.service';
     name: 'config'
 })
 export class ConfigPipe implements PipeTransform {
-    constructor(private readonly _configService: ConfigService) { }
+    constructor(private readonly configService: ConfigService) {}
 
-    // tslint:disable-next-line: no-any
-    transform(value: string): any {
-        return this._configService.getValue(value);
+    transform(value: string): unknown {
+        return this.configService.getValue(value);
     }
 }

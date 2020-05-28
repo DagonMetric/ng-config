@@ -10,7 +10,8 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 
 import { CONFIG_LOADER } from '@dagonmetric/ng-config';
 
-import { HTTP_CONFIG_LOADER_OPTIONS, HttpConfigLoader, HttpConfigLoaderOptions } from './http-config-loader';
+import { HttpConfigLoader } from './http-config-loader';
+import { HTTP_CONFIG_LOADER_OPTIONS, HttpConfigLoaderOptions } from './http-config-loader-options';
 
 /**
  * The `NGMODULE` for providing `HttpConfigLoader`.
@@ -26,8 +27,8 @@ import { HTTP_CONFIG_LOADER_OPTIONS, HttpConfigLoader, HttpConfigLoaderOptions }
 })
 export class HttpConfigLoaderModule {
     /**
-     * Call this method to provide options for configuring the HttpConfigLoader.
-     * @param options An option object for 'HttpConfigLoader'.
+     * Call this method to provide options for configuring the `HttpConfigLoader`.
+     * @param options An option object for `HttpConfigLoader`.
      */
     static withOptions(options: HttpConfigLoaderOptions): ModuleWithProviders {
         return {

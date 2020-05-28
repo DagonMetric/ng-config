@@ -1,20 +1,14 @@
-// tslint:disable: no-floating-promises
-
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
-import { inject, TestBed } from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing';
 
 import { HttpConfigLoader } from '../src/http-config-loader';
 
 describe('HttpConfigLoader', () => {
     it('should be created', () => {
         TestBed.configureTestingModule({
-            imports: [
-                HttpClientTestingModule
-            ],
-            providers: [
-                HttpConfigLoader
-            ]
+            imports: [HttpClientTestingModule],
+            providers: [HttpConfigLoader]
         });
 
         const configLoader = TestBed.get<HttpConfigLoader>(HttpConfigLoader);
@@ -26,18 +20,14 @@ describe('HttpConfigLoader', () => {
     describe('load', () => {
         beforeEach(() => {
             TestBed.configureTestingModule({
-                imports: [
-                    HttpClientTestingModule,
-                ],
-                providers: [
-                    HttpConfigLoader
-                ]
+                imports: [HttpClientTestingModule],
+                providers: [HttpConfigLoader]
             });
         });
 
-        it('should be able to load settings',
-            inject([HttpTestingController, HttpConfigLoader], (httpMock: HttpTestingController, configLoader: HttpConfigLoader) => {
-
+        it('should be able to load settings', inject(
+            [HttpTestingController, HttpConfigLoader],
+            (httpMock: HttpTestingController, configLoader: HttpConfigLoader) => {
                 const mockSettings = {
                     name: 'ng-config',
                     obj: {
@@ -46,7 +36,6 @@ describe('HttpConfigLoader', () => {
                     }
                 };
 
-                // tslint:disable-next-line: no-any
                 configLoader.load().subscribe((data: { [key: string]: any }) => {
                     expect(data).toEqual(mockSettings);
                     expect(data.name).toEqual('ng-config');
@@ -58,6 +47,7 @@ describe('HttpConfigLoader', () => {
                 expect(req.request.responseType).toEqual('json');
                 req.flush(mockSettings);
                 httpMock.verify();
-            }));
+            }
+        ));
     });
 });

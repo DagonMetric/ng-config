@@ -7,23 +7,13 @@
  */
 
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, InjectionToken, Injector, Optional } from '@angular/core';
+import { Inject, Injectable, Injector } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
 import { ConfigLoader } from '@dagonmetric/ng-config';
 
-/**
- * The options for HttpConfigLoader.
- */
-export interface HttpConfigLoaderOptions {
-    /**
-     * The endpoint url string or InjectionToken.
-     */
-    endpoint?: string | InjectionToken<string>;
-}
-
-export const HTTP_CONFIG_LOADER_OPTIONS = new InjectionToken<HttpConfigLoaderOptions>('HttpConfigLoaderOptions');
+import { HTTP_CONFIG_LOADER_OPTIONS, HttpConfigLoaderOptions } from './http-config-loader-options';
 
 /**
  * Implements an HTTP client API for ConfigLoader that relies on the Angular HttpClient.
@@ -32,32 +22,36 @@ export const HTTP_CONFIG_LOADER_OPTIONS = new InjectionToken<HttpConfigLoaderOpt
     providedIn: 'root'
 })
 export class HttpConfigLoader implements ConfigLoader {
-    private readonly _endpoint: string = '/appsettings.json';
-
-    constructor(
-        private readonly _httpClient: HttpClient,
-        injector: Injector,
-        @Optional() @Inject(HTTP_CONFIG_LOADER_OPTIONS) options: HttpConfigLoaderOptions) {
-        if (options && options.endpoint) {
-            if (typeof options.endpoint === 'string') {
-                this._endpoint = options.endpoint;
-            } else {
-                this._endpoint = injector.get(options.endpoint);
-            }
-        }
-    }
-
     get name(): string {
         return 'HttpConfigLoader';
     }
 
     get endpoint(): string {
-        return this._endpoint;
+        return this.configEndpoint;
     }
 
-    // tslint:disable-next-line: no-any
-    load(): Observable<{ [key: string]: any }> {
-        // tslint:disable-next-line: no-any
-        return this._httpClient.get<{ [key: string]: any }>(this._endpoint);
+    get order(): number {
+        return this.loaderOrder != null ? this.loaderOrder : 0;
+    }
+
+    private readonly configEndpoint: string;
+    private readonly loaderOrder?: number;
+
+    constructor(
+        private readonly httpClient: HttpClient,
+        injector: Injector,
+        @Inject(HTTP_CONFIG_LOADER_OPTIONS) options: HttpConfigLoaderOptions
+    ) {
+        if (typeof options.endpoint === 'string') {
+            this.configEndpoint = options.endpoint;
+        } else {
+            this.configEndpoint = injector.get(options.endpoint);
+        }
+
+        this.loaderOrder = options.order;
+    }
+
+    load(): Observable<{ [key: string]: unknown }> {
+        return this.httpClient.get<{ [key: string]: unknown }>(this.configEndpoint);
     }
 }

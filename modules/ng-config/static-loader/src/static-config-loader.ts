@@ -6,16 +6,13 @@
  * found under the LICENSE file in the root directory of this source tree.
  */
 
-// tslint:disable: no-any
-
-import { Inject, Injectable, InjectionToken, Optional } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 
 import { Observable, of } from 'rxjs';
 
 import { ConfigLoader } from '@dagonmetric/ng-config';
 
-// tslint:disable-next-line: ban-types
-export const CONFIG_DATA = new InjectionToken<Object>('ConfigData');
+import { STATIC_CONFIG_LOADER_OPTIONS, StaticConfigLoaderOptions } from './static-config-loader-options';
 
 /**
  * The config loader for providing static config data.
@@ -24,21 +21,24 @@ export const CONFIG_DATA = new InjectionToken<Object>('ConfigData');
     providedIn: 'root'
 })
 export class StaticConfigLoader implements ConfigLoader {
-
-    readonly settings: { [key: string]: any } = {};
-
-    // tslint:disable-next-line: ban-types
-    constructor(@Optional() @Inject(CONFIG_DATA) settings?: Object) {
-        if (settings) {
-            this.settings = settings;
-        }
-    }
+    readonly data: { [key: string]: unknown } = {};
 
     get name(): string {
         return 'StaticConfigLoader';
     }
 
-    load(): Observable<{ [key: string]: any }> {
-        return of(this.settings);
+    get order(): number {
+        return this.loaderOrder != null ? this.loaderOrder : 0;
+    }
+
+    private readonly loaderOrder?: number;
+
+    constructor(@Inject(STATIC_CONFIG_LOADER_OPTIONS) options: StaticConfigLoaderOptions) {
+        this.data = options.data;
+        this.loaderOrder = options.order;
+    }
+
+    load(): Observable<{ [key: string]: unknown }> {
+        return of(this.data);
     }
 }

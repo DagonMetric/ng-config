@@ -6,18 +6,16 @@
  * found under the LICENSE file in the root directory of this source tree.
  */
 
-// tslint:disable: no-any
-
 import { Inject, Injectable, InjectionToken, Optional } from '@angular/core';
 
-import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, forkJoin, of } from 'rxjs';
 import { map, share, take, tap } from 'rxjs/operators';
 
 import { ConfigLoader } from './config-loader';
 import { CONFIG_LOADER } from './config-loader-token';
 
 export interface ConfigLoadingContext {
-    data: { [key: string]: any };
+    data: { [key: string]: unknown };
     status?: 'loading' | 'loaded';
 }
 
@@ -42,30 +40,31 @@ export const CONFIG_OPTIONS = new InjectionToken<ConfigOptions>('ConfigOptions')
 export class ConfigService {
     readonly loadEvent: Observable<ConfigLoadingContext>;
 
-    private readonly _options: ConfigOptions;
-    private readonly _onLoad = new BehaviorSubject<ConfigLoadingContext>({ data: {} });
-    private readonly _fetchRequests: { [key: string]: Observable<{ [key: string]: any }> } = {};
+    private readonly options: ConfigOptions;
+    private readonly onLoad = new BehaviorSubject<ConfigLoadingContext>({ data: {} });
+    private readonly fetchRequests: { [key: string]: Observable<{ [key: string]: unknown }> } = {};
 
-    private _cachedSettings: { [key: string]: any } = {};
-    private _loading = false;
-    private _completed = false;
+    private cachedSettings: { [key: string]: unknown } = {};
+    private loading = false;
+    private completed = false;
 
     /**
      * The property to get the loader names.
      */
     get loaderNames(): string[] {
-        if (!this._configLoaders || !this._configLoaders.length) {
+        if (!this.configLoaders || !this.configLoaders.length) {
             return [];
         }
 
-        return this._configLoaders.map(configLoader => configLoader.name);
+        return this.configLoaders.map((configLoader) => configLoader.name);
     }
 
     constructor(
-        @Optional() @Inject(CONFIG_LOADER) private readonly _configLoaders?: ConfigLoader[],
-        @Optional() @Inject(CONFIG_OPTIONS) options?: ConfigOptions) {
-        this._options = options || {};
-        this.loadEvent = this._onLoad.asObservable();
+        @Optional() @Inject(CONFIG_LOADER) private readonly configLoaders?: ConfigLoader[],
+        @Optional() @Inject(CONFIG_OPTIONS) options?: ConfigOptions
+    ) {
+        this.options = options || {};
+        this.loadEvent = this.onLoad.asObservable();
     }
 
     /**
@@ -74,56 +73,53 @@ export class ConfigService {
      * @returns Returns the observable of loaded config data.
      * @throws {Error} Throws error if no 'CONFIG_LOADER' provided.
      */
-    load(reLoad?: boolean): Observable<{ [key: string]: any }> {
-        if (!this._configLoaders || !this._configLoaders.length) {
+    load(reLoad?: boolean): Observable<{ [key: string]: unknown }> {
+        if (!this.configLoaders || !this.configLoaders.length) {
             throw new Error('No configuration loader available.');
         }
 
-        if (this._completed && !reLoad) {
+        if (this.completed && !reLoad) {
             this.log('Configuration already loaded.');
 
-            return of(this._cachedSettings);
+            return of(this.cachedSettings);
         }
 
-        if (!this._loading) {
+        if (!this.loading) {
             this.log('Cconfiguration loading started.');
 
-            this._loading = true;
-            this._completed = false;
+            this.loading = true;
+            this.completed = false;
 
-            this._onLoad.next({
+            this.onLoad.next({
                 data: {},
                 status: 'loading'
             });
         }
 
         const obs = forkJoin(
-            this._configLoaders.map(configLoader => {
-                const loaderName = configLoader.name;
+            this.configLoaders
+                .sort((l) => l.order)
+                .map((configLoader) => {
+                    const loaderName = configLoader.name;
 
-                if (!reLoad && this._fetchRequests[loaderName]) {
-                    return this._fetchRequests[loaderName];
-                }
+                    if (reLoad || !this.fetchRequests[loaderName]) {
+                        const loaderObs = configLoader.load().pipe(
+                            tap((config) => {
+                                this.log(loaderName, config);
+                            }),
+                            share()
+                        );
 
-                const loaderObs = configLoader.load().pipe(
-                    tap(config => {
-                        this.log(loaderName, config);
-                    }),
-                    share()
-                );
+                        this.fetchRequests[loaderName] = loaderObs.pipe(take(1), share());
+                    }
 
-                this._fetchRequests[loaderName] = loaderObs.pipe(
-                    take(1),
-                    share()
-                );
-
-                return loaderObs;
-            })
+                    return this.fetchRequests[loaderName];
+                })
         ).pipe(
-            map(configs => {
-                let mergedConfig: { [key: string]: any } = {};
+            map((configs) => {
+                let mergedConfig: { [key: string]: unknown } = {};
 
-                configs.forEach(config => {
+                configs.forEach((config) => {
                     mergedConfig = { ...mergedConfig, ...config };
                 });
 
@@ -131,23 +127,25 @@ export class ConfigService {
             })
         );
 
-        obs.subscribe(config => {
-            this._cachedSettings = config;
+        obs.subscribe(
+            (config) => {
+                this.cachedSettings = config;
 
-            this._completed = true;
-            this._loading = false;
+                this.completed = true;
+                this.loading = false;
 
-            this.log('Configuration loading completed.');
+                this.log('Configuration loading completed.');
 
-            this._onLoad.next({
-                data: this._cachedSettings,
-                status: 'loaded'
-            });
-
-        }, () => {
-            this._completed = false;
-            this._loading = false;
-        });
+                this.onLoad.next({
+                    data: this.cachedSettings,
+                    status: 'loaded'
+                });
+            },
+            () => {
+                this.completed = false;
+                this.loading = false;
+            }
+        );
 
         return obs;
     }
@@ -164,12 +162,10 @@ export class ConfigService {
      * @param key The setting key.
      * @param defaultValue The default value to return if setting not found.
      */
-    getValue(key: string, defaultValue?: any): any {
+    getValue(key: string, defaultValue?: unknown): unknown {
         const keyArray = key.split(/\.|:/);
 
-        // tslint:disable-next-line: no-unsafe-any
-        const result = keyArray.reduce((acc, current: string) => acc && acc[current],
-            this._cachedSettings);
+        const result = keyArray.reduce((acc, current: string) => acc && acc[current], this.cachedSettings);
 
         if (result === undefined) {
             return defaultValue;
@@ -178,17 +174,16 @@ export class ConfigService {
         return result;
     }
 
-    private log(msg: string, data?: { [key: string]: any }): void {
-        if (!this._options.trace) {
+    private log(msg: string, data?: { [key: string]: unknown }): void {
+        if (!this.options.trace) {
             return;
         }
 
         if (data) {
-            // tslint:disable-next-line:no-console
+            // eslint-disable-next-line no-console
             console.log(`[ConfigService] ${msg}, data: `, data);
-
         } else {
-            // tslint:disable-next-line:no-console
+            // eslint-disable-next-line no-console
             console.log(`[ConfigService] ${msg}`);
         }
     }

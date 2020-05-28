@@ -7,4 +7,5 @@
  */
 
 export * from './src/static-config-loader';
+export * from './src/static-config-loader-options';
 export * from './src/static-config-loader.module';

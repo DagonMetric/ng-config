@@ -7,4 +7,5 @@
  */
 
 export * from './src/http-config-loader';
+export * from './src/http-config-loader-options';
 export * from './src/http-config-loader.module';

@@ -6,9 +6,9 @@
  * found under the LICENSE file in the root directory of this source tree.
  */
 
- /**
-  * Entry point for all public APIs of the ng-config package.
-  */
+/**
+ * Entry point for all public APIs of the ng-config package.
+ */
 export * from './config-loader-token';
 export * from './config-loader';
 export * from './config.module';

@@ -11,9 +11,8 @@ import { APP_INITIALIZER, ModuleWithProviders, NgModule } from '@angular/core';
 import { ConfigPipe } from './config.pipe';
 import { CONFIG_OPTIONS, ConfigOptions, ConfigService } from './config.service';
 
-// tslint:disable-next-line: no-any
-export function configAppInitializerFactory(configService: ConfigService): () => Promise<{ [key: string]: any }> {
-    // tslint:disable-next-line:no-unnecessary-local-variable
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
+export function configAppInitializerFactory(configService: ConfigService): () => Promise<{ [key: string]: unknown }> {
     const res = async () => configService.load().toPromise();
 
     return res;
@@ -23,12 +22,8 @@ export function configAppInitializerFactory(configService: ConfigService): () =>
  * The `NGMODULE` for providing `ConfigService` and `ConfigPipe`. Call `init` method to load configuration with `APP_INITIALIZER` factory.
  */
 @NgModule({
-    declarations: [
-        ConfigPipe
-    ],
-    providers: [
-        ConfigService
-    ]
+    declarations: [ConfigPipe],
+    providers: [ConfigService]
 })
 export class ConfigModule {
     /**
@@ -45,7 +40,7 @@ export class ConfigModule {
                 },
                 {
                     provide: APP_INITIALIZER,
-                    useFactory: (configAppInitializerFactory),
+                    useFactory: configAppInitializerFactory,
                     deps: [ConfigService],
                     multi: true
                 }

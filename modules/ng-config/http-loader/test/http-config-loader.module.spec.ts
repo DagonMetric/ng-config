@@ -1,5 +1,3 @@
-// tslint:disable: no-floating-promises
-
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { InjectionToken } from '@angular/core';
 
@@ -13,10 +11,7 @@ import { HttpConfigLoaderModule } from '../src/http-config-loader.module';
 describe('HttpConfigLoaderModule', () => {
     it("should provide 'HttpConfigLoader'", () => {
         TestBed.configureTestingModule({
-            imports: [
-                HttpClientTestingModule,
-                HttpConfigLoaderModule
-            ]
+            imports: [HttpClientTestingModule, HttpConfigLoaderModule]
         });
 
         const configLoaders = TestBed.get<HttpConfigLoader[]>(CONFIG_LOADER);

@@ -1,5 +1,4 @@
-// tslint:disable: no-floating-promises
-import { inject, TestBed } from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing';
 
 import { StaticConfigLoader } from '../src/static-config-loader';
 import { StaticConfigLoaderModule } from '../src/static-config-loader.module';
@@ -7,9 +6,7 @@ import { StaticConfigLoaderModule } from '../src/static-config-loader.module';
 describe('StaticConfigLoader', () => {
     it('should be created', () => {
         TestBed.configureTestingModule({
-            providers: [
-                StaticConfigLoader
-            ]
+            providers: [StaticConfigLoader]
         });
 
         const configLoader = TestBed.get<StaticConfigLoader>(StaticConfigLoader);
@@ -33,12 +30,10 @@ describe('StaticConfigLoader', () => {
             });
         });
 
-        it('should be able to load settings',
-            inject([StaticConfigLoader], (configLoader: StaticConfigLoader) => {
-                // tslint:disable-next-line: no-any
-                configLoader.load().subscribe((data: { [key: string]: any }) => {
-                    expect(data.name).toEqual('ng-config');
-                });
-            }));
+        it('should be able to load settings', inject([StaticConfigLoader], (configLoader: StaticConfigLoader) => {
+            configLoader.load().subscribe((data: { [key: string]: any }) => {
+                expect(data.name).toEqual('ng-config');
+            });
+        }));
     });
 });
