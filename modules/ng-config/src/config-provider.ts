@@ -6,8 +6,10 @@
  * found under the LICENSE file in the root directory of this source tree.
  */
 
-import { InjectionToken } from '@angular/core';
+import { Observable } from 'rxjs';
 
-import { ConfigLoader } from './config-loader';
-
-export const CONFIG_LOADER = new InjectionToken<ConfigLoader>('ConfigLoader');
+export interface ConfigProvider {
+    readonly name: string;
+    readonly order: number;
+    load(): Observable<{ [key: string]: unknown }>;
+}

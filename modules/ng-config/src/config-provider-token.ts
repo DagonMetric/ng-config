@@ -6,6 +6,8 @@
  * found under the LICENSE file in the root directory of this source tree.
  */
 
-export * from './src/http-config-loader';
-export * from './src/http-config-loader-options';
-export * from './src/http-config-loader.module';
+import { InjectionToken } from '@angular/core';
+
+import { ConfigProvider } from './config-provider';
+
+export const CONFIG_PROVIDER = new InjectionToken<ConfigProvider>('ConfigProvider');

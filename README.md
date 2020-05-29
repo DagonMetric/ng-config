@@ -10,7 +10,7 @@ Configuration / settings service for Angular applications.
 
 ## Features
 
-* Extendable `ConfigLoader` (see built-in [HttpConfigLoader](https://github.com/DagonMetric/ng-config/blob/master/modules/ng-config/http-loader/src/http-config-loader.ts) for implementation demo)
+* Extendable `ConfigProvider` (see built-in [HttpConfigProvider](https://github.com/DagonMetric/ng-config/blob/master/modules/ng-config/http-config-provider/src/http-config-provider.ts) for implementation demo)
 * Load settings when Angular app starts with `APP_INITIALIZER` factory
 * Latest versions of Angular are supported
 * Compatible with Angular Universal (Server Side Rendering - SSR)
@@ -38,7 +38,7 @@ The following code is a simple module setup.
 
 ```typescript
 import { ConfigModule } from '@dagonmetric/ng-config';
-import { HttpConfigLoaderModule } from '@dagonmetric/ng-config/http-loader';
+import { HttpConfigProviderModule } from '@dagonmetric/ng-config/http-config-provider';
 
 @NgModule({
   imports: [
@@ -46,7 +46,7 @@ import { HttpConfigLoaderModule } from '@dagonmetric/ng-config/http-loader';
 
     // ng-config modules
     ConfigModule.init(),
-    HttpConfigLoaderModule.withOptions({
+    HttpConfigProviderModule.withOptions({
         endpoint: '/appsettings.json'
     })
   ]

@@ -11,8 +11,8 @@ import { Inject, Injectable, InjectionToken, Optional } from '@angular/core';
 import { BehaviorSubject, Observable, forkJoin, of } from 'rxjs';
 import { map, share, take, tap } from 'rxjs/operators';
 
-import { ConfigLoader } from './config-loader';
-import { CONFIG_LOADER } from './config-loader-token';
+import { ConfigProvider } from './config-provider';
+import { CONFIG_PROVIDER } from './config-provider-token';
 
 export interface ConfigLoadingContext {
     data: { [key: string]: unknown };
@@ -49,18 +49,18 @@ export class ConfigService {
     private completed = false;
 
     /**
-     * The property to get the loader names.
+     * The property to get the config provider names.
      */
-    get loaderNames(): string[] {
-        if (!this.configLoaders || !this.configLoaders.length) {
+    get providerNames(): string[] {
+        if (!this.configProvider || !this.configProvider.length) {
             return [];
         }
 
-        return this.configLoaders.map((configLoader) => configLoader.name);
+        return this.configProvider.map((configProvider) => configProvider.name);
     }
 
     constructor(
-        @Optional() @Inject(CONFIG_LOADER) private readonly configLoaders?: ConfigLoader[],
+        @Optional() @Inject(CONFIG_PROVIDER) private readonly configProvider?: ConfigProvider[],
         @Optional() @Inject(CONFIG_OPTIONS) options?: ConfigOptions
     ) {
         this.options = options || {};
@@ -74,7 +74,7 @@ export class ConfigService {
      * @throws {Error} Throws error if no 'CONFIG_LOADER' provided.
      */
     load(reLoad?: boolean): Observable<{ [key: string]: unknown }> {
-        if (!this.configLoaders || !this.configLoaders.length) {
+        if (!this.configProvider || !this.configProvider.length) {
             throw new Error('No configuration loader available.');
         }
 
@@ -97,13 +97,13 @@ export class ConfigService {
         }
 
         const obs = forkJoin(
-            this.configLoaders
+            this.configProvider
                 .sort((l) => l.order)
-                .map((configLoader) => {
-                    const loaderName = configLoader.name;
+                .map((configProvider) => {
+                    const loaderName = configProvider.name;
 
                     if (reLoad || !this.fetchRequests[loaderName]) {
-                        const loaderObs = configLoader.load().pipe(
+                        const loaderObs = configProvider.load().pipe(
                             tap((config) => {
                                 this.log(loaderName, config);
                             }),

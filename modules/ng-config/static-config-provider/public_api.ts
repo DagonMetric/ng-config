@@ -6,10 +6,6 @@
  * found under the LICENSE file in the root directory of this source tree.
  */
 
-import { Observable } from 'rxjs';
-
-export interface ConfigLoader {
-    readonly order: number;
-    readonly name: string;
-    load(): Observable<{ [key: string]: unknown }>;
-}
+export * from './src/static-config-provider';
+export * from './src/static-config-provider-options';
+export * from './src/static-config-provider.module';

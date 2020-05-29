@@ -9,7 +9,8 @@
 /**
  * Entry point for all public APIs of the ng-config package.
  */
-export * from './config-loader-token';
-export * from './config-loader';
+
 export * from './config.module';
+export * from './config-provider-token';
+export * from './config-provider';
 export * from './config.service';

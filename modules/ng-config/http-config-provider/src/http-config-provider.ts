@@ -11,19 +11,17 @@ import { Inject, Injectable, Injector } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
-import { ConfigLoader } from '@dagonmetric/ng-config';
+import { ConfigProvider } from '@dagonmetric/ng-config';
 
-import { HTTP_CONFIG_LOADER_OPTIONS, HttpConfigLoaderOptions } from './http-config-loader-options';
+import { HTTP_CONFIG_PROVIDER_OPTIONS, HttpConfigProviderOptions } from './http-config-provider-options';
 
 /**
- * Implements an HTTP client API for ConfigLoader that relies on the Angular HttpClient.
+ * Implements an HTTP client API for HttpConfigProvider that relies on the Angular HttpClient.
  */
-@Injectable({
-    providedIn: 'root'
-})
-export class HttpConfigLoader implements ConfigLoader {
+@Injectable()
+export class HttpConfigProvider implements ConfigProvider {
     get name(): string {
-        return 'HttpConfigLoader';
+        return 'HttpConfigProvider';
     }
 
     get endpoint(): string {
@@ -40,7 +38,7 @@ export class HttpConfigLoader implements ConfigLoader {
     constructor(
         private readonly httpClient: HttpClient,
         injector: Injector,
-        @Inject(HTTP_CONFIG_LOADER_OPTIONS) options: HttpConfigLoaderOptions
+        @Inject(HTTP_CONFIG_PROVIDER_OPTIONS) options: HttpConfigProviderOptions
     ) {
         if (typeof options.endpoint === 'string') {
             this.configEndpoint = options.endpoint;

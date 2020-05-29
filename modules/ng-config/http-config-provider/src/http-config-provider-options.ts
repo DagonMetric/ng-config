@@ -9,9 +9,9 @@
 import { InjectionToken } from '@angular/core';
 
 /**
- * The options for `HttpConfigLoader`.
+ * The options for `HttpConfigProvider`.
  */
-export interface HttpConfigLoaderOptions {
+export interface HttpConfigProviderOptions {
     /**
      * The endpoint url string or InjectionToken.
      */
@@ -22,4 +22,4 @@ export interface HttpConfigLoaderOptions {
     order?: number;
 }
 
-export const HTTP_CONFIG_LOADER_OPTIONS = new InjectionToken<HttpConfigLoaderOptions>('HttpConfigLoaderOptions');
+export const HTTP_CONFIG_PROVIDER_OPTIONS = new InjectionToken<HttpConfigProviderOptions>('HttpConfigProviderOptions');

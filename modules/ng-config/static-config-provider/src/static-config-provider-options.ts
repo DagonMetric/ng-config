@@ -8,9 +8,11 @@
 
 import { InjectionToken } from '@angular/core';
 
-export interface StaticConfigLoaderOptions {
+export interface StaticConfigProviderOptions {
     data: { [key: string]: unknown };
     order?: number;
 }
 
-export const STATIC_CONFIG_LOADER_OPTIONS = new InjectionToken<StaticConfigLoaderOptions>('StaticConfigLoaderOptions');
+export const STATIC_CONFIG_PROVIDER_OPTIONS = new InjectionToken<StaticConfigProviderOptions>(
+    'StaticConfigProviderOptions'
+);

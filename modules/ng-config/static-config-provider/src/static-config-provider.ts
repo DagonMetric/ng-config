@@ -10,21 +10,19 @@ import { Inject, Injectable } from '@angular/core';
 
 import { Observable, of } from 'rxjs';
 
-import { ConfigLoader } from '@dagonmetric/ng-config';
+import { ConfigProvider } from '@dagonmetric/ng-config';
 
-import { STATIC_CONFIG_LOADER_OPTIONS, StaticConfigLoaderOptions } from './static-config-loader-options';
+import { STATIC_CONFIG_PROVIDER_OPTIONS, StaticConfigProviderOptions } from './static-config-provider-options';
 
 /**
  * The config loader for providing static config data.
  */
-@Injectable({
-    providedIn: 'root'
-})
-export class StaticConfigLoader implements ConfigLoader {
+@Injectable()
+export class StaticConfigProvider implements ConfigProvider {
     readonly data: { [key: string]: unknown } = {};
 
     get name(): string {
-        return 'StaticConfigLoader';
+        return 'StaticConfigProvider';
     }
 
     get order(): number {
@@ -33,7 +31,7 @@ export class StaticConfigLoader implements ConfigLoader {
 
     private readonly loaderOrder?: number;
 
-    constructor(@Inject(STATIC_CONFIG_LOADER_OPTIONS) options: StaticConfigLoaderOptions) {
+    constructor(@Inject(STATIC_CONFIG_PROVIDER_OPTIONS) options: StaticConfigProviderOptions) {
         this.data = options.data;
         this.loaderOrder = options.order;
     }
