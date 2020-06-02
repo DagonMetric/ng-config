@@ -2,32 +2,31 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 
 import { TestBed, inject } from '@angular/core/testing';
 
-import { HttpConfigLoader } from '../src/http-config-loader';
+import { HttpConfigProvider } from '../src/http-config-provider';
+import { ConfigSection } from 'modules/ng-config/src';
 
-describe('HttpConfigLoader', () => {
+describe('HttpConfigProvider', () => {
     it('should be created', () => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
-            providers: [HttpConfigLoader]
+            providers: [HttpConfigProvider]
         });
 
-        const configLoader = TestBed.get<HttpConfigLoader>(HttpConfigLoader);
-        expect(configLoader).toBeDefined();
-        expect(configLoader instanceof HttpConfigLoader).toBeTruthy();
-        expect((configLoader as HttpConfigLoader).name).toBe('HttpConfigLoader');
+        const configLoader = TestBed.inject<HttpConfigProvider>(HttpConfigProvider);
+        void expect(configLoader).toBeDefined();
     });
 
     describe('load', () => {
         beforeEach(() => {
             TestBed.configureTestingModule({
                 imports: [HttpClientTestingModule],
-                providers: [HttpConfigLoader]
+                providers: [HttpConfigProvider]
             });
         });
 
         it('should be able to load settings', inject(
-            [HttpTestingController, HttpConfigLoader],
-            (httpMock: HttpTestingController, configLoader: HttpConfigLoader) => {
+            [HttpTestingController, HttpConfigProvider],
+            (httpMock: HttpTestingController, configLoader: HttpConfigProvider) => {
                 const mockSettings = {
                     name: 'ng-config',
                     obj: {
@@ -36,15 +35,15 @@ describe('HttpConfigLoader', () => {
                     }
                 };
 
-                configLoader.load().subscribe((data: { [key: string]: any }) => {
-                    expect(data).toEqual(mockSettings);
-                    expect(data.name).toEqual('ng-config');
+                configLoader.load().subscribe((data: ConfigSection) => {
+                    void expect(data).toEqual(mockSettings);
+                    void expect(data.name).toEqual('ng-config');
                 });
 
                 const req = httpMock.expectOne(configLoader.endpoint);
-                expect(req.cancelled).toBeFalsy();
-                expect(req.request.method).toBe('GET');
-                expect(req.request.responseType).toEqual('json');
+                void expect(req.cancelled).toBeFalsy();
+                void expect(req.request.method).toBe('GET');
+                void expect(req.request.responseType).toEqual('json');
                 req.flush(mockSettings);
                 httpMock.verify();
             }

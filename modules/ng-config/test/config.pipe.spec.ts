@@ -1,22 +1,22 @@
 // tslint:disable: no-floating-promises
 
 import { Injectable } from '@angular/core';
-import { inject, TestBed } from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing';
 
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 
-import { ConfigLoader } from '../src/config-loader';
-import { CONFIG_LOADER } from '../src/config-loader-token';
+import { ConfigProvider } from '../src/config-provider';
+import { CONFIG_PROVIDER } from '../src/config-provider-token';
+import { ConfigSection } from '../src';
 import { ConfigPipe } from '../src/config.pipe';
 import { ConfigService } from '../src/config.service';
 
-/**
- * Test loader that implements ConfigLoader.
- */
-@Injectable()
-export class TestConfigLoader implements ConfigLoader {
-    private readonly _settings = {
+@Injectable({
+    providedIn: 'any'
+})
+export class TestConfigProvider implements ConfigProvider {
+    private readonly config = {
         name: 'ng-config',
         obj: {
             key1: 'value1',
@@ -28,9 +28,8 @@ export class TestConfigLoader implements ConfigLoader {
         return 'TestConfigLoader';
     }
 
-    // tslint:disable-next-line: no-any
-    load(): Observable<{ [key: string]: any }> {
-        return of(this._settings).pipe(delay(10));
+    load(): Observable<ConfigSection> {
+        return of(this.config).pipe(delay(10));
     }
 }
 
@@ -40,8 +39,8 @@ describe('ConfigPipe', () => {
             providers: [
                 ConfigService,
                 {
-                    provide: CONFIG_LOADER,
-                    useClass: TestConfigLoader,
+                    provide: CONFIG_PROVIDER,
+                    useClass: TestConfigProvider,
                     multi: true
                 }
             ]
@@ -53,6 +52,7 @@ describe('ConfigPipe', () => {
 
     it('should be able to transform', inject([ConfigService], (configService: ConfigService) => {
         const pipe = new ConfigPipe(configService);
-        expect(pipe.transform('name')).toEqual('ng-config');
+
+        void expect(pipe.transform('name')).toEqual('ng-config');
     }));
 });

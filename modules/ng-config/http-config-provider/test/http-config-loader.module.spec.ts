@@ -3,21 +3,21 @@ import { InjectionToken } from '@angular/core';
 
 import { TestBed } from '@angular/core/testing';
 
-import { CONFIG_LOADER } from '../../src';
+import { CONFIG_PROVIDER } from '../../src';
 
-import { HttpConfigLoader } from '../src/http-config-loader';
-import { HttpConfigLoaderModule } from '../src/http-config-loader.module';
+import { HttpConfigProvider } from '../src/http-config-provider';
+import { HttpConfigProviderModule } from '../src/http-config-provider.module';
 
-describe('HttpConfigLoaderModule', () => {
+describe('HttpConfigProviderModule', () => {
     it("should provide 'HttpConfigLoader'", () => {
         TestBed.configureTestingModule({
-            imports: [HttpClientTestingModule, HttpConfigLoaderModule]
+            imports: [HttpClientTestingModule, HttpConfigProviderModule]
         });
 
-        const configLoaders = TestBed.get<HttpConfigLoader[]>(CONFIG_LOADER);
-        expect(configLoaders).toBeDefined();
-        expect((configLoaders as HttpConfigLoader[]).length).toBe(1);
-        expect((configLoaders as HttpConfigLoader[])[0] instanceof HttpConfigLoader).toBeTruthy();
+        const configLoaders = TestBed.inject<HttpConfigProvider[]>(CONFIG_PROVIDER);
+        void expect(configLoaders).toBeDefined();
+        void expect(configLoaders.length).toBe(1);
+        void expect(configLoaders[0] instanceof HttpConfigProvider).toBeTruthy();
     });
 
     describe('withOptions', () => {
@@ -25,15 +25,15 @@ describe('HttpConfigLoaderModule', () => {
             TestBed.configureTestingModule({
                 imports: [
                     HttpClientTestingModule,
-                    HttpConfigLoaderModule.withOptions({
+                    HttpConfigProviderModule.withOptions({
                         endpoint: '/testsettings.json'
                     })
                 ]
             });
 
-            const configLoaders = TestBed.get<HttpConfigLoader[]>(CONFIG_LOADER) as HttpConfigLoader[];
+            const configLoaders = TestBed.inject<HttpConfigProvider[]>(CONFIG_PROVIDER);
             const configLoader = configLoaders[0];
-            expect(configLoader.endpoint).toBe('/testsettings.json');
+            void expect(configLoader.endpoint).toBe('/testsettings.json');
         });
 
         it("should work with injection token 'endpoint' value", () => {
@@ -42,7 +42,7 @@ describe('HttpConfigLoaderModule', () => {
             TestBed.configureTestingModule({
                 imports: [
                     HttpClientTestingModule,
-                    HttpConfigLoaderModule.withOptions({
+                    HttpConfigProviderModule.withOptions({
                         endpoint: ENDPOINT_URL
                     })
                 ],
@@ -54,9 +54,9 @@ describe('HttpConfigLoaderModule', () => {
                 ]
             });
 
-            const configLoaders = TestBed.get<HttpConfigLoader[]>(CONFIG_LOADER) as HttpConfigLoader[];
+            const configLoaders = TestBed.get<HttpConfigProvider[]>(CONFIG_PROVIDER) as HttpConfigProvider[];
             const configLoader = configLoaders[0];
-            expect(configLoader.endpoint).toBe('/testsettings.json');
+            void expect(configLoader.endpoint).toBe('/testsettings.json');
         });
     });
 });
