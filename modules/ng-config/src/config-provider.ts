@@ -8,8 +8,14 @@
 
 import { Observable } from 'rxjs';
 
+import { ConfigTemplate } from './config-template';
+
+/**
+ * The ConfigProvider interface.
+ */
 export interface ConfigProvider {
     readonly name: string;
-    readonly order: number;
-    load(): Observable<{ [key: string]: unknown }>;
+    load(): Observable<ConfigTemplate>;
+    getValue(key: string): string | null;
+    setValue(key: string, value: string): void;
 }
