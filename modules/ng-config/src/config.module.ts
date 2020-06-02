@@ -14,7 +14,7 @@ import { CONFIG_OPTIONS, ConfigOptions } from './config-options';
 import { ConfigSection } from './config-section';
 
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
-export function configAppInitializerFactory(configService: ConfigService): () => Promise<ConfigSection[]> {
+export function configAppInitializerFactory(configService: ConfigService): () => Promise<ConfigSection> {
     const res = async () => configService.load().toPromise();
 
     return res;
