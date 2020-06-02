@@ -1,3 +1,3 @@
 export interface ConfigSection {
-    [key: string]: string | ConfigSection | null;
+    [key: string]: string | ConfigSection;
 }
