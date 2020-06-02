@@ -9,7 +9,7 @@
 import { Inject, Injectable, Injector, Optional } from '@angular/core';
 
 import { BehaviorSubject, Observable, forkJoin, of } from 'rxjs';
-import { share, take, tap } from 'rxjs/operators';
+import { map, share, take, tap } from 'rxjs/operators';
 
 import { ConfigProvider } from './config-provider';
 import { CONFIG_PROVIDER } from './config-provider-token';
@@ -93,6 +93,7 @@ export class ConfigService {
 
     private loading = false;
     private completed = false;
+    private cachedConfig: ConfigSection = {};
 
     get providers(): ConfigProvider[] {
         return this.sortedConfigProviders;
@@ -115,32 +116,18 @@ export class ConfigService {
         this.loadEvent = this.loadSubject.asObservable();
     }
 
-    load(): Observable<ConfigSection[]> {
-        return this.loadInternal(false);
-    }
-
-    reload(): Observable<ConfigSection[]> {
-        return this.loadInternal(true);
+    load(reLoad: boolean = false): Observable<ConfigSection> {
+        return this.loadInternal(reLoad);
     }
 
     getValue(key: string): string | ConfigSection | null {
-        // const keyArray = key.split(/\.|:/);
-        // const result = keyArray.reduce((acc, current: string) => acc && acc[current], this.cachedConfig);
-
-        for (const provider of this.providers) {
-            const value = provider.getValue(key);
-            if (value != null) {
-                return value;
-            }
+        const keyArray = key.split(/\.|:/);
+        const result = keyArray.reduce((acc, current: string) => acc && acc[current], this.cachedConfig);
+        if (result === undefined) {
+            return null;
         }
 
-        return null;
-    }
-
-    setValue(key: string, value: string): void {
-        for (const provider of this.providers) {
-            provider.setValue(key, value);
-        }
+        return result;
     }
 
     getOptions<T extends NewableOptions<T>>(optionsClass: NewableOptions<T>): T {
@@ -169,11 +156,11 @@ export class ConfigService {
         return normalizedKey;
     }
 
-    private loadInternal(reload: boolean): Observable<ConfigSection[]> {
+    private loadInternal(reload: boolean): Observable<ConfigSection> {
         if (this.completed && !reload) {
             this.log('Configuration already loaded.');
 
-            return of([]);
+            return of(this.cachedConfig);
         }
 
         if (!this.loading) {
@@ -203,6 +190,16 @@ export class ConfigService {
                 }
 
                 return this.fetchRequests[loaderName];
+            })
+        ).pipe(
+            map((configs) => {
+                let mergedConfig: ConfigSection = {};
+
+                configs.forEach((config) => {
+                    mergedConfig = { ...mergedConfig, ...config };
+                });
+
+                return mergedConfig;
             })
         );
 
