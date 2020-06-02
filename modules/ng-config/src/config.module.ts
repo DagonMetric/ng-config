@@ -9,10 +9,12 @@
 import { APP_INITIALIZER, ModuleWithProviders, NgModule } from '@angular/core';
 
 import { ConfigPipe } from './config.pipe';
-import { CONFIG_OPTIONS, ConfigOptions, ConfigService } from './config.service';
+import { ConfigService } from './config.service';
+import { CONFIG_OPTIONS, ConfigOptions } from './config-options';
+import { ConfigSection } from './config-section';
 
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
-export function configAppInitializerFactory(configService: ConfigService): () => Promise<{ [key: string]: unknown }> {
+export function configAppInitializerFactory(configService: ConfigService): () => Promise<ConfigSection[]> {
     const res = async () => configService.load().toPromise();
 
     return res;
