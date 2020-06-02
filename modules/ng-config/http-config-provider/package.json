@@ -1,5 +1,5 @@
 {
-  "name": "@dagonmetric/ng-config/http-loader",
+  "name": "@dagonmetric/ng-config/http-config-provider",
   "version": "0.0.0-PLACEHOLDER",
   "sideEffects": false,
   "peerDependencies": {

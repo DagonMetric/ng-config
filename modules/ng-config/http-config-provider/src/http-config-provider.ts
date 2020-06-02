@@ -11,14 +11,16 @@ import { Inject, Injectable, Injector } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
-import { ConfigProvider } from '@dagonmetric/ng-config';
+import { ConfigProvider, ConfigSection } from '@dagonmetric/ng-config';
 
 import { HTTP_CONFIG_PROVIDER_OPTIONS, HttpConfigProviderOptions } from './http-config-provider-options';
 
 /**
  * Implements an HTTP client API for HttpConfigProvider that relies on the Angular HttpClient.
  */
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class HttpConfigProvider implements ConfigProvider {
     get name(): string {
         return 'HttpConfigProvider';
@@ -49,7 +51,7 @@ export class HttpConfigProvider implements ConfigProvider {
         this.loaderOrder = options.order;
     }
 
-    load(): Observable<{ [key: string]: unknown }> {
-        return this.httpClient.get<{ [key: string]: unknown }>(this.configEndpoint);
+    load(): Observable<ConfigSection> {
+        return this.httpClient.get<ConfigSection>(this.configEndpoint);
     }
 }
