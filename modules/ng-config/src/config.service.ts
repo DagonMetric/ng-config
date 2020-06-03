@@ -106,10 +106,6 @@ export class ConfigService {
         private readonly injector: Injector,
         @Optional() @Inject(CONFIG_OPTIONS) options?: ConfigOptions
     ) {
-        if (!configProviders || !configProviders.length) {
-            throw new Error('No configuration provider available.');
-        }
-
         this.sortedConfigProviders = configProviders.reverse();
 
         this.options = options || {};
@@ -200,6 +196,9 @@ export class ConfigService {
                 });
 
                 return mergedConfig;
+            }),
+            tap((config) => {
+                this.cachedConfig = config;
             })
         );
 
