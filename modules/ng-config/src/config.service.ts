@@ -20,7 +20,7 @@ export interface ConfigLoadingContext {
     status?: 'loading' | 'loaded';
 }
 
-export interface OptionsLike {
+interface OptionsLike {
     [key: string]: string | number | boolean | OptionsLike | null;
 }
 
@@ -92,7 +92,7 @@ export class ConfigService {
     private loading = false;
     private completed = false;
     private cachedConfig: ConfigSection = {};
-    private optionsRecord = new Map<string, OptionsLike>();
+    private optionsRecord = new Map<string, unknown>();
 
     get providers(): ConfigProvider[] {
         return this.sortedConfigProviders;
@@ -125,20 +125,25 @@ export class ConfigService {
         return result;
     }
 
-    mapOptions<T extends OptionsLike>(optionsClass: new () => T): T {
+    map<T>(optionsClass: new () => T): T {
+        const optionsObj = this.injector.get<T>(optionsClass, new optionsClass());
         const normalizedKey = this.getNormalizedKey(optionsClass.name);
         const cachedOptions = this.optionsRecord.get(normalizedKey) as T;
         if (cachedOptions != null) {
-            return cachedOptions;
+            if (cachedOptions === optionsObj) {
+                return cachedOptions;
+            }
+
+            this.optionsRecord.delete(normalizedKey);
         }
 
         const configSection = this.getValue(normalizedKey);
-        const optionsObj = this.injector.get<T>(optionsClass, new optionsClass());
+
         if (configSection == null || typeof configSection !== 'object') {
             return optionsObj;
         }
 
-        mapOptionValues(optionsObj, configSection);
+        mapOptionValues(optionsObj as never, configSection);
         this.optionsRecord.set(normalizedKey, optionsObj);
 
         return optionsObj;
