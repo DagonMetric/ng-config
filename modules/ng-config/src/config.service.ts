@@ -20,16 +20,14 @@ export interface ConfigLoadingContext {
     status?: 'loading' | 'loaded';
 }
 
-export type NewableOptions<TOptions> = new () => TOptions;
+export interface OptionsLike {
+    [key: string]: string | number | boolean | OptionsLike | null;
+}
 
 const OptionsSuffix = 'Options';
 
-interface OptionsBase {
-    [key: string]: string | number | boolean | OptionsBase | null;
-}
-
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
-function mapOptionValues(options: OptionsBase, configSection: ConfigSection): void {
+function mapOptionValues(options: OptionsLike, configSection: ConfigSection): void {
     const keys = Object.keys(options);
     for (const key of keys) {
         if (!Object.prototype.hasOwnProperty.call(configSection, key)) {
@@ -94,6 +92,7 @@ export class ConfigService {
     private loading = false;
     private completed = false;
     private cachedConfig: ConfigSection = {};
+    private optionsRecord = new Map<string, OptionsLike>();
 
     get providers(): ConfigProvider[] {
         return this.sortedConfigProviders;
@@ -126,23 +125,27 @@ export class ConfigService {
         return result;
     }
 
-    getOptions<T extends NewableOptions<T>>(optionsClass: NewableOptions<T>): T {
-        const normalizedKey = this.getNormalizedKey(optionsClass);
+    mapOptions<T extends OptionsLike>(optionsClass: new () => T): T {
+        const normalizedKey = this.getNormalizedKey(optionsClass.name);
+        const cachedOptions = this.optionsRecord.get(normalizedKey) as T;
+        if (cachedOptions != null) {
+            return cachedOptions;
+        }
+
         const configSection = this.getValue(normalizedKey);
-        let optionsObj = this.injector.get<T>(optionsClass);
-        optionsObj = optionsObj || new optionsClass();
+        const optionsObj = this.injector.get<T>(optionsClass, new optionsClass());
         if (configSection == null || typeof configSection !== 'object') {
             return optionsObj;
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        mapOptionValues(optionsObj as any, configSection);
+        mapOptionValues(optionsObj, configSection);
+        this.optionsRecord.set(normalizedKey, optionsObj);
 
         return optionsObj;
     }
 
-    private getNormalizedKey<T extends NewableOptions<T>>(optionsClass: NewableOptions<T>): string {
-        let normalizedKey = optionsClass.name;
+    private getNormalizedKey(className: string): string {
+        let normalizedKey = className;
         if (normalizedKey.length > OptionsSuffix.length && normalizedKey.endsWith(OptionsSuffix)) {
             normalizedKey = normalizedKey.substr(0, normalizedKey.length - OptionsSuffix.length);
         }
@@ -199,6 +202,7 @@ export class ConfigService {
             }),
             tap((config) => {
                 this.cachedConfig = config;
+                this.optionsRecord.clear();
             })
         );
 
