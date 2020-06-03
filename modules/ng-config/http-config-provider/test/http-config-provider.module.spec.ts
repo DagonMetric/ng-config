@@ -9,17 +9,6 @@ import { HttpConfigProvider } from '../src/http-config-provider';
 import { HttpConfigProviderModule } from '../src/http-config-provider.module';
 
 describe('HttpConfigProviderModule', () => {
-    it("should provide 'HttpConfigLoader'", () => {
-        TestBed.configureTestingModule({
-            imports: [HttpClientTestingModule, HttpConfigProviderModule]
-        });
-
-        const configLoaders = TestBed.inject<HttpConfigProvider[]>(CONFIG_PROVIDER);
-        void expect(configLoaders).toBeDefined();
-        void expect(configLoaders.length).toBe(1);
-        void expect(configLoaders[0] instanceof HttpConfigProvider).toBeTruthy();
-    });
-
     describe('withOptions', () => {
         it("should work with string 'endpoint' value", () => {
             TestBed.configureTestingModule({
@@ -31,8 +20,8 @@ describe('HttpConfigProviderModule', () => {
                 ]
             });
 
-            const configLoaders = TestBed.inject<HttpConfigProvider[]>(CONFIG_PROVIDER);
-            const configLoader = configLoaders[0];
+            const configProviders = TestBed.inject<HttpConfigProvider[]>(CONFIG_PROVIDER);
+            const configLoader = configProviders[0];
             void expect(configLoader.endpoint).toBe('/testsettings.json');
         });
 
@@ -54,8 +43,8 @@ describe('HttpConfigProviderModule', () => {
                 ]
             });
 
-            const configLoaders = TestBed.get<HttpConfigProvider[]>(CONFIG_PROVIDER) as HttpConfigProvider[];
-            const configLoader = configLoaders[0];
+            const configProviders = TestBed.inject<HttpConfigProvider[]>(CONFIG_PROVIDER);
+            const configLoader = configProviders[0];
             void expect(configLoader.endpoint).toBe('/testsettings.json');
         });
     });

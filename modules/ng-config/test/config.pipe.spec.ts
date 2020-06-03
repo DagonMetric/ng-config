@@ -46,7 +46,7 @@ describe('ConfigPipe', () => {
             ]
         });
 
-        const configService = TestBed.get<ConfigService>(ConfigService) as ConfigService;
+        const configService = TestBed.inject<ConfigService>(ConfigService);
         await configService.load().toPromise();
     });
 

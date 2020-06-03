@@ -49,7 +49,7 @@ describe('ConfigModule', () => {
 
         // until https://github.com/angular/angular/issues/24218 is fixed
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        await TestBed.get<ApplicationInitStatus>(ApplicationInitStatus).donePromise;
+        await TestBed.inject<ApplicationInitStatus>(ApplicationInitStatus).donePromise;
     });
 
     it("should provide 'ConfigService'", () => {
@@ -59,13 +59,13 @@ describe('ConfigModule', () => {
     });
 
     it("should provide 'ConfigOptions'", () => {
-        const configOptions = TestBed.get<ConfigOptions>(CONFIG_OPTIONS) as ConfigOptions;
+        const configOptions = TestBed.inject<ConfigOptions>(CONFIG_OPTIONS);
 
         void expect(configOptions).toBeDefined();
     });
 
     it("should load with 'APP_INITIALIZER'", () => {
-        const configService = TestBed.get<ConfigService>(ConfigService) as ConfigService;
+        const configService = TestBed.inject<ConfigService>(ConfigService);
 
         void expect(configService.getValue('name')).toBe('ng-config');
     });
