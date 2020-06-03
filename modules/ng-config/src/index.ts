@@ -14,5 +14,5 @@ export * from './config-options';
 export * from './config-provider-token';
 export * from './config-provider';
 export * from './config-section';
-export { configAppInitializerFactory, ConfigModule } from './config.module';
-export { ConfigService, ConfigLoadingContext } from './config.service';
+export * from './config.module';
+export * from './config.service';
