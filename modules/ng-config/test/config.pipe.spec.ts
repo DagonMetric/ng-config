@@ -6,11 +6,10 @@ import { TestBed, inject } from '@angular/core/testing';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 
-import { ConfigProvider } from '../src/config-provider';
-import { CONFIG_PROVIDER } from '../src/config-provider-token';
-import { ConfigSection } from '../src';
+import { CONFIG_PROVIDER, ConfigProvider } from '../src/config-provider';
 import { ConfigPipe } from '../src/config.pipe';
 import { ConfigService } from '../src/config.service';
+import { ConfigSection } from '../src/config-value';
 
 @Injectable({
     providedIn: 'any'

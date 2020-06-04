@@ -6,8 +6,7 @@ import { TestBed } from '@angular/core/testing';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 
-import { ConfigProvider } from '../src/config-provider';
-import { CONFIG_PROVIDER } from '../src/config-provider-token';
+import { CONFIG_PROVIDER, ConfigProvider } from '../src/config-provider';
 import { ConfigModule } from '../src/config.module';
 import { ConfigService } from '../src/config.service';
 import { CONFIG_OPTIONS, ConfigOptions } from '../src/config-options';

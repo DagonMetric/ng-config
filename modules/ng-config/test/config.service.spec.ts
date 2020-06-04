@@ -26,14 +26,14 @@ export class TransientOptions {
 export class RootOptions {
     key1 = '';
     key2 = false;
-    key3 = 0;
+    key3 = 1;
     key4 = {
         subKey1: '',
         subKey2: true,
         subKey3: 0,
         subKey4: null
     };
-    key5 = 'value5';
+    key5 = null;
 }
 
 @Injectable({
@@ -55,13 +55,14 @@ export class TestConfigProvider implements ConfigProvider {
         },
         root: {
             key1: 'value1',
-            key2: 'true',
+            key2: null,
             key3: '1',
             key4: {
-                subKey1: 'hello',
+                subKey1: '',
                 subKey2: 'false',
-                subKey3: '-10'
-            }
+                subKey3: null
+            },
+            key5: 'value5'
         }
     };
 
@@ -205,7 +206,7 @@ describe('ConfigService', () => {
         });
     });
 
-    describe('map', () => {
+    describe('getMappedOptions', () => {
         beforeEach(() => {
             TestBed.configureTestingModule({
                 providers: [
@@ -235,7 +236,7 @@ describe('ConfigService', () => {
                     key5: 'value5'
                 });
 
-                void expect(configService.map(TransientOptions)).toEqual(expectedOptions);
+                void expect(configService.getMappedOptions(TransientOptions)).toEqual(expectedOptions);
                 done();
             });
         });
@@ -243,8 +244,8 @@ describe('ConfigService', () => {
         it(`should return new instances with 'TransientOptions'`, (done: DoneFn) => {
             const configService = TestBed.inject<ConfigService>(ConfigService);
             configService.load().subscribe(() => {
-                const options1 = configService.map(TransientOptions);
-                const options2 = configService.map(TransientOptions);
+                const options1 = configService.getMappedOptions(TransientOptions);
+                const options2 = configService.getMappedOptions(TransientOptions);
 
                 void expect(options1 !== options2).toBeTruthy();
                 done();
@@ -254,8 +255,8 @@ describe('ConfigService', () => {
         it(`should return same instance with 'RootOptions'`, (done: DoneFn) => {
             const configService = TestBed.inject<ConfigService>(ConfigService);
             configService.load().subscribe(() => {
-                const options1 = configService.map(RootOptions);
-                const options2 = configService.map(RootOptions);
+                const options1 = configService.getMappedOptions(RootOptions);
+                const options2 = configService.getMappedOptions(RootOptions);
 
                 void expect(options1 === options2).toBeTruthy();
                 done();
