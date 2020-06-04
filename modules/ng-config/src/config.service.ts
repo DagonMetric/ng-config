@@ -26,12 +26,13 @@ const mapOptionValues = (options: ConfigSection, configSection: ConfigSection): 
             continue;
         }
 
+        // const popDescriptor = Object.getOwnPropertyDescriptor(options, key);
+        // if (!popDescriptor?.writable) {
+        //     continue;
+        // }
+
         const optionsValue = options[key];
         const configValue = configSection[key];
-
-        if (optionsValue === configValue) {
-            continue;
-        }
 
         if (configValue == null) {
             options[key] = null;
@@ -43,21 +44,21 @@ const mapOptionValues = (options: ConfigSection, configSection: ConfigSection): 
             continue;
         }
 
+        if (optionsValue === configValue) {
+            continue;
+        }
+
         if (typeof optionsValue === 'string') {
             if (typeof configValue === 'string') {
                 options[key] = configValue;
-            } else if (typeof configValue === 'number') {
-                options[key] = configValue.toString();
-            } else if (typeof configValue === 'boolean') {
-                options[key] = configValue.toString();
             } else {
                 options[key] = JSON.stringify(configValue);
             }
         } else if (typeof optionsValue === 'boolean') {
-            if (typeof configValue === 'string') {
-                options[key] = ['1', 'true', 'on'].indexOf(configValue.toLowerCase()) > -1;
-            } else if (typeof configValue === 'boolean') {
+            if (typeof configValue === 'boolean') {
                 options[key] = configValue;
+            } else if (typeof configValue === 'string') {
+                options[key] = ['true', '1', 'on', 'yes'].indexOf(configValue.toLowerCase()) > -1;
             } else if (typeof configValue === 'number') {
                 options[key] = configValue === 1;
             } else {
@@ -67,7 +68,14 @@ const mapOptionValues = (options: ConfigSection, configSection: ConfigSection): 
             options[key] = Number(configValue) || 0;
         } else if (Array.isArray(optionsValue)) {
             if (Array.isArray(configValue)) {
-                options[key] = [...configValue];
+                if (
+                    configValue.length > 0 &&
+                    configValue.filter((v) => typeof v == 'string').length === configValue.length
+                ) {
+                    options[key] = [...configValue];
+                } else {
+                    options[key] = [];
+                }
             } else if (typeof configValue === 'string') {
                 options[key] = configValue
                     .split(';')
