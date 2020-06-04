@@ -123,8 +123,74 @@ export class ConfigService {
         this.loadEvent = this.loadSubject.asObservable();
     }
 
-    load(reLoad: boolean = false): Observable<ConfigSection> {
-        return this.loadInternal(reLoad);
+    load(reload?: boolean): Observable<ConfigSection> {
+        if (this.completed && !reload) {
+            this.log('Configuration already loaded.');
+
+            return of(this.cachedConfig);
+        }
+
+        if (!this.loading) {
+            this.log('Cconfiguration loading started.');
+
+            this.loading = true;
+            this.completed = false;
+
+            this.loadSubject.next({
+                status: 'loading'
+            });
+        }
+
+        const obs$ = forkJoin(
+            this.providers.map((configProvider) => {
+                const providerName = configProvider.name;
+
+                if (reload || !this.fetchRequests[providerName]) {
+                    const loaderObs = configProvider.load().pipe(
+                        tap((config) => {
+                            this.log(providerName, config);
+                        }),
+                        share()
+                    );
+
+                    this.fetchRequests[providerName] = loaderObs.pipe(take(1), share());
+                }
+
+                return this.fetchRequests[providerName];
+            })
+        ).pipe(
+            map((configs) => {
+                let mergedConfig: ConfigSection = {};
+
+                configs.forEach((config) => {
+                    mergedConfig = { ...mergedConfig, ...config };
+                });
+
+                return mergedConfig;
+            })
+        );
+
+        obs$.subscribe(
+            (config) => {
+                this.cachedConfig = config;
+                this.optionsRecord.clear();
+
+                this.completed = true;
+                this.loading = false;
+
+                this.log('Configuration loading completed.');
+
+                this.loadSubject.next({
+                    status: 'loaded'
+                });
+            },
+            () => {
+                this.completed = false;
+                this.loading = false;
+            }
+        );
+
+        return obs$;
     }
 
     getValue(key: string): ConfigValue {
@@ -170,77 +236,6 @@ export class ConfigService {
         normalizedKey = normalizedKey[0].toLowerCase() + normalizedKey.substr(1);
 
         return normalizedKey;
-    }
-
-    private loadInternal(reload: boolean): Observable<ConfigSection> {
-        if (this.completed && !reload) {
-            this.log('Configuration already loaded.');
-
-            return of(this.cachedConfig);
-        }
-
-        if (!this.loading) {
-            this.log('Cconfiguration loading started.');
-
-            this.loading = true;
-            this.completed = false;
-
-            this.loadSubject.next({
-                status: 'loading'
-            });
-        }
-
-        const obs$ = forkJoin(
-            this.providers.map((configProvider) => {
-                const providerName = configProvider.name;
-
-                if (reload || !this.fetchRequests[providerName]) {
-                    const loaderObs = configProvider.load().pipe(
-                        tap((config) => {
-                            this.log(providerName, config);
-                        }),
-                        share()
-                    );
-
-                    this.fetchRequests[providerName] = loaderObs.pipe(take(1), share());
-                }
-
-                return this.fetchRequests[providerName];
-            })
-        ).pipe(
-            map((configs) => {
-                let mergedConfig: ConfigSection = {};
-
-                configs.forEach((config) => {
-                    mergedConfig = { ...mergedConfig, ...config };
-                });
-
-                return mergedConfig;
-            }),
-            tap((config) => {
-                this.cachedConfig = config;
-                this.optionsRecord.clear();
-            })
-        );
-
-        obs$.subscribe(
-            () => {
-                this.completed = true;
-                this.loading = false;
-
-                this.log('Configuration loading completed.');
-
-                this.loadSubject.next({
-                    status: 'loaded'
-                });
-            },
-            () => {
-                this.completed = false;
-                this.loading = false;
-            }
-        );
-
-        return obs$;
     }
 
     private log(msg: string, optionalParam?: unknown): void {
