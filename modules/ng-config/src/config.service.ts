@@ -6,20 +6,17 @@
  * found under the LICENSE file in the root directory of this source tree.
  */
 
-import { Inject, Injectable, Injector, Optional } from '@angular/core';
+import { EventEmitter, Inject, Injectable, Injector, Optional } from '@angular/core';
 
-import { BehaviorSubject, Observable, forkJoin, of } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { map, share, take, tap } from 'rxjs/operators';
 
 import { CONFIG_PROVIDER, ConfigProvider } from './config-provider';
 import { CONFIG_OPTIONS, ConfigOptions } from './config-options';
 import { ConfigSection, ConfigValue } from './config-value';
 
-export interface ConfigLoadingContext {
-    status?: 'loading' | 'loaded';
-}
-
-const mapOptionValues = (options: ConfigSection, configSection: ConfigSection): void => {
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
+function mapOptionValues(options: ConfigSection, configSection: ConfigSection): void {
     const keys = Object.keys(options);
     for (const key of keys) {
         if (!Object.prototype.hasOwnProperty.call(configSection, key)) {
@@ -82,28 +79,88 @@ const mapOptionValues = (options: ConfigSection, configSection: ConfigSection): 
                     .map((s) => s.trim())
                     .filter((s) => s.length > 0);
             }
-        } else if (typeof optionsValue === 'object') {
+        } else if (
+            typeof optionsValue === 'object' &&
+            Object.prototype.toString.call(optionsValue) !== '[object Date]'
+        ) {
             if (!Array.isArray(configValue) && typeof configValue === 'object') {
                 mapOptionValues(optionsValue, configValue);
             }
         }
     }
-};
+}
+
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
+function equalDeep(a: ConfigValue, b: ConfigValue): boolean {
+    if (a === b) {
+        return true;
+    }
+
+    if (a && b && typeof a == 'object' && typeof b == 'object') {
+        if (Array.isArray(a)) {
+            if (!Array.isArray(b)) {
+                return false;
+            }
+
+            if (a.length !== b.length) {
+                return false;
+            }
+
+            for (let i = a.length - 1; i >= 0; i--) {
+                if (!equalDeep(a[i], b[i])) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        if (Array.isArray(b)) {
+            return false;
+        }
+
+        if (a.valueOf !== Object.prototype.valueOf) {
+            return a.valueOf() === b.valueOf();
+        }
+
+        if (a.toString !== Object.prototype.toString) {
+            return a.toString() === b.toString();
+        }
+
+        const keys = Object.keys(a);
+        if (keys.length !== Object.keys(b).length) {
+            return false;
+        }
+
+        for (let i = keys.length - 1; i >= 0; i--) {
+            const key = keys[i];
+
+            if (!equalDeep(a[key], b[key])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    return a !== a && b !== b;
+}
 
 @Injectable({
     providedIn: 'root'
 })
 export class ConfigService {
-    readonly loadEvent: Observable<ConfigLoadingContext>;
+    readonly valueChanges: Observable<ConfigSection>;
 
     private readonly optionsSuffix: string;
     private readonly options: ConfigOptions;
-    private readonly loadSubject = new BehaviorSubject<ConfigLoadingContext>({});
     private readonly fetchRequests: { [key: string]: Observable<ConfigSection> } = {};
 
     private loading = false;
     private completed = false;
-    private cachedConfig: ConfigSection = {};
+
+    private currentConfig$ = new Observable<ConfigSection>();
+    private loadedConfig: ConfigSection = {};
     private optionsRecord = new Map<string, unknown>();
 
     get providers(): ConfigProvider[] {
@@ -120,14 +177,14 @@ export class ConfigService {
         this.sortedConfigProviders = configProviders.reverse();
         this.options = options || {};
         this.optionsSuffix = this.options.optionsSuffix || 'Options';
-        this.loadEvent = this.loadSubject.asObservable();
+        this.valueChanges = new EventEmitter<ConfigSection>();
     }
 
     load(reload?: boolean): Observable<ConfigSection> {
         if (this.completed && !reload) {
             this.log('Configuration already loaded.');
 
-            return of(this.cachedConfig);
+            return this.currentConfig$;
         }
 
         if (!this.loading) {
@@ -135,13 +192,9 @@ export class ConfigService {
 
             this.loading = true;
             this.completed = false;
-
-            this.loadSubject.next({
-                status: 'loading'
-            });
         }
 
-        const obs$ = forkJoin(
+        this.currentConfig$ = forkJoin(
             this.providers.map((configProvider) => {
                 const providerName = configProvider.name;
 
@@ -170,40 +223,33 @@ export class ConfigService {
             })
         );
 
-        obs$.subscribe(
+        this.currentConfig$.subscribe(
             (config) => {
-                this.cachedConfig = config;
-                this.optionsRecord.clear();
+                this.loading = false;
+
+                if (!equalDeep(config, this.loadedConfig)) {
+                    this.optionsRecord.clear();
+                    this.loadedConfig = config;
+                    (this.valueChanges as EventEmitter<ConfigSection>).emit(config);
+                }
 
                 this.completed = true;
-                this.loading = false;
-
                 this.log('Configuration loading completed.');
-
-                this.loadSubject.next({
-                    status: 'loaded'
-                });
             },
             () => {
-                this.completed = false;
                 this.loading = false;
+                this.completed = false;
             }
         );
 
-        return obs$;
+        return this.currentConfig$;
     }
 
     getValue(key: string): ConfigValue {
-        const keyArray = key.split(/\.|:/);
-        const result = keyArray.reduce((acc, current: string) => acc && acc[current], this.cachedConfig);
-        if (result === undefined) {
-            return null;
-        }
-
-        return result;
+        return this.getConfigValue(key, this.loadedConfig);
     }
 
-    getMappedOptions<T>(optionsClass: new () => T): T {
+    map<T>(optionsClass: new () => T): T {
         const optionsObj = this.injector.get<T>(optionsClass, new optionsClass());
         const normalizedKey = this.getNormalizedKey(optionsClass.name);
         const cachedOptions = this.optionsRecord.get(normalizedKey) as T;
@@ -225,6 +271,16 @@ export class ConfigService {
         this.optionsRecord.set(normalizedKey, optionsObj);
 
         return optionsObj;
+    }
+
+    private getConfigValue(key: string, config: ConfigSection): ConfigValue {
+        const keyArray = key.split(/:/);
+        const result = keyArray.reduce((acc, current: string) => acc && acc[current], config);
+        if (result === undefined) {
+            return null;
+        }
+
+        return result;
     }
 
     private getNormalizedKey(className: string): string {
