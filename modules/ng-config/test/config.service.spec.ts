@@ -8,16 +8,53 @@ import { delay } from 'rxjs/operators';
 import { CONFIG_PROVIDER, ConfigProvider, ConfigSection, ConfigService } from '../src';
 
 export class TransientOptions {
-    key1 = '';
-    key2 = false;
-    key3 = 0;
-    key4 = {
-        subKey1: '',
-        subKey2: true,
-        subKey3: 0,
-        subKey4: null
+    // string -> string
+    str1 = '';
+    // boolean -> string
+    str2 = '';
+    // number -> string
+    str3 = '';
+    // Set null
+    str4 = '';
+
+    // number -> number
+    num1 = 0;
+    // string -> number
+    num2 = 0;
+    // Set null
+    num3 = 0;
+
+    // boolean -> boolean
+    bool1 = false;
+    // string (true/false) -> boolean
+    bool2 = false;
+    // string (on) -> boolean
+    bool3 = false;
+    // number (1) -> boolean
+    bool4 = false;
+    // Set null
+    bool5 = false;
+
+    // array -> array
+    arr1 = [];
+    // string -> array
+    arr2 = [];
+    // Set null
+    arr3 = [];
+
+    // child object
+    child = {
+        // string
+        key1: '',
+        // boolean
+        key2: true,
+        // number
+        key3: 0,
+        // array
+        key4: [],
+        // null
+        key5: null
     };
-    key5 = 'value5';
 }
 
 @Injectable({
@@ -26,14 +63,7 @@ export class TransientOptions {
 export class RootOptions {
     key1 = '';
     key2 = false;
-    key3 = 1;
-    key4 = {
-        subKey1: '',
-        subKey2: true,
-        subKey3: 0,
-        subKey4: null
-    };
-    key5 = null;
+    key3 = 0;
 }
 
 @Injectable({
@@ -42,27 +72,39 @@ export class RootOptions {
 export class TestConfigProvider implements ConfigProvider {
     private readonly config = {
         name: 'ng-config',
-        counter: '0',
+        counter: 0,
         transient: {
-            key1: 'value1',
-            key2: 'true',
-            key3: '1',
-            key4: {
-                subKey1: 'hello',
-                subKey2: 'false',
-                subKey3: '-10'
+            str1: 'value1',
+            str2: true,
+            str3: 10,
+            str4: null,
+
+            num1: 100,
+            num2: '100.05',
+            num3: null,
+
+            bool1: true,
+            bool2: 'true',
+            bool3: 'on',
+            bool4: 1,
+            bool5: null,
+
+            arr1: ['item1', 'item2'],
+            arr2: 'item1;item2',
+            arr3: null,
+
+            child: {
+                key1: 'hello',
+                key2: false,
+                key3: -10,
+                key4: ['sub1', 'sub2'],
+                key5: 'world'
             }
         },
         root: {
             key1: 'value1',
-            key2: null,
-            key3: '1',
-            key4: {
-                subKey1: '',
-                subKey2: 'false',
-                subKey3: null
-            },
-            key5: 'value5'
+            key2: true,
+            key3: 1
         }
     };
 
@@ -71,34 +113,35 @@ export class TestConfigProvider implements ConfigProvider {
     }
 
     load(): Observable<ConfigSection> {
-        const c = Number(this.config.counter) + 1;
-        if (c > 9) {
+        const c = this.config.counter + 1;
+        if (c > 5) {
             return throwError('Error from provider.');
         }
 
-        this.config.counter = c.toString();
+        this.config.counter = c;
 
         return of(this.config).pipe(delay(10));
     }
 }
 
 describe('ConfigService', () => {
-    describe('load', () => {
-        beforeEach(() => {
-            TestBed.configureTestingModule({
-                providers: [
-                    {
-                        provide: CONFIG_PROVIDER,
-                        useClass: TestConfigProvider,
-                        multi: true
-                    }
-                ]
-            });
+    let configService: ConfigService;
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            providers: [
+                {
+                    provide: CONFIG_PROVIDER,
+                    useClass: TestConfigProvider,
+                    multi: true
+                }
+            ]
         });
 
-        it('should return merged config', (done: DoneFn) => {
-            const configService = TestBed.inject<ConfigService>(ConfigService);
+        configService = TestBed.inject<ConfigService>(ConfigService);
+    });
 
+    describe('load', () => {
+        it('should return merged config', (done: DoneFn) => {
             configService.load().subscribe((config) => {
                 void expect(config.name).toBe('ng-config');
                 done();
@@ -106,35 +149,29 @@ describe('ConfigService', () => {
         });
 
         it("should return cached config if 'reLoad' is 'false'", (done: DoneFn) => {
-            const configService = TestBed.inject<ConfigService>(ConfigService);
-
             for (let i = 0; i < 5; i++) {
                 configService.load(false);
             }
 
             configService.load(false).subscribe((c1) => {
-                void expect(c1.counter).toBe('1');
+                void expect(c1.counter).toBe(1);
                 done();
             });
         });
 
         it("should reload the config if 'reLoad' is 'true'", (done: DoneFn) => {
-            const configService = TestBed.inject<ConfigService>(ConfigService);
-
             for (let i = 0; i < 5; i++) {
                 configService.load(true);
             }
 
             configService.load().subscribe((config) => {
-                void expect(config.counter).toBe('5');
+                void expect(config.counter).toBe(5);
                 done();
             });
         });
 
         it('should throw an error message when provider throws error', (done: DoneFn) => {
-            const configService = TestBed.inject<ConfigService>(ConfigService);
-
-            for (let i = 0; i < 11; i++) {
+            for (let i = 0; i < 6; i++) {
                 configService.load(true);
             }
 
@@ -148,92 +185,63 @@ describe('ConfigService', () => {
     });
 
     describe('getValue', () => {
-        beforeEach(() => {
-            TestBed.configureTestingModule({
-                providers: [
-                    {
-                        provide: CONFIG_PROVIDER,
-                        useClass: TestConfigProvider,
-                        multi: true
-                    }
-                ]
-            });
-        });
-
-        it('should get string value', (done: DoneFn) => {
-            const configService = TestBed.inject<ConfigService>(ConfigService);
-
+        it('should get config string value', (done: DoneFn) => {
             configService.load().subscribe(() => {
                 void expect(configService.getValue('name')).toBe('ng-config');
                 done();
             });
         });
 
-        it('should get config section object value', (done: DoneFn) => {
-            const configService = TestBed.inject<ConfigService>(ConfigService);
-
+        it('should get config object value', (done: DoneFn) => {
             configService.load().subscribe(() => {
-                void expect(configService.getValue('transient')).toEqual({
+                void expect(configService.getValue('root')).toEqual({
                     key1: 'value1',
-                    key2: 'true',
-                    key3: '1',
-                    key4: {
-                        subKey1: 'hello',
-                        subKey2: 'false',
-                        subKey3: '-10'
-                    }
+                    key2: true,
+                    key3: 1
                 });
                 done();
             });
         });
 
-        it(`should get with dot '.' key separator`, (done: DoneFn) => {
-            const configService = TestBed.inject<ConfigService>(ConfigService);
-
+        it(`should get with ':' key separator`, (done: DoneFn) => {
             configService.load().subscribe(() => {
-                void expect(configService.getValue('transient.key1')).toBe('value1');
-                done();
-            });
-        });
-
-        it(`should get with colon ':' key separator`, (done: DoneFn) => {
-            const configService = TestBed.inject<ConfigService>(ConfigService);
-
-            configService.load().subscribe(() => {
-                void expect(configService.getValue('transient:key1')).toBe('value1');
+                void expect(configService.getValue('root:key1')).toBe('value1');
                 done();
             });
         });
     });
 
     describe('getMappedOptions', () => {
-        beforeEach(() => {
-            TestBed.configureTestingModule({
-                providers: [
-                    {
-                        provide: CONFIG_PROVIDER,
-                        useClass: TestConfigProvider,
-                        multi: true
-                    }
-                ]
-            });
-        });
-
         it('should return mapped options', (done: DoneFn) => {
-            const configService = TestBed.inject<ConfigService>(ConfigService);
             configService.load().subscribe(() => {
                 const expectedOptions: TransientOptions = new TransientOptions();
                 Object.assign(expectedOptions, {
-                    key1: 'value1',
-                    key2: true,
-                    key3: 1,
-                    key4: {
-                        subKey1: 'hello',
-                        subKey2: false,
-                        subKey3: -10,
-                        subKey4: null
-                    },
-                    key5: 'value5'
+                    str1: 'value1',
+                    str2: 'true',
+                    str3: '10',
+                    str4: null,
+
+                    num1: 100,
+                    num2: 100.05,
+                    num3: null,
+
+                    bool1: true,
+                    bool2: true,
+                    bool3: true,
+                    bool4: true,
+                    bool5: null,
+
+                    arr1: ['item1', 'item2'],
+                    arr2: ['item1', 'item2'],
+                    arr3: null,
+
+                    child: {
+                        key1: 'hello',
+                        key2: false,
+                        key3: -10,
+                        key4: ['sub1', 'sub2'],
+                        key5: 'world'
+                    }
                 });
 
                 void expect(configService.getMappedOptions(TransientOptions)).toEqual(expectedOptions);
@@ -242,7 +250,6 @@ describe('ConfigService', () => {
         });
 
         it(`should return new instances with 'TransientOptions'`, (done: DoneFn) => {
-            const configService = TestBed.inject<ConfigService>(ConfigService);
             configService.load().subscribe(() => {
                 const options1 = configService.getMappedOptions(TransientOptions);
                 const options2 = configService.getMappedOptions(TransientOptions);
@@ -253,7 +260,6 @@ describe('ConfigService', () => {
         });
 
         it(`should return same instance with 'RootOptions'`, (done: DoneFn) => {
-            const configService = TestBed.inject<ConfigService>(ConfigService);
             configService.load().subscribe(() => {
                 const options1 = configService.getMappedOptions(RootOptions);
                 const options2 = configService.getMappedOptions(RootOptions);
