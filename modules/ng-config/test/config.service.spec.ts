@@ -5,7 +5,7 @@ import { TestBed } from '@angular/core/testing';
 import { Observable, of, throwError } from 'rxjs';
 import { delay } from 'rxjs/operators';
 
-import { CONFIG_PROVIDER, ConfigProvider, ConfigSection, ConfigService } from '../src';
+import { CONFIG_OPTIONS, CONFIG_PROVIDER, ConfigOptions, ConfigProvider, ConfigSection, ConfigService } from '../src';
 
 export class TransientOptions {
     // string -> string
@@ -52,7 +52,6 @@ export class TransientOptions {
     // incompatible
     arr5 = [];
 
-    // child object
     child = {
         // string
         key1: '',
@@ -69,25 +68,18 @@ export class TransientOptions {
     // Not mapped values
     //
     extraKey = 'extra';
-    readonly readonlyKey = 'readonly';
-
-    private customValuePrivate = 'custom value';
-    get customValue(): string {
-        return this.customValuePrivate;
-    }
-    set customValue(v: string) {
-        this.customValuePrivate = v;
-    }
-
-    customFunc(): string {
-        return 'custom func';
-    }
 }
 
 @Injectable({
     providedIn: 'root'
 })
 export class RootOptions {
+    key1 = '';
+    key2 = false;
+    key3 = 0;
+}
+
+export class NotMapped {
     key1 = '';
     key2 = false;
     key3 = 0;
@@ -168,6 +160,12 @@ describe('ConfigService', () => {
                     provide: CONFIG_PROVIDER,
                     useClass: TestConfigProvider,
                     multi: true
+                },
+                {
+                    provide: CONFIG_OPTIONS,
+                    useValue: {
+                        trace: true
+                    } as ConfigOptions
                 }
             ]
         });
@@ -188,14 +186,18 @@ describe('ConfigService', () => {
                 configService.load(false);
             }
 
-            configService.load(false).subscribe((c1) => {
-                void expect(c1.counter).toBe(1);
-                done();
+            configService.load(false).subscribe(() => {
+                configService.load(false).subscribe((config) => {
+                    void expect(config.counter).toBe(1);
+                    done();
+                });
             });
         });
 
         it("should reload the config if 'reLoad' is 'true'", (done: DoneFn) => {
-            for (let i = 0; i < 5; i++) {
+            configService.load();
+
+            for (let i = 0; i < 4; i++) {
                 configService.load(true);
             }
 
@@ -244,6 +246,13 @@ describe('ConfigService', () => {
                 done();
             });
         });
+
+        it('should return null if not found', (done: DoneFn) => {
+            configService.load().subscribe(() => {
+                void expect(configService.getValue('unknownKey') === null).toBeTruthy();
+                done();
+            });
+        });
     });
 
     describe('getMappedOptions', () => {
@@ -281,8 +290,7 @@ describe('ConfigService', () => {
                         key3: -10,
                         key4: ['sub1', 'sub2'],
                         key5: 'world'
-                    },
-                    extraKey: 'extra'
+                    }
                 });
 
                 void expect(configService.getMappedOptions(TransientOptions)).toEqual(expectedOptions);
@@ -306,6 +314,14 @@ describe('ConfigService', () => {
                 const options2 = configService.getMappedOptions(RootOptions);
 
                 void expect(options1 === options2).toBeTruthy();
+                done();
+            });
+        });
+
+        it(`should return default instance when no config section found`, (done: DoneFn) => {
+            configService.load().subscribe(() => {
+                const expectedOptions = new NotMapped();
+                void expect(configService.getMappedOptions(NotMapped)).toEqual(expectedOptions);
                 done();
             });
         });
