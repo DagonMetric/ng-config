@@ -9,7 +9,7 @@ import { CONFIG_PROVIDER, ConfigProvider, ConfigSection, ConfigService } from '.
 
 export class TransientOptions {
     // string -> string
-    str1 = '';
+    str1 = 'value1';
     // boolean -> string
     str2 = '';
     // number -> string
@@ -23,6 +23,8 @@ export class TransientOptions {
     num2 = 0;
     // Set null
     num3 = 0;
+    // incompatible
+    num4 = 1;
 
     // boolean -> boolean
     bool1 = false;
@@ -32,8 +34,12 @@ export class TransientOptions {
     bool3 = false;
     // number (1) -> boolean
     bool4 = false;
-    // Set null
+    // number (yes) -> boolean
     bool5 = false;
+    // Set null
+    bool6 = false;
+    // incompatible
+    bool7 = false;
 
     // array -> array
     arr1 = [];
@@ -41,6 +47,10 @@ export class TransientOptions {
     arr2 = [];
     // Set null
     arr3 = [];
+    // incompatible
+    arr4 = [];
+    // incompatible
+    arr5 = [];
 
     // child object
     child = {
@@ -55,6 +65,23 @@ export class TransientOptions {
         // null
         key5: null
     };
+
+    // Not mapped values
+    //
+    extraKey = 'extra';
+    readonly readonlyKey = 'readonly';
+
+    private customValuePrivate = 'custom value';
+    get customValue(): string {
+        return this.customValuePrivate;
+    }
+    set customValue(v: string) {
+        this.customValuePrivate = v;
+    }
+
+    customFunc(): string {
+        return 'custom func';
+    }
 }
 
 @Injectable({
@@ -82,16 +109,24 @@ export class TestConfigProvider implements ConfigProvider {
             num1: 100,
             num2: '100.05',
             num3: null,
+            // incompatible
+            num4: 'yes',
 
             bool1: true,
             bool2: 'true',
             bool3: 'on',
             bool4: 1,
-            bool5: null,
+            bool5: 'yes',
+            bool6: null,
+            // incompatible
+            bool7: [],
 
             arr1: ['item1', 'item2'],
             arr2: 'item1;item2',
             arr3: null,
+            arr4: {},
+            // incompatible
+            arr5: ['hello', 1, true] as string[],
 
             child: {
                 key1: 'hello',
@@ -224,16 +259,21 @@ describe('ConfigService', () => {
                     num1: 100,
                     num2: 100.05,
                     num3: null,
+                    num4: 0,
 
                     bool1: true,
                     bool2: true,
                     bool3: true,
                     bool4: true,
-                    bool5: null,
+                    bool5: true,
+                    bool6: null,
+                    bool7: false,
 
                     arr1: ['item1', 'item2'],
                     arr2: ['item1', 'item2'],
                     arr3: null,
+                    arr4: [],
+                    arr5: [],
 
                     child: {
                         key1: 'hello',
@@ -241,7 +281,8 @@ describe('ConfigService', () => {
                         key3: -10,
                         key4: ['sub1', 'sub2'],
                         key5: 'world'
-                    }
+                    },
+                    extraKey: 'extra'
                 });
 
                 void expect(configService.getMappedOptions(TransientOptions)).toEqual(expectedOptions);
