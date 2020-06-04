@@ -11,7 +11,7 @@ import { APP_INITIALIZER, ModuleWithProviders, NgModule } from '@angular/core';
 import { ConfigPipe } from './config.pipe';
 import { ConfigService } from './config.service';
 import { CONFIG_OPTIONS, ConfigOptions } from './config-options';
-import { ConfigSection } from './config-section';
+import { ConfigSection } from './config-value';
 
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function configAppInitializerFactory(configService: ConfigService): () => Promise<ConfigSection> {
