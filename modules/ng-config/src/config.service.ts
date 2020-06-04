@@ -11,23 +11,15 @@ import { Inject, Injectable, Injector, Optional } from '@angular/core';
 import { BehaviorSubject, Observable, forkJoin, of } from 'rxjs';
 import { map, share, take, tap } from 'rxjs/operators';
 
-import { ConfigProvider } from './config-provider';
-import { CONFIG_PROVIDER } from './config-provider-token';
-import { ConfigSection } from './config-section';
+import { CONFIG_PROVIDER, ConfigProvider } from './config-provider';
 import { CONFIG_OPTIONS, ConfigOptions } from './config-options';
+import { ConfigSection, ConfigValue } from './config-value';
 
 export interface ConfigLoadingContext {
     status?: 'loading' | 'loaded';
 }
 
-interface OptionsLike {
-    [key: string]: string | number | boolean | OptionsLike | null;
-}
-
-const OptionsSuffix = 'Options';
-
-// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
-function mapOptionValues(options: OptionsLike, configSection: ConfigSection): void {
+const mapOptionValues = (options: ConfigSection, configSection: ConfigSection): void => {
     const keys = Object.keys(options);
     for (const key of keys) {
         if (!Object.prototype.hasOwnProperty.call(configSection, key)) {
@@ -55,9 +47,9 @@ function mapOptionValues(options: OptionsLike, configSection: ConfigSection): vo
             if (typeof configValue === 'string') {
                 options[key] = configValue;
             } else if (typeof configValue === 'number') {
-                options[key] = (configValue as number).toString();
+                options[key] = configValue.toString();
             } else if (typeof configValue === 'boolean') {
-                options[key] = (configValue as boolean).toString();
+                options[key] = configValue.toString();
             } else {
                 options[key] = JSON.stringify(configValue);
             }
@@ -73,11 +65,22 @@ function mapOptionValues(options: OptionsLike, configSection: ConfigSection): vo
             }
         } else if (typeof optionsValue === 'number') {
             options[key] = Number(configValue) || 0;
-        } else if (typeof optionsValue === 'object' && typeof configValue === 'object') {
-            mapOptionValues(optionsValue, configValue);
+        } else if (Array.isArray(optionsValue)) {
+            if (Array.isArray(configValue)) {
+                options[key] = [...configValue];
+            } else if (typeof configValue === 'string') {
+                options[key] = configValue
+                    .split(';')
+                    .map((s) => s.trim())
+                    .filter((s) => s.length > 0);
+            }
+        } else if (typeof optionsValue === 'object') {
+            if (!Array.isArray(configValue) && typeof configValue === 'object') {
+                mapOptionValues(optionsValue, configValue);
+            }
         }
     }
-}
+};
 
 @Injectable({
     providedIn: 'root'
@@ -85,6 +88,7 @@ function mapOptionValues(options: OptionsLike, configSection: ConfigSection): vo
 export class ConfigService {
     readonly loadEvent: Observable<ConfigLoadingContext>;
 
+    private readonly optionsSuffix: string;
     private readonly options: ConfigOptions;
     private readonly loadSubject = new BehaviorSubject<ConfigLoadingContext>({});
     private readonly fetchRequests: { [key: string]: Observable<ConfigSection> } = {};
@@ -106,8 +110,8 @@ export class ConfigService {
         @Optional() @Inject(CONFIG_OPTIONS) options?: ConfigOptions
     ) {
         this.sortedConfigProviders = configProviders.reverse();
-
         this.options = options || {};
+        this.optionsSuffix = this.options.optionsSuffix || 'Options';
         this.loadEvent = this.loadSubject.asObservable();
     }
 
@@ -115,7 +119,7 @@ export class ConfigService {
         return this.loadInternal(reLoad);
     }
 
-    getValue(key: string): string | ConfigSection | null {
+    getValue(key: string): ConfigValue {
         const keyArray = key.split(/\.|:/);
         const result = keyArray.reduce((acc, current: string) => acc && acc[current], this.cachedConfig);
         if (result === undefined) {
@@ -125,7 +129,7 @@ export class ConfigService {
         return result;
     }
 
-    map<T>(optionsClass: new () => T): T {
+    getMappedOptions<T>(optionsClass: new () => T): T {
         const optionsObj = this.injector.get<T>(optionsClass, new optionsClass());
         const normalizedKey = this.getNormalizedKey(optionsClass.name);
         const cachedOptions = this.optionsRecord.get(normalizedKey) as T;
@@ -137,13 +141,13 @@ export class ConfigService {
             this.optionsRecord.delete(normalizedKey);
         }
 
-        const configSection = this.getValue(normalizedKey);
+        const configValue = this.getValue(normalizedKey);
 
-        if (configSection == null || typeof configSection !== 'object') {
+        if (configValue == null || Array.isArray(configValue) || typeof configValue !== 'object') {
             return optionsObj;
         }
 
-        mapOptionValues(optionsObj as never, configSection);
+        mapOptionValues(optionsObj as never, configValue);
         this.optionsRecord.set(normalizedKey, optionsObj);
 
         return optionsObj;
@@ -151,8 +155,8 @@ export class ConfigService {
 
     private getNormalizedKey(className: string): string {
         let normalizedKey = className;
-        if (normalizedKey.length > OptionsSuffix.length && normalizedKey.endsWith(OptionsSuffix)) {
-            normalizedKey = normalizedKey.substr(0, normalizedKey.length - OptionsSuffix.length);
+        if (normalizedKey.length > this.optionsSuffix.length && normalizedKey.endsWith(this.optionsSuffix)) {
+            normalizedKey = normalizedKey.substr(0, normalizedKey.length - this.optionsSuffix.length);
         }
 
         normalizedKey = normalizedKey[0].toLowerCase() + normalizedKey.substr(1);
@@ -180,20 +184,20 @@ export class ConfigService {
 
         const obs$ = forkJoin(
             this.providers.map((configProvider) => {
-                const loaderName = configProvider.name;
+                const providerName = configProvider.name;
 
-                if (reload || !this.fetchRequests[loaderName]) {
+                if (reload || !this.fetchRequests[providerName]) {
                     const loaderObs = configProvider.load().pipe(
                         tap((config) => {
-                            this.log(loaderName, config);
+                            this.log(providerName, config);
                         }),
                         share()
                     );
 
-                    this.fetchRequests[loaderName] = loaderObs.pipe(take(1), share());
+                    this.fetchRequests[providerName] = loaderObs.pipe(take(1), share());
                 }
 
-                return this.fetchRequests[loaderName];
+                return this.fetchRequests[providerName];
             })
         ).pipe(
             map((configs) => {
