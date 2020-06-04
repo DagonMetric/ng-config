@@ -65,9 +65,15 @@ export class TransientOptions {
         key5: null
     };
 
+    child2 = {
+        key1: '',
+        key2: true
+    };
+
     // Not mapped values
     //
     extraKey = 'extra';
+    date = new Date();
 }
 
 @Injectable({
@@ -126,7 +132,12 @@ export class TestConfigProvider implements ConfigProvider {
                 key3: -10,
                 key4: ['sub1', 'sub2'],
                 key5: 'world'
-            }
+            },
+
+            child2: false,
+
+            // incompatible
+            date: ''
         },
         root: {
             key1: 'value1',
@@ -147,33 +158,33 @@ export class TestConfigProvider implements ConfigProvider {
 
         this.config.counter = c;
 
-        return of(this.config).pipe(delay(10));
+        return of(this.config).pipe(delay(1));
     }
 }
 
 describe('ConfigService', () => {
-    let configService: ConfigService;
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-            providers: [
-                {
-                    provide: CONFIG_PROVIDER,
-                    useClass: TestConfigProvider,
-                    multi: true
-                },
-                {
-                    provide: CONFIG_OPTIONS,
-                    useValue: {
-                        trace: true
-                    } as ConfigOptions
-                }
-            ]
+    describe('load', () => {
+        let configService: ConfigService;
+        beforeEach(() => {
+            TestBed.configureTestingModule({
+                providers: [
+                    {
+                        provide: CONFIG_PROVIDER,
+                        useClass: TestConfigProvider,
+                        multi: true
+                    }
+                    // {
+                    //     provide: CONFIG_OPTIONS,
+                    //     useValue: {
+                    //         trace: true
+                    //     } as ConfigOptions
+                    // }
+                ]
+            });
+
+            configService = TestBed.inject<ConfigService>(ConfigService);
         });
 
-        configService = TestBed.inject<ConfigService>(ConfigService);
-    });
-
-    describe('load', () => {
         it('should return merged config', (done: DoneFn) => {
             configService.load().subscribe((config) => {
                 void expect(config.name).toBe('ng-config');
@@ -221,7 +232,59 @@ describe('ConfigService', () => {
         });
     });
 
+    describe('valueChanges', () => {
+        let configService: ConfigService;
+        beforeEach(() => {
+            TestBed.configureTestingModule({
+                providers: [
+                    {
+                        provide: CONFIG_PROVIDER,
+                        useClass: TestConfigProvider,
+                        multi: true
+                    },
+                    {
+                        provide: CONFIG_OPTIONS,
+                        useValue: {
+                            trace: true
+                        } as ConfigOptions
+                    }
+                ]
+            });
+
+            configService = TestBed.inject<ConfigService>(ConfigService);
+        });
+
+        it('should emit valueChanges event', (done: DoneFn) => {
+            let chanageCount = 0;
+            configService.valueChanges.subscribe((config) => {
+                ++chanageCount;
+                void expect(chanageCount).toBe(config.counter as number);
+            });
+
+            configService.load().subscribe(() => {
+                configService.load(true).subscribe(() => {
+                    done();
+                });
+            });
+        });
+    });
+
     describe('getValue', () => {
+        let configService: ConfigService;
+        beforeEach(() => {
+            TestBed.configureTestingModule({
+                providers: [
+                    {
+                        provide: CONFIG_PROVIDER,
+                        useClass: TestConfigProvider,
+                        multi: true
+                    }
+                ]
+            });
+
+            configService = TestBed.inject<ConfigService>(ConfigService);
+        });
+
         it('should get config string value', (done: DoneFn) => {
             configService.load().subscribe(() => {
                 void expect(configService.getValue('name')).toBe('ng-config');
@@ -255,7 +318,22 @@ describe('ConfigService', () => {
         });
     });
 
-    describe('getMappedOptions', () => {
+    describe('map', () => {
+        let configService: ConfigService;
+        beforeEach(() => {
+            TestBed.configureTestingModule({
+                providers: [
+                    {
+                        provide: CONFIG_PROVIDER,
+                        useClass: TestConfigProvider,
+                        multi: true
+                    }
+                ]
+            });
+
+            configService = TestBed.inject<ConfigService>(ConfigService);
+        });
+
         it('should return mapped options', (done: DoneFn) => {
             configService.load().subscribe(() => {
                 const expectedOptions: TransientOptions = new TransientOptions();
@@ -290,18 +368,23 @@ describe('ConfigService', () => {
                         key3: -10,
                         key4: ['sub1', 'sub2'],
                         key5: 'world'
+                    },
+
+                    child2: {
+                        key1: '',
+                        key2: true
                     }
                 });
 
-                void expect(configService.getMappedOptions(TransientOptions)).toEqual(expectedOptions);
+                void expect(configService.map(TransientOptions)).toEqual(expectedOptions);
                 done();
             });
         });
 
         it(`should return new instances with 'TransientOptions'`, (done: DoneFn) => {
             configService.load().subscribe(() => {
-                const options1 = configService.getMappedOptions(TransientOptions);
-                const options2 = configService.getMappedOptions(TransientOptions);
+                const options1 = configService.map(TransientOptions);
+                const options2 = configService.map(TransientOptions);
 
                 void expect(options1 !== options2).toBeTruthy();
                 done();
@@ -310,8 +393,8 @@ describe('ConfigService', () => {
 
         it(`should return same instance with 'RootOptions'`, (done: DoneFn) => {
             configService.load().subscribe(() => {
-                const options1 = configService.getMappedOptions(RootOptions);
-                const options2 = configService.getMappedOptions(RootOptions);
+                const options1 = configService.map(RootOptions);
+                const options2 = configService.map(RootOptions);
 
                 void expect(options1 === options2).toBeTruthy();
                 done();
@@ -321,7 +404,7 @@ describe('ConfigService', () => {
         it(`should return default instance when no config section found`, (done: DoneFn) => {
             configService.load().subscribe(() => {
                 const expectedOptions = new NotMapped();
-                void expect(configService.getMappedOptions(NotMapped)).toEqual(expectedOptions);
+                void expect(configService.map(NotMapped)).toEqual(expectedOptions);
                 done();
             });
         });
