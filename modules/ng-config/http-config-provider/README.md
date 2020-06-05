@@ -4,7 +4,7 @@ Implements an HTTP client API for [ConfigProvider](https://github.com/DagonMetri
 
 ## Getting Started
 
-### Module Setup (app.module.ts)
+### Module Setup
 
 ```typescript
 import { ConfigModule } from '@dagonmetric/ng-config';

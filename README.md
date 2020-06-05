@@ -1,4 +1,4 @@
-# Configuration / Settings Service for Angular
+# Configuration & Options Service for Angular
 
 [![GitHub Actions Status](https://github.com/DagonMetric/ng-config/workflows/Main%20Workflow/badge.svg)](https://github.com/DagonMetric/ng-config/actions)
 [![Azure Pipelines Status](https://dev.azure.com/DagonMetric/ng-config/_apis/build/status/DagonMetric.ng-config?branchName=master)](https://dev.azure.com/DagonMetric/ng-config/_build/latest?definitionId=9&branchName=master)
@@ -6,17 +6,19 @@
 [![npm version](https://img.shields.io/npm/v/@dagonmetric/ng-config.svg)](https://www.npmjs.com/package/@dagonmetric/ng-config)
 [![Gitter](https://badges.gitter.im/DagonMetric/general.svg)](https://gitter.im/DagonMetric/general?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-Configuration / settings service for Angular applications.
+The `ng-config` is a configuration and options service for Angular applications with flexible api and extendable config providers.
 
 ## Features
 
+* Flexible strongly typed options mapping with options classes *(e.g. `const options = config.map<IdentityOptions>`)*
 * Extendable `ConfigProvider` (see built-in [HttpConfigProvider](https://github.com/DagonMetric/ng-config/blob/master/modules/ng-config/http-config-provider/src/http-config-provider.ts) for implementation demo)
-* Load settings when Angular app starts with `APP_INITIALIZER` factory
+* Configuration values change detection with `valueChanges` observable
+* Load configuration when Angular app starts with `APP_INITIALIZER` factory
 * Latest versions of Angular are supported
 * Compatible with Angular Universal (Server Side Rendering - SSR)
 * Powered with RxJS
 
-## Getting Started
+## Get Started
 
 ### Installation
 
@@ -32,9 +34,7 @@ or yarn
 yarn add @dagonmetric/ng-config
 ```
 
-### Module Setup (app.module.ts)
-
-The following code is a simple module setup.
+### Module Setup
 
 ```typescript
 import { ConfigModule } from '@dagonmetric/ng-config';
@@ -44,7 +44,7 @@ import { HttpConfigProviderModule } from '@dagonmetric/ng-config/http-config-pro
   imports: [
     // Other module imports
 
-    // ng-config modules
+    // ng-config module
     ConfigModule.init(),
     HttpConfigProviderModule.withOptions({
         endpoint: '/appsettings.json'
@@ -54,20 +54,37 @@ import { HttpConfigProviderModule } from '@dagonmetric/ng-config/http-config-pro
 export class AppModule { }
 ```
 
-### Usage (app.component.ts)
+### Usage
 
 ```typescript
 import { Component } from '@angular/core';
 
 import { ConfigService } from '@dagonmetric/ng-config';
 
+export class IdentityOptions {
+  popupRedirectUri = ';
+  automaticSilentRenew = true;
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html'
 })
 export class AppComponent {
-  constructor(private readonly _configService: ConfigService) {
-    const configValue = this._configService.getValue<string>('key1'));
+  constructor(private readonly configService: ConfigService) {
+    // Get with key
+    const configValue = this.configService.getValue('key1'));
+    console.log('configValue: ', configValue);
+
+    // Get with options class
+    const identityOptions = this.configService.map(IdentityOptions));
+    console.log('identityOptions: ', identityOptions);
+
+    // Change detection
+    this.configService.valueChanges.subscribe(()=> {
+      const lastestOptions = this.configService.map(IdentityOptions));
+      console.log('lastestOptions: ', lastestOptions);
+    });
   }
 }
 ```
