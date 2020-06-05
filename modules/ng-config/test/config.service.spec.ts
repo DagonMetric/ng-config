@@ -200,8 +200,46 @@ export class TestConfigProvider implements ConfigProvider {
 }
 
 describe('ConfigService', () => {
+    describe('log', () => {
+        let configService: ConfigService;
+        const debugMessages: string[] = [];
+
+        beforeEach(() => {
+            TestBed.configureTestingModule({
+                providers: [
+                    {
+                        provide: CONFIG_PROVIDER,
+                        useClass: TestConfigProvider,
+                        multi: true
+                    },
+                    {
+                        provide: CONFIG_OPTIONS,
+                        useValue: {
+                            debug: true,
+                            logger: {
+                                debug: (message) => {
+                                    debugMessages.push(message);
+                                }
+                            }
+                        } as ConfigOptions
+                    }
+                ]
+            });
+
+            configService = TestBed.inject<ConfigService>(ConfigService);
+        });
+
+        it(`should output debug message when debug is 'true'`, (done: DoneFn) => {
+            configService.load().subscribe(() => {
+                void expect(debugMessages.length > 0).toBeTruthy();
+                done();
+            });
+        });
+    });
+
     describe('load', () => {
         let configService: ConfigService;
+
         beforeEach(() => {
             TestBed.configureTestingModule({
                 providers: [
