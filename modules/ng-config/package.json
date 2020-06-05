@@ -1,7 +1,7 @@
 {
   "name": "@dagonmetric/ng-config",
   "version": "0.0.0-PLACEHOLDER",
-  "description": "Configuration / settings service for Angular applications.",
+  "description": "Configuration and options service for Angular applications.",
   "author": "DagonMetric",
   "license": "MIT",
   "repository": {
@@ -16,6 +16,7 @@
     "angular-config",
     "angular-config-service",
     "angular-configuration-service",
+    "angular-options",
     "angular-options-service",
     "angular-options-provider",
     "angular-config-provider",
