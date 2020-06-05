@@ -284,17 +284,25 @@ export class ConfigService {
         return normalizedKey;
     }
 
-    private log(msg: string, optionalParam?: unknown): void {
-        if (!this.options.trace) {
+    private log(msg: string, data?: unknown): void {
+        if (!this.options.debug) {
             return;
         }
 
-        if (optionalParam) {
-            // eslint-disable-next-line no-console
-            console.log(`[ConfigService] ${msg}, data: `, optionalParam);
+        if (data) {
+            if (this.options.logger) {
+                this.options.logger.debug(`[ConfigService] ${msg}, data: `, data);
+            } else {
+                // eslint-disable-next-line no-console
+                console.log(`[ConfigService] ${msg}, data: `, data);
+            }
         } else {
-            // eslint-disable-next-line no-console
-            console.log(`[ConfigService] ${msg}`);
+            if (this.options.logger) {
+                this.options.logger.debug(`[ConfigService] ${msg}`);
+            } else {
+                // eslint-disable-next-line no-console
+                console.log(`[ConfigService] ${msg}`);
+            }
         }
     }
 }
