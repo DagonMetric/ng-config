@@ -1,6 +1,6 @@
 ## Fetures
 
-* strongly typed options mapping with options classes *(e.g. `const options = config.map<IdentityOptions>`)*
+* Strongly typed options mapping with options classes *(e.g. `const options = config.map<IdentityOptions>`)*
 * Custom options class name suffix support in `ConfigOptions`
 * Custom logger support in `ConfigOptions`
 * Configuration values change detection with `valueChanges` observable
