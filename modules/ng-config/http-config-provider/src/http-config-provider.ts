@@ -19,7 +19,7 @@ import { HTTP_CONFIG_PROVIDER_OPTIONS, HttpConfigProviderOptions } from './http-
  * Implements an HTTP client API for HttpConfigProvider that relies on the Angular HttpClient.
  */
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'any'
 })
 export class HttpConfigProvider implements ConfigProvider {
     get name(): string {
@@ -30,12 +30,7 @@ export class HttpConfigProvider implements ConfigProvider {
         return this.configEndpoint;
     }
 
-    get order(): number {
-        return this.loaderOrder != null ? this.loaderOrder : 0;
-    }
-
     private readonly configEndpoint: string;
-    private readonly loaderOrder?: number;
 
     constructor(
         private readonly httpClient: HttpClient,
@@ -47,8 +42,6 @@ export class HttpConfigProvider implements ConfigProvider {
         } else {
             this.configEndpoint = injector.get(options.endpoint);
         }
-
-        this.loaderOrder = options.order;
     }
 
     load(): Observable<ConfigSection> {
