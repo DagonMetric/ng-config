@@ -10,6 +10,7 @@
 * Rename `ConfigLoader` to `ConfigProvider`
 * Change `ConfigService.providerNames` to `ConfigService.providers`
 * Remove `loadEvent` from `ConfigService`
+* Remove `StaticConfigLoader`
 * Update package dependencies
 
 npm packages are available on:
