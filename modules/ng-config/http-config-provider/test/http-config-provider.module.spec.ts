@@ -22,6 +22,7 @@ describe('HttpConfigProviderModule', () => {
 
             const configProviders = TestBed.inject<HttpConfigProvider[]>(CONFIG_PROVIDER);
             const configLoader = configProviders[0];
+
             void expect(configLoader.endpoint).toBe('/testsettings.json');
         });
 
@@ -45,6 +46,7 @@ describe('HttpConfigProviderModule', () => {
 
             const configProviders = TestBed.inject<HttpConfigProvider[]>(CONFIG_PROVIDER);
             const configLoader = configProviders[0];
+
             void expect(configLoader.endpoint).toBe('/testsettings.json');
         });
     });
