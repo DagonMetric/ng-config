@@ -14,20 +14,18 @@ import { ConfigSection } from '../src/config-value';
     providedIn: 'any'
 })
 export class TestConfigProvider implements ConfigProvider {
-    private readonly config = {
-        name: 'ng-config',
-        obj: {
-            key1: 'value1',
-            key2: 'value2'
-        }
-    };
-
     get name(): string {
         return 'TestConfigProvider';
     }
 
     load(): Observable<ConfigSection> {
-        return of(this.config);
+        return of({
+            name: 'ng-config',
+            obj: {
+                key1: 'value1',
+                key2: 'value2'
+            }
+        });
     }
 }
 

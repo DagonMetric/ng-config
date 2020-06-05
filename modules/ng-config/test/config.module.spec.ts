@@ -4,7 +4,6 @@ import { ApplicationInitStatus, Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
 
 import { CONFIG_PROVIDER, ConfigProvider } from '../src/config-provider';
 import { ConfigModule } from '../src/config.module';
@@ -16,20 +15,18 @@ import { ConfigSection } from '../src';
     providedIn: 'any'
 })
 export class TestConfigProvider implements ConfigProvider {
-    private readonly config = {
-        name: 'ng-config',
-        obj: {
-            key1: 'value1',
-            key2: 'value2'
-        }
-    };
-
     get name(): string {
-        return 'TestConfigLoader';
+        return 'TestConfigProvider';
     }
 
     load(): Observable<ConfigSection> {
-        return of(this.config).pipe(delay(10));
+        return of({
+            name: 'ng-config',
+            obj: {
+                key1: 'value1',
+                key2: 'value2'
+            }
+        });
     }
 }
 
