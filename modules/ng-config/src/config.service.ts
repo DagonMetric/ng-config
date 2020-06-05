@@ -92,49 +92,39 @@ function mapOptionValues(options: ConfigSection, configSection: ConfigSection): 
 
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 function equalDeep(a: ConfigValue, b: ConfigValue): boolean {
-    if (a === b) {
+    if (a === null && b === null) {
         return true;
     }
 
-    if (a && b && typeof a == 'object' && typeof b == 'object') {
-        if (Array.isArray(a)) {
-            if (!Array.isArray(b)) {
-                return false;
-            }
-
-            if (a.length !== b.length) {
-                return false;
-            }
-
-            for (let i = a.length - 1; i >= 0; i--) {
-                if (!equalDeep(a[i], b[i])) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        if (Array.isArray(b)) {
+    if (Array.isArray(a)) {
+        if (!b || !Array.isArray(b)) {
             return false;
         }
 
-        if (a.valueOf !== Object.prototype.valueOf) {
-            return a.valueOf() === b.valueOf();
+        if (a.length !== b.length) {
+            return false;
         }
 
-        if (a.toString !== Object.prototype.toString) {
-            return a.toString() === b.toString();
+        for (let i = a.length - 1; i >= 0; i--) {
+            if (!equalDeep(a[i], b[i])) {
+                return false;
+            }
         }
 
+        return true;
+    }
+
+    if (Array.isArray(b)) {
+        return false;
+    }
+
+    if (a && b && typeof a == 'object' && typeof b == 'object') {
         const keys = Object.keys(a);
         if (keys.length !== Object.keys(b).length) {
             return false;
         }
 
-        for (let i = keys.length - 1; i >= 0; i--) {
-            const key = keys[i];
-
+        for (const key of keys) {
             if (!equalDeep(a[key], b[key])) {
                 return false;
             }
@@ -143,7 +133,7 @@ function equalDeep(a: ConfigValue, b: ConfigValue): boolean {
         return true;
     }
 
-    return a !== a && b !== b;
+    return a === b;
 }
 
 @Injectable({
