@@ -23,7 +23,7 @@ export class TestConfigProvider implements ConfigProvider {
     };
 
     get name(): string {
-        return 'TestConfigLoader';
+        return 'TestConfigProvider';
     }
 
     load(): Observable<ConfigSection> {
