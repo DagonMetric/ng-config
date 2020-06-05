@@ -93,6 +93,14 @@ export class AppComponent {
 
 * [ng-config wiki](https://github.com/DagonMetric/ng-config/wiki)
 
+## Sub-modules
+
+* [http-config-provider](https://github.com/DagonMetric/ng-config/tree/master/modules/ng-config/http-config-provider) - Implements an HTTP client API for [ConfigProvider](https://github.com/DagonMetric/ng-config/blob/master/modules/ng-config/src/config-provider.ts) that relies on the Angular `HttpClient`
+
+## Integrations
+
+* [ng-config-firebase-remote-config](https://github.com/DagonMetric/ng-config-firebase-remote-config) - Firebase Remote Config implementation for `ConfigProvider`
+
 ## Feedback and Contributing
 
 Check out the [Contributing](https://github.com/DagonMetric/ng-config/blob/master/CONTRIBUTING.md) page to see the best places to log issues and start discussions.
