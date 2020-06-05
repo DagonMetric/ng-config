@@ -4,7 +4,6 @@ import { Injectable } from '@angular/core';
 import { TestBed, inject } from '@angular/core/testing';
 
 import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
 
 import { CONFIG_PROVIDER, ConfigProvider } from '../src/config-provider';
 import { ConfigPipe } from '../src/config.pipe';
@@ -28,7 +27,7 @@ export class TestConfigProvider implements ConfigProvider {
     }
 
     load(): Observable<ConfigSection> {
-        return of(this.config).pipe(delay(10));
+        return of(this.config);
     }
 }
 
@@ -53,5 +52,11 @@ describe('ConfigPipe', () => {
         const pipe = new ConfigPipe(configService);
 
         void expect(pipe.transform('name')).toEqual('ng-config');
+    }));
+
+    it('should be able to transform with separator', inject([ConfigService], (configService: ConfigService) => {
+        const pipe = new ConfigPipe(configService);
+
+        void expect(pipe.transform('obj:key1')).toEqual('value1');
     }));
 });
