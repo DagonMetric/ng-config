@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, forkJoin, of, throwError } from 'rxjs';
 import { delay } from 'rxjs/operators';
 
 import { CONFIG_OPTIONS, CONFIG_PROVIDER, ConfigOptions, ConfigProvider, ConfigSection, ConfigService } from '../src';
@@ -73,7 +73,7 @@ export class TransientOptions {
     // Not mapped values
     //
     extraKey = 'extra';
-    date = new Date();
+    // date = new Date();
 }
 
 @Injectable({
@@ -95,9 +95,12 @@ export class NotMapped {
     providedIn: 'any'
 })
 export class TestConfigProvider implements ConfigProvider {
-    private readonly config = {
+    get name(): string {
+        return 'TestConfigProvider';
+    }
+
+    private config = {
         name: 'ng-config',
-        counter: 0,
         transient: {
             str1: 'value1',
             str2: true,
@@ -136,29 +139,60 @@ export class TestConfigProvider implements ConfigProvider {
 
             child2: false,
 
-            // incompatible
             date: ''
         },
         root: {
             key1: 'value1',
             key2: true,
             key3: 1
-        }
+        },
+        str: 'a',
+        bool: true,
+        arr: ['a'],
+        lastNum: 0,
+        noValue: null
     };
 
-    get name(): string {
-        return 'TestConfigProvider';
-    }
+    private counter = 0;
 
     load(): Observable<ConfigSection> {
-        const c = this.config.counter + 1;
-        if (c > 5) {
+        // Simulate changes
+        //
+
+        const config = { ...this.config };
+
+        if (!config.arr || !Array.isArray(config.arr)) {
+            config.arr = [];
+        }
+
+        config.arr = [...config.arr];
+        config.root = { ...config.root };
+        config.transient = { ...config.transient };
+
+        if (this.counter === 1) {
+            config.str = 'b';
+        } else if (this.counter === 4) {
+            config.arr.push('b');
+            config.arr.push('c');
+        } else if (this.counter === 5) {
+            config.arr = ['a', 'c', 'b'];
+        } else if (this.counter === 6) {
+            config.arr = null as never;
+        } else if (this.counter === 8) {
+            config.root.key3 = 8;
+        } else if (this.counter === 9) {
+            config.lastNum = this.counter;
+        }
+
+        ++this.counter;
+
+        this.config = { ...config };
+
+        if (this.counter > 10) {
             return throwError('Error from provider.');
         }
 
-        this.config.counter = c;
-
-        return of(this.config).pipe(delay(1));
+        return of(config).pipe(delay(1));
     }
 }
 
@@ -173,12 +207,6 @@ describe('ConfigService', () => {
                         useClass: TestConfigProvider,
                         multi: true
                     }
-                    // {
-                    //     provide: CONFIG_OPTIONS,
-                    //     useValue: {
-                    //         trace: true
-                    //     } as ConfigOptions
-                    // }
                 ]
             });
 
@@ -192,34 +220,29 @@ describe('ConfigService', () => {
             });
         });
 
-        it("should return cached config if 'reLoad' is 'false'", (done: DoneFn) => {
-            for (let i = 0; i < 5; i++) {
-                configService.load(false);
-            }
-
-            configService.load(false).subscribe(() => {
-                configService.load(false).subscribe((config) => {
-                    void expect(config.counter).toBe(1);
+        it('should return cached config whenever load() is called', (done: DoneFn) => {
+            configService.load();
+            configService.load();
+            configService.load();
+            configService.load().subscribe((c1) => {
+                configService.load().subscribe((c2) => {
+                    void expect(c1).toEqual(c2);
                     done();
                 });
             });
         });
 
-        it("should reload the config if 'reLoad' is 'true'", (done: DoneFn) => {
-            configService.load();
-
-            for (let i = 0; i < 4; i++) {
-                configService.load(true);
-            }
-
-            configService.load().subscribe((config) => {
-                void expect(config.counter).toBe(5);
-                done();
+        it("should reload the config when passing 'reLoad' = 'true'", (done: DoneFn) => {
+            configService.load().subscribe((c1) => {
+                configService.load(true).subscribe((c2) => {
+                    void expect(c1.str !== c2.str).toBeTruthy();
+                    done();
+                });
             });
         });
 
         it('should throw an error message when provider throws error', (done: DoneFn) => {
-            for (let i = 0; i < 6; i++) {
+            for (let i = 0; i < 10; i++) {
                 configService.load(true);
             }
 
@@ -228,43 +251,6 @@ describe('ConfigService', () => {
                     void expect(of(error)).toBeTruthy();
                     done();
                 }
-            });
-        });
-    });
-
-    describe('valueChanges', () => {
-        let configService: ConfigService;
-        beforeEach(() => {
-            TestBed.configureTestingModule({
-                providers: [
-                    {
-                        provide: CONFIG_PROVIDER,
-                        useClass: TestConfigProvider,
-                        multi: true
-                    },
-                    {
-                        provide: CONFIG_OPTIONS,
-                        useValue: {
-                            trace: true
-                        } as ConfigOptions
-                    }
-                ]
-            });
-
-            configService = TestBed.inject<ConfigService>(ConfigService);
-        });
-
-        it('should emit valueChanges event', (done: DoneFn) => {
-            let chanageCount = 0;
-            configService.valueChanges.subscribe((config) => {
-                ++chanageCount;
-                void expect(chanageCount).toBe(config.counter as number);
-            });
-
-            configService.load().subscribe(() => {
-                configService.load(true).subscribe(() => {
-                    done();
-                });
             });
         });
     });
@@ -406,6 +392,62 @@ describe('ConfigService', () => {
                 const expectedOptions = new NotMapped();
                 void expect(configService.map(NotMapped)).toEqual(expectedOptions);
                 done();
+            });
+        });
+    });
+
+    describe('valueChanges', () => {
+        let configService: ConfigService;
+        beforeEach(() => {
+            TestBed.configureTestingModule({
+                providers: [
+                    {
+                        provide: CONFIG_PROVIDER,
+                        useClass: TestConfigProvider,
+                        multi: true
+                    },
+                    {
+                        provide: CONFIG_OPTIONS,
+                        useValue: {
+                            trace: true
+                        } as ConfigOptions
+                    }
+                ]
+            });
+
+            configService = TestBed.inject<ConfigService>(ConfigService);
+        });
+
+        it('should emit valueChanges event', (done: DoneFn) => {
+            const lastChangeInfo = {
+                changeCount: 0,
+                lastNum: 0
+            };
+
+            configService.valueChanges.subscribe((config) => {
+                ++lastChangeInfo.changeCount;
+                lastChangeInfo.lastNum = config.lastNum as number;
+            });
+
+            configService.load().subscribe(() => {
+                forkJoin([
+                    configService.load(true),
+                    configService.load(true),
+                    configService.load(true),
+                    configService.load(true),
+                    configService.load(true),
+                    configService.load(true),
+                    configService.load(true),
+                    configService.load(true),
+                    configService.load(true)
+                ]).subscribe(() => {
+                    const expectedObj = {
+                        changeCount: 8,
+                        lastNum: 9
+                    };
+                    void expect(lastChangeInfo).toEqual(expectedObj);
+                    done();
+                });
             });
         });
     });
