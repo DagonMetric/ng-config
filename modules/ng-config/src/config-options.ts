@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * @license
  * Copyright DagonMetric. All Rights Reserved.
@@ -27,7 +26,8 @@ export interface ConfigOptions {
      * Custom logger for debug information.
      */
     logger?: {
-        debug(message: string, ...optionalParams: any[]): void;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        debug(message: string, optionalParam?: any): void;
     };
 }
 
