@@ -8,9 +8,11 @@
 ## Changes
 
 * Rename `ConfigLoader` to `ConfigProvider`
-* Change `ConfigService.providerNames` to `ConfigService.providers`
+* Rename `HttpConfigLoader` to `HttpConfigProvider`
+* Change `ConfigService.providerNames` to `ConfigService.providers` that returns `ConfigProvider[]`
 * Remove `loadEvent` from `ConfigService`
 * Remove `StaticConfigLoader`
+* Refactor codes for bug fixes and performance
 * Update package dependencies
 
 npm packages are available on:
