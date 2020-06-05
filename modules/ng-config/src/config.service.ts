@@ -189,14 +189,14 @@ export class ConfigService {
                 const providerName = configProvider.name;
 
                 if (reload || !this.fetchRequests[providerName]) {
-                    const loaderObs = configProvider.load().pipe(
+                    const loadObs = configProvider.load().pipe(
                         tap((config) => {
                             this.log(providerName, config);
                         }),
                         share()
                     );
 
-                    this.fetchRequests[providerName] = loaderObs.pipe(take(1), share());
+                    this.fetchRequests[providerName] = loadObs.pipe(take(1), share());
                 }
 
                 return this.fetchRequests[providerName];
