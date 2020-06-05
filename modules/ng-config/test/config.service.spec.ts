@@ -412,7 +412,7 @@ describe('ConfigService', () => {
                     {
                         provide: CONFIG_OPTIONS,
                         useValue: {
-                            trace: true
+                            debug: true
                         } as ConfigOptions
                     }
                 ]
