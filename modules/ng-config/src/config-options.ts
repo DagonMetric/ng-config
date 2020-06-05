@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * @license
  * Copyright DagonMetric. All Rights Reserved.
@@ -13,13 +14,21 @@ import { InjectionToken } from '@angular/core';
  */
 export interface ConfigOptions {
     /**
-     * Set true to log debug information.
-     */
-    trace?: boolean;
-    /**
      * Options suffix for options class. Default is 'Options'.
      */
     optionsSuffix?: string;
+
+    /**
+     * Set true to log debug information.
+     */
+    debug?: boolean;
+
+    /**
+     * Custom logger for debug information.
+     */
+    logger?: {
+        debug(message: string, ...optionalParams: any[]): void;
+    };
 }
 
 export const CONFIG_OPTIONS = new InjectionToken<ConfigOptions>('ConfigOptions');
