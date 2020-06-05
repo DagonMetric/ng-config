@@ -20,27 +20,10 @@
     },
     {
       "extends": "ngb:lib-default",
-      "name": "ng-config-http-loader",
-      "root": "modules/ng-config/http-loader",
+      "name": "ng-config-http-config-provider",
+      "root": "modules/ng-config/http-config-provider",
       "outputPath": "dist/packages/ng-config",
-      "libraryName": "ngConfig.httpLoader",
-      "externals": {
-        "@dagonmetric/ng-config": "ngConfig"
-      },
-      "envOverrides": {
-        "prod": {
-          "copy": [],
-          "bundles": true,
-          "packageJsonCopy": true
-        }
-      }
-    },
-    {
-      "extends": "ngb:lib-default",
-      "name": "ng-config-static-loader",
-      "root": "modules/ng-config/static-loader",
-      "outputPath": "dist/packages/ng-config",
-      "libraryName": "ngConfig.staticLoader",
+      "libraryName": "ngConfig.httpProvider",
       "externals": {
         "@dagonmetric/ng-config": "ngConfig"
       },
