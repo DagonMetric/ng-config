@@ -7,6 +7,8 @@ import { delay } from 'rxjs/operators';
 
 import { CONFIG_OPTIONS, CONFIG_PROVIDER, ConfigOptions, ConfigProvider, ConfigSection, ConfigService } from '../src';
 
+const dateObj = new Date();
+
 export class TransientOptions {
     // string -> string
     str1 = 'value1';
@@ -73,7 +75,7 @@ export class TransientOptions {
     // Not mapped values
     //
     extraKey = 'extra';
-    // date = new Date();
+    date = dateObj;
 }
 
 @Injectable({
@@ -139,6 +141,7 @@ export class TestConfigProvider implements ConfigProvider {
 
             child2: false,
 
+            // Not mapped
             date: ''
         },
         root: {
