@@ -55,34 +55,15 @@
         }
       }
     },
-    "ng-config-http-loader": {
-      "root": "modules/ng-config/http-loader",
-      "sourceRoot": "modules/ng-config/http-loader/src",
+    "ng-config-http-config-provider": {
+      "root": "modules/ng-config/http-config-provider",
+      "sourceRoot": "modules/ng-config/http-config-provider/src",
       "projectType": "library",
       "architect": {
         "build": {
           "builder": "@dagonmetric/angular-build:lib",
           "options": {
-            "extends": "file:angular-build.json:lib:ng-config-http-loader",
-            "outputPath": "dist/packages/ng-config"
-          },
-          "configurations": {
-            "production": {
-              "environment": "prod"
-            }
-          }
-        }
-      }
-    },
-    "ng-config-static-loader": {
-      "root": "modules/ng-config/static-loader",
-      "sourceRoot": "modules/ng-config/static-loader/src",
-      "projectType": "library",
-      "architect": {
-        "build": {
-          "builder": "@dagonmetric/angular-build:lib",
-          "options": {
-            "extends": "file:angular-build.json:lib:ng-config-static-loader",
+            "extends": "file:angular-build.json:lib:ng-config-http-config-provider",
             "outputPath": "dist/packages/ng-config"
           },
           "configurations": {
