@@ -13,11 +13,7 @@
 
     "baseUrl": ".",
     "rootDir": ".",
-    "outDir": "../../dist/packages/ng-config",
-
-    "paths": {
-      "@angular/core": [ "../../node_modules/@angular/core" ]
-    }
+    "outDir": "../../dist/packages/ng-config"
   },
   "files": [
     "public_api.ts"
