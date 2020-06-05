@@ -1,5 +1,15 @@
+## Fetures
+
+* strongly typed options mapping with options classes *(e.g. `const options = config.map<IdentityOptions>`)*
+* Custom options class name suffix support in `ConfigOptions`
+* Custom logger support in `ConfigOptions`
+* Configuration values change detection with `valueChanges` observable
+
 ## Changes
 
+* Rename `ConfigLoader` to `ConfigProvider`
+* Change `ConfigService.providerNames` to `ConfigService.providers`
+* Remove `loadEvent` from `ConfigService`
 * Update package dependencies
 
 npm packages are available on:
