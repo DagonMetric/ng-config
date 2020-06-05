@@ -21,9 +21,9 @@ describe('HttpConfigProviderModule', () => {
             });
 
             const configProviders = TestBed.inject<HttpConfigProvider[]>(CONFIG_PROVIDER);
-            const configLoader = configProviders[0];
+            const configProvider = configProviders[0];
 
-            void expect(configLoader.endpoint).toBe('/testsettings.json');
+            void expect(configProvider.endpoint).toBe('/testsettings.json');
         });
 
         it("should work with injection token 'endpoint' value", () => {
@@ -45,9 +45,9 @@ describe('HttpConfigProviderModule', () => {
             });
 
             const configProviders = TestBed.inject<HttpConfigProvider[]>(CONFIG_PROVIDER);
-            const configLoader = configProviders[0];
+            const configProvider = configProviders[0];
 
-            void expect(configLoader.endpoint).toBe('/testsettings.json');
+            void expect(configProvider.endpoint).toBe('/testsettings.json');
         });
     });
 });
