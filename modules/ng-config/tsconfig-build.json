@@ -19,6 +19,7 @@
     "public_api.ts"
   ],
   "angularCompilerOptions": {
+    "enableIvy": false,
     "annotateForClosureCompiler": true,
     "strictMetadataEmit": true,
     "skipTemplateCodegen": true,
