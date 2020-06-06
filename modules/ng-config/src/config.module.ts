@@ -32,7 +32,7 @@ export class ConfigModule {
      * Call this method to load configuration with APP_INITIALIZER.
      * @param options An option object for ConfigService.
      */
-    static init(options: ConfigOptions = {}): ModuleWithProviders {
+    static init(options: ConfigOptions = {}): ModuleWithProviders<ConfigModule> {
         return {
             ngModule: ConfigModule,
             providers: [
