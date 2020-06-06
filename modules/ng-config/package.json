@@ -14,6 +14,7 @@
   "homepage": "https://github.com/Dagonmetric/ng-config",
   "keywords": [
     "angular-config",
+    "ng-config",
     "angular-config-service",
     "angular-configuration-service",
     "angular-options",
