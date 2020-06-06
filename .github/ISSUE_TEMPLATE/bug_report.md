@@ -10,15 +10,15 @@ This issue tracker is ONLY used for reporting bugs.
 Please fill in the *entire* template below. 
 -->
 
-## Current Behavior
+## Current behavior
 
 <!-- Describe the current behavior. -->
 
-## Expected Behavior
+## Expected behavior
 
 <!-- Describe what the desired behavior would be. -->
 
-## Playground Link
+## Playground link
 
 <!-- A link to a Playground "Share" link which demonstrates this behavior -->
 
@@ -26,6 +26,6 @@ Please fill in the *entire* template below.
 
 <!-- - Library package version: -->
 
-## Additional Context
+## Additional context
 
 <!-- Anything else relevant? -->
