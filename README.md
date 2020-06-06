@@ -12,11 +12,11 @@ The `ng-config` is a configuration and options service for Angular applications 
 
 * Flexible strongly typed options mapping with options classes *(e.g. `const options = config.map<IdentityOptions>`)*
 * Extendable `ConfigProvider` (see built-in [HttpConfigProvider](https://github.com/DagonMetric/ng-config/blob/master/modules/ng-config/http-config-provider/src/http-config-provider.ts) for implementation demo)
-* Configuration values change detection with `valueChanges` observable
+* Multiple configuration providers / loaders are supported
+* Configuration value change detection with `valueChanges` observable
 * Load configuration when Angular app starts with `APP_INITIALIZER` factory
 * Latest versions of Angular are supported
 * Compatible with Angular Universal (Server Side Rendering - SSR)
-* Powered with RxJS
 
 ## Get Started
 
@@ -46,7 +46,7 @@ import { HttpConfigProviderModule } from '@dagonmetric/ng-config/http-config-pro
 
     // ng-config module
     ConfigModule.init(),
-    HttpConfigProviderModule.withOptions({
+    HttpConfigProviderModule.init({
         endpoint: '/appsettings.json'
     })
   ]
