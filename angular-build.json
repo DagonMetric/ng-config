@@ -23,7 +23,7 @@
       "name": "ng-config-http-config-provider",
       "root": "modules/ng-config/http-config-provider",
       "outputPath": "dist/packages/ng-config",
-      "libraryName": "ngConfig.httpProvider",
+      "libraryName": "ngConfig.httpConfigProvider",
       "externals": {
         "@dagonmetric/ng-config": "ngConfig"
       },
