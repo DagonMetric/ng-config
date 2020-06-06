@@ -16,7 +16,7 @@ import { HttpConfigProviderModule } from '@dagonmetric/ng-config/http-config-pro
 
     // ng-config
     ConfigModule,
-    HttpConfigProviderModule.withOptions({
+    HttpConfigProviderModule.init({
       endpoint: '/appsettings.json'
     })
   ]

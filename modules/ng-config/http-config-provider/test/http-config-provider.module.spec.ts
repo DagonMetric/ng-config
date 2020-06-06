@@ -9,12 +9,12 @@ import { HttpConfigProvider } from '../src/http-config-provider';
 import { HttpConfigProviderModule } from '../src/http-config-provider.module';
 
 describe('HttpConfigProviderModule', () => {
-    describe('withOptions', () => {
+    describe('init', () => {
         it("should work with string 'endpoint' value", () => {
             TestBed.configureTestingModule({
                 imports: [
                     HttpClientTestingModule,
-                    HttpConfigProviderModule.withOptions({
+                    HttpConfigProviderModule.init({
                         endpoint: '/testsettings.json'
                     })
                 ]
@@ -32,7 +32,7 @@ describe('HttpConfigProviderModule', () => {
             TestBed.configureTestingModule({
                 imports: [
                     HttpClientTestingModule,
-                    HttpConfigProviderModule.withOptions({
+                    HttpConfigProviderModule.init({
                         endpoint: ENDPOINT_URL
                     })
                 ],
