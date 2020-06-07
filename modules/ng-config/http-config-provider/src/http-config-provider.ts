@@ -19,7 +19,7 @@ import { HTTP_CONFIG_PROVIDER_OPTIONS, HttpConfigProviderOptions } from './http-
  * Implements an HTTP client API for HttpConfigProvider that relies on the Angular HttpClient.
  */
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'any'
 })
 export class HttpConfigProvider implements ConfigProvider {
     get name(): string {
