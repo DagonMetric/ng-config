@@ -25,7 +25,6 @@ export function configAppInitializerFactory(configService: ConfigService): () =>
  */
 @NgModule({
     declarations: [ConfigPipe],
-    providers: [ConfigService],
     exports: [ConfigPipe]
 })
 export class ConfigModule {
@@ -46,7 +45,8 @@ export class ConfigModule {
                     useFactory: configAppInitializerFactory,
                     deps: [ConfigService],
                     multi: true
-                }
+                },
+                ConfigService
             ]
         };
     }
