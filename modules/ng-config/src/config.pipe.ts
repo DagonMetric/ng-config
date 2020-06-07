@@ -16,7 +16,8 @@ import { ConfigValue } from './config-value';
  */
 @Injectable()
 @Pipe({
-    name: 'config'
+    name: 'config',
+    pure: false
 })
 export class ConfigPipe implements PipeTransform {
     constructor(private readonly configService: ConfigService) {}
