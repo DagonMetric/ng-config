@@ -12,7 +12,7 @@ import { ConfigService } from './config.service';
 import { ConfigValue } from './config-value';
 
 /**
- * The config pipe to get setting value by key.
+ * The config pipe to get configuration value by key.
  */
 @Injectable()
 @Pipe({
