@@ -16,7 +16,13 @@ import { ConfigSection } from './config-value';
  * The ConfigProvider interface.
  */
 export interface ConfigProvider {
+    /**
+     * The name of the provider.
+     */
     readonly name: string;
+    /**
+     * Fetch method for loading configuration.
+     */
     load(): Observable<ConfigSection>;
 }
 
