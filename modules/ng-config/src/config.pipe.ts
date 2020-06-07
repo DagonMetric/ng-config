@@ -6,10 +6,11 @@
  * found under the LICENSE file in the root directory of this source tree.
  */
 
-import { Injectable, Pipe, PipeTransform } from '@angular/core';
+import { ChangeDetectorRef, Injectable, OnDestroy, Pipe, PipeTransform } from '@angular/core';
+
+import { Subscription } from 'rxjs';
 
 import { ConfigService } from './config.service';
-import { ConfigValue } from './config-value';
 
 /**
  * The config pipe to get configuration value by key.
@@ -19,10 +20,73 @@ import { ConfigValue } from './config-value';
     name: 'config',
     pure: false
 })
-export class ConfigPipe implements PipeTransform {
-    constructor(private readonly configService: ConfigService) {}
+export class ConfigPipe implements PipeTransform, OnDestroy {
+    private lastQuery: string | null = null;
+    private lastValue = '';
+    private onValueChanges?: Subscription | null;
 
-    transform(value: string): ConfigValue {
-        return this.configService.getValue(value);
+    constructor(private readonly configService: ConfigService, private changeDetectorRef: ChangeDetectorRef) {}
+
+    transform(query: string): string {
+        if (!query || !query.length) {
+            this.lastValue = '';
+            this.lastQuery = null;
+
+            return '';
+        }
+
+        if (query === this.lastQuery) {
+            return this.lastValue;
+        }
+
+        this.update(query);
+        this.unsubscribe();
+
+        if (!this.onValueChanges) {
+            this.onValueChanges = this.configService.valueChanges.subscribe(() => {
+                this.lastQuery = null;
+                this.update(query);
+            });
+        }
+
+        return this.lastValue;
+    }
+
+    ngOnDestroy(): void {
+        this.lastQuery = null;
+        this.lastValue = '';
+
+        this.unsubscribe();
+    }
+
+    private update(query: string): void {
+        const configValue = this.configService.getValue(query);
+        if (configValue == null || configValue === '') {
+            if (this.lastValue !== '') {
+                this.lastValue = '';
+                this.lastQuery = query;
+                this.changeDetectorRef.markForCheck();
+            } else {
+                this.lastQuery = query;
+            }
+
+            return;
+        }
+
+        const configValueStr = typeof configValue === 'string' ? configValue : JSON.stringify(configValue);
+        if (configValueStr !== this.lastValue) {
+            this.lastValue = configValueStr;
+            this.lastQuery = query;
+            this.changeDetectorRef.markForCheck();
+        } else {
+            this.lastQuery = query;
+        }
+    }
+
+    private unsubscribe(): void {
+        if (this.onValueChanges) {
+            this.onValueChanges.unsubscribe();
+            this.onValueChanges = undefined;
+        }
     }
 }
