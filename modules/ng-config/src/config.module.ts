@@ -25,7 +25,8 @@ export function configAppInitializerFactory(configService: ConfigService): () =>
  */
 @NgModule({
     declarations: [ConfigPipe],
-    providers: [ConfigService]
+    providers: [ConfigService],
+    exports: [ConfigPipe]
 })
 export class ConfigModule {
     /**
