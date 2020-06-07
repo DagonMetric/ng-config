@@ -30,7 +30,7 @@ export function configAppInitializerFactory(configService: ConfigService): () =>
 })
 export class ConfigModule {
     /**
-     * Call this method to load configuration with APP_INITIALIZER.
+     * Call this method in root module to load configuration with `APP_INITIALIZER`.
      * @param options An option object for ConfigService.
      */
     static init(options: ConfigOptions = {}): ModuleWithProviders<ConfigModule> {
