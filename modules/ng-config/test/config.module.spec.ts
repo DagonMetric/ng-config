@@ -1,9 +1,10 @@
-// tslint:disable: no-floating-promises
+/* eslint-disable max-classes-per-file */
 
 import { ApplicationInitStatus, Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { Observable, of } from 'rxjs';
+import { delay } from 'rxjs/operators';
 
 import { CONFIG_PROVIDER, ConfigProvider } from '../src/config-provider';
 import { ConfigModule } from '../src/config.module';
@@ -14,55 +15,104 @@ import { ConfigSection } from '../src';
 @Injectable({
     providedIn: 'any'
 })
-export class TestConfigProvider implements ConfigProvider {
+export class DelayConfigProvider implements ConfigProvider {
     get name(): string {
-        return 'TestConfigProvider';
+        return 'DelayConfigProvider';
     }
 
     load(): Observable<ConfigSection> {
         return of({
-            name: 'ng-config',
-            obj: {
-                key1: 'value1',
-                key2: 'value2'
-            }
+            name: 'ng-config'
+        }).pipe(delay(100));
+    }
+}
+
+@Injectable({
+    providedIn: 'any'
+})
+export class NonDelayConfigProvider implements ConfigProvider {
+    get name(): string {
+        return 'NonDelayConfigProvider';
+    }
+
+    load(): Observable<ConfigSection> {
+        return of({
+            name: 'ng-config'
         });
     }
 }
 
 describe('ConfigModule', () => {
-    beforeEach(async () => {
-        TestBed.configureTestingModule({
-            imports: [ConfigModule.init()],
-            providers: [
-                {
-                    provide: CONFIG_PROVIDER,
-                    useClass: TestConfigProvider,
-                    multi: true
-                }
-            ]
+    describe('init(loadOnStartUp: false)', () => {
+        it("should return 'null' when calling 'ConfigService.getValue' with 'DelayConfigProvider'", () => {
+            TestBed.configureTestingModule({
+                imports: [ConfigModule.init(false)],
+                providers: [
+                    {
+                        provide: CONFIG_PROVIDER,
+                        useClass: DelayConfigProvider,
+                        multi: true
+                    }
+                ]
+            });
+
+            const configService = TestBed.inject<ConfigService>(ConfigService);
+
+            void expect(configService.getValue('name')).toBe(null);
         });
 
-        // until https://github.com/angular/angular/issues/24218 is fixed
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        await TestBed.inject<ApplicationInitStatus>(ApplicationInitStatus).donePromise;
+        it("should return value when calling 'ConfigService.getValue' with 'NonDelayConfigProvider'", () => {
+            TestBed.configureTestingModule({
+                imports: [ConfigModule.init(false)],
+                providers: [
+                    {
+                        provide: CONFIG_PROVIDER,
+                        useClass: NonDelayConfigProvider,
+                        multi: true
+                    }
+                ]
+            });
+
+            const configService = TestBed.inject<ConfigService>(ConfigService);
+
+            void expect(configService.getValue('name')).toBe('ng-config');
+        });
     });
 
-    it("should provide 'ConfigService'", () => {
-        const configService = TestBed.inject<ConfigService>(ConfigService);
+    describe('init(loadOnStartUp: true)', () => {
+        beforeEach(async () => {
+            TestBed.configureTestingModule({
+                imports: [ConfigModule.init()],
+                providers: [
+                    {
+                        provide: CONFIG_PROVIDER,
+                        useClass: DelayConfigProvider,
+                        multi: true
+                    }
+                ]
+            });
 
-        void expect(configService).toBeDefined();
-    });
+            // until https://github.com/angular/angular/issues/24218 is fixed
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            await TestBed.inject<ApplicationInitStatus>(ApplicationInitStatus).donePromise;
+        });
 
-    it("should provide 'ConfigOptions'", () => {
-        const configOptions = TestBed.inject<ConfigOptions>(CONFIG_OPTIONS);
+        it("should provide 'ConfigService'", () => {
+            const configService = TestBed.inject<ConfigService>(ConfigService);
 
-        void expect(configOptions).toBeDefined();
-    });
+            void expect(configService).toBeDefined();
+        });
 
-    it("should load with 'APP_INITIALIZER'", () => {
-        const configService = TestBed.inject<ConfigService>(ConfigService);
+        it("should provide 'ConfigOptions'", () => {
+            const configOptions = TestBed.inject<ConfigOptions>(CONFIG_OPTIONS);
 
-        void expect(configService.getValue('name')).toBe('ng-config');
+            void expect(configOptions).toBeDefined();
+        });
+
+        it("should return value when calling 'ConfigService.getValue'", () => {
+            const configService = TestBed.inject<ConfigService>(ConfigService);
+
+            void expect(configService.getValue('name')).toBe('ng-config');
+        });
     });
 });

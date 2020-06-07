@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
-import { Observable, forkJoin, of, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { delay } from 'rxjs/operators';
 
 import { CONFIG_OPTIONS, CONFIG_PROVIDER, ConfigOptions, ConfigProvider, ConfigSection, ConfigService } from '../src';
@@ -230,14 +230,14 @@ describe('ConfigService', () => {
         });
 
         it(`should output debug message when debug is 'true'`, (done: DoneFn) => {
-            configService.load().subscribe(() => {
+            configService.ensureInitialized().subscribe(() => {
                 void expect(debugMessages.length > 0).toBeTruthy();
                 done();
             });
         });
     });
 
-    describe('load', () => {
+    describe('ensureInitialized', () => {
         let configService: ConfigService;
 
         beforeEach(() => {
@@ -254,40 +254,56 @@ describe('ConfigService', () => {
             configService = TestBed.inject<ConfigService>(ConfigService);
         });
 
-        it('should return merged config', (done: DoneFn) => {
-            configService.load().subscribe((config) => {
-                void expect(config.name).toBe('ng-config');
+        it("should return 'true'", (done: DoneFn) => {
+            configService.ensureInitialized().subscribe((activated) => {
+                void expect(activated).toBe(true);
                 done();
             });
         });
+    });
 
-        it('should return cached config whenever load() is called', (done: DoneFn) => {
-            configService.load();
-            configService.load();
-            configService.load();
-            configService.load().subscribe((c1) => {
-                configService.load().subscribe((c2) => {
-                    void expect(c1).toEqual(c2);
+    describe('reload', () => {
+        let configService: ConfigService;
+
+        beforeEach(() => {
+            TestBed.configureTestingModule({
+                providers: [
+                    {
+                        provide: CONFIG_PROVIDER,
+                        useClass: TestConfigProvider,
+                        multi: true
+                    },
+                    {
+                        provide: CONFIG_OPTIONS,
+                        useValue: {
+                            debug: true
+                        } as ConfigOptions
+                    }
+                ]
+            });
+
+            configService = TestBed.inject<ConfigService>(ConfigService);
+        });
+
+        it('should return fresh config', (done: DoneFn) => {
+            configService.ensureInitialized().subscribe(() => {
+                const c1 = configService.getValue('str');
+
+                configService.reload().subscribe(() => {
+                    const c2 = configService.getValue('str');
+
+                    void expect(c1 !== c2).toBeTruthy();
                     done();
                 });
             });
         });
 
-        it("should reload the config when passing 'reLoad' = 'true'", (done: DoneFn) => {
-            configService.load().subscribe((c1) => {
-                configService.load(true).subscribe((c2) => {
-                    void expect(c1.str !== c2.str).toBeTruthy();
-                    done();
-                });
-            });
-        });
-
-        it('should throw an error message when provider throws error', (done: DoneFn) => {
+        it('should throw an error when provider throws one', (done: DoneFn) => {
             for (let i = 0; i < 10; i++) {
-                configService.load(true);
+                configService.reload();
             }
 
-            configService.load(true).subscribe({
+            configService.ensureInitialized().subscribe({
                 error: (error: Error): void => {
                     void expect(of(error)).toBeTruthy();
                     done();
@@ -298,6 +314,7 @@ describe('ConfigService', () => {
 
     describe('getValue', () => {
         let configService: ConfigService;
+
         beforeEach(() => {
             TestBed.configureTestingModule({
                 providers: [
@@ -313,14 +330,14 @@ describe('ConfigService', () => {
         });
 
         it('should get config string value', (done: DoneFn) => {
-            configService.load().subscribe(() => {
+            configService.ensureInitialized().subscribe(() => {
                 void expect(configService.getValue('name')).toBe('ng-config');
                 done();
             });
         });
 
         it('should get config object value', (done: DoneFn) => {
-            configService.load().subscribe(() => {
+            configService.ensureInitialized().subscribe(() => {
                 void expect(configService.getValue('root')).toEqual({
                     key1: 'value1',
                     key2: true,
@@ -331,22 +348,23 @@ describe('ConfigService', () => {
         });
 
         it(`should get with ':' key separator`, (done: DoneFn) => {
-            configService.load().subscribe(() => {
+            configService.ensureInitialized().subscribe(() => {
                 void expect(configService.getValue('root:key1')).toBe('value1');
                 done();
             });
         });
 
         it('should return null if not found', (done: DoneFn) => {
-            configService.load().subscribe(() => {
+            configService.ensureInitialized().subscribe(() => {
                 void expect(configService.getValue('unknownKey') === null).toBeTruthy();
                 done();
             });
         });
     });
 
-    describe('map', () => {
+    describe('mapType', () => {
         let configService: ConfigService;
+
         beforeEach(() => {
             TestBed.configureTestingModule({
                 providers: [
@@ -362,8 +380,8 @@ describe('ConfigService', () => {
         });
 
         it('should return mapped options', (done: DoneFn) => {
-            configService.load().subscribe(() => {
-                const expectedOptions: TransientOptions = new TransientOptions();
+            configService.ensureInitialized().subscribe(() => {
+                const expectedOptions = new TransientOptions();
                 Object.assign(expectedOptions, {
                     str1: 'value1',
                     str2: 'true',
@@ -403,15 +421,15 @@ describe('ConfigService', () => {
                     }
                 });
 
-                void expect(configService.map(TransientOptions)).toEqual(expectedOptions);
+                void expect(configService.mapType(TransientOptions)).toEqual(expectedOptions);
                 done();
             });
         });
 
         it(`should return new instances with 'TransientOptions'`, (done: DoneFn) => {
-            configService.load().subscribe(() => {
-                const options1 = configService.map(TransientOptions);
-                const options2 = configService.map(TransientOptions);
+            configService.ensureInitialized().subscribe(() => {
+                const options1 = configService.mapType(TransientOptions);
+                const options2 = configService.mapType(TransientOptions);
 
                 void expect(options1 !== options2).toBeTruthy();
                 done();
@@ -419,9 +437,9 @@ describe('ConfigService', () => {
         });
 
         it(`should return same instance with 'RootOptions'`, (done: DoneFn) => {
-            configService.load().subscribe(() => {
-                const options1 = configService.map(RootOptions);
-                const options2 = configService.map(RootOptions);
+            configService.ensureInitialized().subscribe(() => {
+                const options1 = configService.mapType(RootOptions);
+                const options2 = configService.mapType(RootOptions);
 
                 void expect(options1 === options2).toBeTruthy();
                 done();
@@ -429,16 +447,17 @@ describe('ConfigService', () => {
         });
 
         it(`should return default instance when no config section found`, (done: DoneFn) => {
-            configService.load().subscribe(() => {
+            configService.ensureInitialized().subscribe(() => {
                 const expectedOptions = new NotMapped();
-                void expect(configService.map(NotMapped)).toEqual(expectedOptions);
+                void expect(configService.mapType(NotMapped)).toEqual(expectedOptions);
                 done();
             });
         });
     });
 
-    describe('valueChanges', () => {
+    describe('mapObject', () => {
         let configService: ConfigService;
+
         beforeEach(() => {
             TestBed.configureTestingModule({
                 providers: [
@@ -446,12 +465,83 @@ describe('ConfigService', () => {
                         provide: CONFIG_PROVIDER,
                         useClass: TestConfigProvider,
                         multi: true
+                    }
+                ]
+            });
+
+            configService = TestBed.inject<ConfigService>(ConfigService);
+        });
+
+        it('should map to options object', (done: DoneFn) => {
+            configService.ensureInitialized().subscribe(() => {
+                const options = new TransientOptions();
+
+                const expectedOptions = new TransientOptions();
+                Object.assign(expectedOptions, {
+                    str1: 'value1',
+                    str2: 'true',
+                    str3: '10',
+                    str4: null,
+
+                    num1: 100,
+                    num2: 100.05,
+                    num3: null,
+                    num4: 0,
+
+                    bool1: true,
+                    bool2: true,
+                    bool3: true,
+                    bool4: true,
+                    bool5: true,
+                    bool6: null,
+                    bool7: false,
+
+                    arr1: ['item1', 'item2'],
+                    arr2: ['item1', 'item2'],
+                    arr3: null,
+                    arr4: [],
+                    arr5: [],
+
+                    child: {
+                        key1: 'hello',
+                        key2: false,
+                        key3: -10,
+                        key4: ['sub1', 'sub2'],
+                        key5: 'world'
                     },
+
+                    child2: {
+                        key1: '',
+                        key2: true
+                    }
+                });
+
+                void expect(configService.mapObject('transient', options)).toEqual(expectedOptions);
+                done();
+            });
+        });
+
+        it(`should return default instance when no config section found`, (done: DoneFn) => {
+            configService.ensureInitialized().subscribe(() => {
+                const options = new NotMapped();
+
+                const expectedOptions = new NotMapped();
+                void expect(configService.mapObject('nomap', options)).toEqual(expectedOptions);
+                done();
+            });
+        });
+    });
+
+    describe('valueChanges', () => {
+        let configService: ConfigService;
+
+        beforeEach(() => {
+            TestBed.configureTestingModule({
+                providers: [
                     {
-                        provide: CONFIG_OPTIONS,
-                        useValue: {
-                            debug: true
-                        } as ConfigOptions
+                        provide: CONFIG_PROVIDER,
+                        useClass: TestConfigProvider,
+                        multi: true
                     }
                 ]
             });
@@ -465,29 +555,35 @@ describe('ConfigService', () => {
                 lastNum: 0
             };
 
-            configService.valueChanges.subscribe((config) => {
+            configService.valueChanges.subscribe(() => {
                 ++lastChangeInfo.changeCount;
-                lastChangeInfo.lastNum = config.lastNum as number;
+                lastChangeInfo.lastNum = configService.getValue('lastNum') as number;
             });
 
-            configService.load().subscribe(() => {
-                forkJoin([
-                    configService.load(true),
-                    configService.load(true),
-                    configService.load(true),
-                    configService.load(true),
-                    configService.load(true),
-                    configService.load(true),
-                    configService.load(true),
-                    configService.load(true),
-                    configService.load(true)
-                ]).subscribe(() => {
-                    const expectedObj = {
-                        changeCount: 8,
-                        lastNum: 9
-                    };
-                    void expect(lastChangeInfo).toEqual(expectedObj);
-                    done();
+            configService.ensureInitialized().subscribe(() => {
+                configService.reload().subscribe(() => {
+                    configService.reload().subscribe(() => {
+                        configService.reload().subscribe(() => {
+                            configService.reload().subscribe(() => {
+                                configService.reload().subscribe(() => {
+                                    configService.reload().subscribe(() => {
+                                        configService.reload().subscribe(() => {
+                                            configService.reload().subscribe(() => {
+                                                configService.reload().subscribe(() => {
+                                                    const expectedObj = {
+                                                        changeCount: 8,
+                                                        lastNum: 9
+                                                    };
+                                                    void expect(lastChangeInfo).toEqual(expectedObj);
+                                                    done();
+                                                });
+                                            });
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                    });
                 });
             });
         });
