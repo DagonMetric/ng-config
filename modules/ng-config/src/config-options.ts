@@ -9,7 +9,7 @@
 import { InjectionToken } from '@angular/core';
 
 /**
- * Options for `ConfigService`.
+ * Options interface for `ConfigService`.
  */
 export interface ConfigOptions {
     /**
