@@ -8,7 +8,6 @@
 
 import { APP_INITIALIZER, ModuleWithProviders, NgModule } from '@angular/core';
 
-import { ConfigPipe } from './config.pipe';
 import { ConfigService } from './config.service';
 import { CONFIG_OPTIONS, ConfigOptions } from './config-options';
 import { ConfigSection } from './config-value';
@@ -21,18 +20,18 @@ export function configAppInitializerFactory(configService: ConfigService): () =>
 }
 
 /**
- * The `NGMODULE` for providing `ConfigService` and `ConfigPipe`. Call `init` method to load configuration with `APP_INITIALIZER` factory.
+ * The `NGMODULE` for providing `ConfigService`. Call `init` method to provide options for `ConfigService`.
  */
 @NgModule({
-    declarations: [ConfigPipe],
-    exports: [ConfigPipe]
+    providers: [ConfigService]
 })
 export class ConfigModule {
     /**
-     * Call this method in root module to load configuration with `APP_INITIALIZER`.
-     * @param options An option object for ConfigService.
+     * Call this method in root module to provide options for `ConfigService`.
+     * @param loadOnStartUp If `true` configuration values are loaded at app starts. Default is `true`.
+     * @param options Option object for `ConfigService`.
      */
-    static init(options: ConfigOptions = {}): ModuleWithProviders<ConfigModule> {
+    static init(loadOnStartUp: boolean = true, options: ConfigOptions = {}): ModuleWithProviders<ConfigModule> {
         return {
             ngModule: ConfigModule,
             providers: [
@@ -40,13 +39,14 @@ export class ConfigModule {
                     provide: CONFIG_OPTIONS,
                     useValue: options
                 },
-                {
-                    provide: APP_INITIALIZER,
-                    useFactory: configAppInitializerFactory,
-                    deps: [ConfigService],
-                    multi: true
-                },
-                ConfigService
+                loadOnStartUp
+                    ? {
+                          provide: APP_INITIALIZER,
+                          useFactory: configAppInitializerFactory,
+                          deps: [ConfigService],
+                          multi: true
+                      }
+                    : []
             ]
         };
     }
