@@ -119,26 +119,34 @@ export class ConfigService {
         return this.getConfigValue(key, this.loadedConfig);
     }
 
-    map<T>(optionsClass: new () => T): T {
+    mapType<T>(optionsClass: new () => T): T {
         const optionsObj = this.injector.get<T>(optionsClass, new optionsClass());
-        const normalizedKey = this.getNormalizedKey(optionsClass.name);
-        const cachedOptions = this.optionsRecord.get(normalizedKey) as T;
+        const key = this.getKeyFromClassName(optionsClass.name);
+        this.mapObject(key, optionsObj);
+
+        return optionsObj;
+    }
+
+    mapObject<T>(key: string, optionsObj: T): T {
+        const cachedOptions = this.optionsRecord.get(key) as T;
+
         if (cachedOptions != null) {
             if (cachedOptions === optionsObj) {
                 return cachedOptions;
             }
 
-            this.optionsRecord.delete(normalizedKey);
+            this.optionsRecord.delete(key);
         }
 
-        const configValue = this.getValue(normalizedKey);
+        const configValue = this.getValue(key);
 
         if (configValue == null || Array.isArray(configValue) || typeof configValue !== 'object') {
             return optionsObj;
         }
 
         mapOptionValues(optionsObj as never, configValue);
-        this.optionsRecord.set(normalizedKey, optionsObj);
+
+        this.optionsRecord.set(key, optionsObj);
 
         return optionsObj;
     }
@@ -153,7 +161,7 @@ export class ConfigService {
         return result;
     }
 
-    private getNormalizedKey(className: string): string {
+    private getKeyFromClassName(className: string): string {
         let normalizedKey = className;
         if (normalizedKey.length > this.optionsSuffix.length && normalizedKey.endsWith(this.optionsSuffix)) {
             normalizedKey = normalizedKey.substr(0, normalizedKey.length - this.optionsSuffix.length);
