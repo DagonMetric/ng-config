@@ -260,6 +260,15 @@ describe('ConfigService', () => {
                 done();
             });
         });
+
+        it('should return cached activated value when calling multiple times', (done: DoneFn) => {
+            configService.ensureInitialized().subscribe(() => {
+                configService.ensureInitialized().subscribe((activated) => {
+                    void expect(activated).toBe(true);
+                    done();
+                });
+            });
+        });
     });
 
     describe('reload', () => {
