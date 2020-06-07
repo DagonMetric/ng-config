@@ -8,8 +8,8 @@
 
 import { EventEmitter, Inject, Injectable, Injector, Optional } from '@angular/core';
 
-import { Observable, forkJoin } from 'rxjs';
-import { map, share, take, tap } from 'rxjs/operators';
+import { Observable, Subscription, forkJoin, of } from 'rxjs';
+import { map, mapTo, share, take, tap } from 'rxjs/operators';
 
 import { CONFIG_PROVIDER, ConfigProvider } from './config-provider';
 import { CONFIG_OPTIONS, ConfigOptions } from './config-options';
@@ -24,12 +24,12 @@ export class ConfigService {
 
     private readonly optionsSuffix: string;
     private readonly options: ConfigOptions;
-    private readonly fetchRequests: { [key: string]: Observable<ConfigSection> } = {};
 
     private loading = false;
-    private completed = false;
+    private activated = false;
 
-    private currentConfig$ = new Observable<ConfigSection>();
+    private currentLoad = new Observable<ConfigSection>();
+    private currentLoadSubscription?: Subscription | null;
     private loadedConfig: ConfigSection = {};
     private optionsRecord = new Map<string, unknown>();
 
@@ -48,71 +48,29 @@ export class ConfigService {
         this.options = options || {};
         this.optionsSuffix = this.options.optionsSuffix || 'Options';
         this.valueChanges = new EventEmitter<ConfigSection>();
+
+        this.currentLoad = this.initLoad();
+        this.subscribeCurrentLoad(false);
     }
 
-    load(reload?: boolean): Observable<ConfigSection> {
-        if (this.completed && !reload) {
-            this.log('Configuration already loaded.');
-
-            return this.currentConfig$;
+    ensureInitialized(): Observable<boolean> {
+        if (this.activated) {
+            return of(this.activated);
         }
 
-        if (!this.loading) {
-            this.log('Cconfiguration loading started.');
-
-            this.loading = true;
-            this.completed = false;
-        }
-
-        this.currentConfig$ = forkJoin(
-            this.providers.map((configProvider) => {
-                const providerName = configProvider.name;
-
-                if (reload || !this.fetchRequests[providerName]) {
-                    const loadObs = configProvider.load().pipe(
-                        tap((config) => {
-                            this.log(providerName, config);
-                        }),
-                        share()
-                    );
-
-                    this.fetchRequests[providerName] = loadObs.pipe(take(1), share());
-                }
-
-                return this.fetchRequests[providerName];
-            })
-        ).pipe(
-            map((configs) => {
-                let mergedConfig: ConfigSection = {};
-
-                configs.forEach((config) => {
-                    mergedConfig = { ...mergedConfig, ...config };
-                });
-
-                return mergedConfig;
-            })
+        return this.currentLoad.pipe(
+            tap((config) => {
+                this.activateConfig(config, false);
+            }),
+            map(() => this.activated)
         );
+    }
 
-        this.currentConfig$.subscribe(
-            (config) => {
-                this.loading = false;
+    reload(): Observable<void> {
+        this.currentLoad = this.initLoad();
+        this.subscribeCurrentLoad(true);
 
-                if (!equalDeep(config, this.loadedConfig)) {
-                    this.optionsRecord.clear();
-                    this.loadedConfig = config;
-                    (this.valueChanges as EventEmitter<ConfigSection>).emit(config);
-                }
-
-                this.completed = true;
-                this.log('Configuration loading completed.');
-            },
-            () => {
-                this.loading = false;
-                this.completed = false;
-            }
-        );
-
-        return this.currentConfig$;
+        return this.currentLoad.pipe(mapTo(void 0));
     }
 
     getValue(key: string): ConfigValue {
@@ -149,6 +107,76 @@ export class ConfigService {
         this.optionsRecord.set(key, optionsObj);
 
         return optionsObj;
+    }
+
+    private initLoad(): Observable<ConfigSection> {
+        if (this.currentLoadSubscription) {
+            this.currentLoadSubscription.unsubscribe();
+            this.currentLoadSubscription = null;
+        }
+
+        if (!this.loading) {
+            this.log('Cconfiguration loading started.');
+
+            this.loading = true;
+        }
+
+        return forkJoin(
+            this.providers.map((configProvider) => {
+                const providerName = configProvider.name;
+
+                const loadObs = configProvider.load().pipe(
+                    tap((config) => {
+                        this.log(providerName, config);
+                    }),
+                    share()
+                );
+
+                return loadObs.pipe(take(1), share());
+            })
+        ).pipe(
+            map((configs) => {
+                let mergedConfig: ConfigSection = {};
+
+                configs.forEach((config) => {
+                    mergedConfig = { ...mergedConfig, ...config };
+                });
+
+                return mergedConfig;
+            })
+        );
+    }
+
+    private subscribeCurrentLoad(reActivate: boolean): void {
+        this.currentLoadSubscription = this.currentLoad.subscribe(
+            (config) => {
+                this.activateConfig(config, reActivate);
+            },
+            () => {
+                this.loading = false;
+            }
+        );
+    }
+
+    private activateConfig(config: ConfigSection, reActivate: boolean): void {
+        this.loading = false;
+
+        if (this.activated && !reActivate) {
+            return;
+        }
+
+        if (!equalDeep(config, this.loadedConfig)) {
+            this.optionsRecord.clear();
+            this.loadedConfig = config;
+
+            this.activated = true;
+            this.log('Configuration loading completed.');
+
+            (this.valueChanges as EventEmitter<ConfigSection>).emit(config);
+        } else {
+            this.activated = true;
+            this.log('Configuration loading completed.');
+        }
     }
 
     private getConfigValue(key: string, config: ConfigSection): ConfigValue {
