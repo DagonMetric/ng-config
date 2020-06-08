@@ -74,7 +74,7 @@ export class AppComponent {
     console.log('appOptions: ', JSON.stringify(appOptions));
 
     // Configuration value change detection
-    this.configService.valueChanges.subscribe(()=> {
+    this.configService.valueChanges.subscribe(() => {
       const latestValue = this.configService.getValue('key1'));
       console.log('latest value: ', latestValue);
 
@@ -84,6 +84,8 @@ export class AppComponent {
   }
 }
 ```
+
+See [demo-app](https://github.com/DagonMetric/ng-config/tree/master/samples/demo-app) for example source code.
 
 ## Documentation
 
