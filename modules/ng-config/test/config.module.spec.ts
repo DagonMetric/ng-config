@@ -46,7 +46,7 @@ describe('ConfigModule', () => {
     describe('init(loadOnStartUp: false)', () => {
         it("should return 'null' when calling 'ConfigService.getValue' with 'DelayConfigProvider'", () => {
             TestBed.configureTestingModule({
-                imports: [ConfigModule.init(false)],
+                imports: [ConfigModule.configure(false)],
                 providers: [
                     {
                         provide: CONFIG_PROVIDER,
@@ -63,7 +63,7 @@ describe('ConfigModule', () => {
 
         it("should return value when calling 'ConfigService.getValue' with 'NonDelayConfigProvider'", () => {
             TestBed.configureTestingModule({
-                imports: [ConfigModule.init(false)],
+                imports: [ConfigModule.configure(false)],
                 providers: [
                     {
                         provide: CONFIG_PROVIDER,
@@ -82,7 +82,7 @@ describe('ConfigModule', () => {
     describe('init(loadOnStartUp: true)', () => {
         beforeEach(async () => {
             TestBed.configureTestingModule({
-                imports: [ConfigModule.init()],
+                imports: [ConfigModule.configure()],
                 providers: [
                     {
                         provide: CONFIG_PROVIDER,

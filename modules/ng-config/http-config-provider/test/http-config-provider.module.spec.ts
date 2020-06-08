@@ -14,7 +14,7 @@ describe('HttpConfigProviderModule', () => {
             TestBed.configureTestingModule({
                 imports: [
                     HttpClientTestingModule,
-                    HttpConfigProviderModule.init({
+                    HttpConfigProviderModule.configure({
                         endpoint: '/testsettings.json'
                     })
                 ]
@@ -32,7 +32,7 @@ describe('HttpConfigProviderModule', () => {
             TestBed.configureTestingModule({
                 imports: [
                     HttpClientTestingModule,
-                    HttpConfigProviderModule.init({
+                    HttpConfigProviderModule.configure({
                         endpoint: ENDPOINT_URL
                     })
                 ],

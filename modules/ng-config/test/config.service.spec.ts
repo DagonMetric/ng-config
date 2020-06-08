@@ -5,7 +5,15 @@ import { TestBed } from '@angular/core/testing';
 import { Observable, of, throwError } from 'rxjs';
 import { delay } from 'rxjs/operators';
 
-import { CONFIG_OPTIONS, CONFIG_PROVIDER, ConfigOptions, ConfigProvider, ConfigSection, ConfigService } from '../src';
+import {
+    CONFIG_OPTIONS,
+    CONFIG_PROVIDER,
+    ConfigOptions,
+    ConfigProvider,
+    ConfigSection,
+    ConfigService,
+    NG_CONFIG_LOGGER
+} from '../src';
 
 const dateObj = new Date();
 
@@ -199,6 +207,21 @@ export class TestConfigProvider implements ConfigProvider {
     }
 }
 
+@Injectable({
+    providedIn: 'root'
+})
+export class CustomConfigLogger {
+    messages: string[] = [];
+
+    debug(message: string, data: unknown): void {
+        if (data) {
+            this.messages.push(`${message}, data: ${JSON.stringify(data)}`);
+        } else {
+            this.messages.push(message);
+        }
+    }
+}
+
 describe('ConfigService', () => {
     describe('log', () => {
         let configService: ConfigService;
@@ -215,13 +238,12 @@ describe('ConfigService', () => {
                     {
                         provide: CONFIG_OPTIONS,
                         useValue: {
-                            debug: true,
-                            logger: {
-                                debug: (message) => {
-                                    debugMessages.push(message);
-                                }
-                            }
+                            debug: true
                         } as ConfigOptions
+                    },
+                    {
+                        provide: NG_CONFIG_LOGGER,
+                        useExisting: CustomConfigLogger
                     }
                 ]
             });
