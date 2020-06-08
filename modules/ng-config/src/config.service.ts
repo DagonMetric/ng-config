@@ -17,6 +17,9 @@ import { ConfigSection, ConfigValue } from './config-value';
 import { Logger, NG_CONFIG_LOGGER } from './logger';
 import { equalDeep, mapOptionValues } from './util';
 
+/**
+ * The core configuration service.
+ */
 @Injectable({
     providedIn: 'root'
 })
