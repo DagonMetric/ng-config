@@ -19,7 +19,7 @@ export function configAppInitializerFactory(configService: ConfigService): () =>
 }
 
 /**
- * The `NGMODULE` for providing `ConfigService`. Call `init` method to provide options for `ConfigService`.
+ * The `NGMODULE` for providing `ConfigService`. Call `configure` method to provide options for `ConfigService`.
  */
 @NgModule({
     providers: [ConfigService]
@@ -30,7 +30,7 @@ export class ConfigModule {
      * @param loadOnStartUp If `true` configuration values are loaded at app starts. Default is `true`.
      * @param options Option object for `ConfigService`.
      */
-    static init(loadOnStartUp: boolean = true, options: ConfigOptions = {}): ModuleWithProviders<ConfigModule> {
+    static configure(loadOnStartUp: boolean = true, options: ConfigOptions = {}): ModuleWithProviders<ConfigModule> {
         return {
             ngModule: ConfigModule,
             providers: [
