@@ -225,7 +225,7 @@ export class CustomConfigLogger {
 describe('ConfigService', () => {
     describe('log', () => {
         let configService: ConfigService;
-        const debugMessages: string[] = [];
+        let logger: CustomConfigLogger;
 
         beforeEach(() => {
             TestBed.configureTestingModule({
@@ -249,11 +249,12 @@ describe('ConfigService', () => {
             });
 
             configService = TestBed.inject<ConfigService>(ConfigService);
+            logger = TestBed.inject<CustomConfigLogger>(CustomConfigLogger);
         });
 
         it(`should output debug message when debug is 'true'`, (done: DoneFn) => {
             configService.ensureInitialized().subscribe(() => {
-                void expect(debugMessages.length > 0).toBeTruthy();
+                void expect(logger.messages.length > 0).toBeTruthy();
                 done();
             });
         });
