@@ -85,7 +85,7 @@ export class AppComponent {
 }
 ```
 
-See [demo-app](https://github.com/DagonMetric/ng-config/tree/master/samples/demo-app) for example source code.
+See [samples/demo-app](https://github.com/DagonMetric/ng-config/tree/master/samples/demo-app) source code.
 
 ## Documentation
 
