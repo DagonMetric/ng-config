@@ -1,0 +1,25 @@
+<header>
+    <h1>NG-CONFIG Demo</h1>
+</header>
+<main>
+    <section>
+        <h2>Using mapTypes()</h2>
+        <code>
+            configService.mapType(AppOptions)
+        </code>
+        <p>
+            <code>// Output:</code>
+        </p>
+        <p>
+            <code>{{appOptions | json}}</code>
+        </p>
+    </section>
+    <div>
+        <button type="button" (click)="reload()">Reload</button> <span *ngIf="loading">Loading...</span>
+    </div>
+    <hr>
+    <h2>Messages</h2>
+    <p *ngFor="let msg of messages">
+        {{msg}}
+    </p>
+</main>
