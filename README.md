@@ -8,16 +8,6 @@
 
 The `ng-config` is a configuration and options service for Angular applications with flexible api and extendable config providers.
 
-## Features
-
-* Flexible strongly typed options mapping with options classes *(e.g. `const options = config.map<IdentityOptions>`)*
-* Extendable `ConfigProvider` (see built-in [HttpConfigProvider](https://github.com/DagonMetric/ng-config/blob/master/modules/ng-config/http-config-provider/src/http-config-provider.ts) for implementation demo)
-* Multiple configuration providers / loaders are supported
-* Configuration value change detection with `valueChanges` observable
-* Load configuration when Angular app starts with `APP_INITIALIZER` factory
-* Latest versions of Angular are supported
-* Compatible with Angular Universal (Server Side Rendering - SSR)
-
 ## Get Started
 
 ### Installation
@@ -44,11 +34,12 @@ import { HttpConfigProviderModule } from '@dagonmetric/ng-config/http-config-pro
   imports: [
     // Other module imports
 
-    // ng-config module
-    ConfigModule.init(),
-    HttpConfigProviderModule.init({
-        endpoint: '/appsettings.json'
-    })
+    // ng-config modules
+    ConfigModule.configure(),
+    HttpConfigProviderModule.configure({
+        endpoint: '/api/v1/configuration'
+    }),
+    // And additional config provider imports...
   ]
 })
 export class AppModule { }
@@ -61,9 +52,11 @@ import { Component } from '@angular/core';
 
 import { ConfigService } from '@dagonmetric/ng-config';
 
-export class IdentityOptions {
-  popupRedirectUri = ';
-  automaticSilentRenew = true;
+export class AppOptions {
+  name = '';
+  lang = '';
+  logEnabled = false;
+  logLevel = 0;
 }
 
 @Component({
@@ -74,16 +67,19 @@ export class AppComponent {
   constructor(private readonly configService: ConfigService) {
     // Get with key
     const configValue = this.configService.getValue('key1'));
-    console.log('configValue: ', configValue);
+    console.log('value: ', configValue);
 
     // Get with options class
-    const identityOptions = this.configService.map(IdentityOptions));
-    console.log('identityOptions: ', identityOptions);
+    const appOptions = this.configService.mapType(AppOptions));
+    console.log('appOptions: ', JSON.stringify(appOptions));
 
-    // Change detection
+    // Configuration value change detection
     this.configService.valueChanges.subscribe(()=> {
-      const lastestOptions = this.configService.map(IdentityOptions));
-      console.log('lastestOptions: ', lastestOptions);
+      const latestValue = this.configService.getValue('key1'));
+      console.log('latest value: ', latestValue);
+
+      const lastestOptions = this.configService.mapType(AppOptions));
+      console.log('lastest appOptions: ', lastestOptions);
     });
   }
 }
@@ -93,17 +89,13 @@ export class AppComponent {
 
 * [ng-config wiki](https://github.com/DagonMetric/ng-config/wiki)
 
-## Sub-modules
-
-* [http-config-provider](https://github.com/DagonMetric/ng-config/tree/master/modules/ng-config/http-config-provider) - Implements an HTTP client API for [ConfigProvider](https://github.com/DagonMetric/ng-config/blob/master/modules/ng-config/src/config-provider.ts) that relies on the Angular `HttpClient`
-
 ## Integrations
 
-* [ng-config-firebase-remote-config](https://github.com/DagonMetric/ng-config-firebase-remote-config) - Firebase Remote Config implementation for `ConfigProvider`
+* [ng-config-firebase-remote-config](https://github.com/DagonMetric/ng-config-firebase-remote-config) - Firebase Remote Config implementation for [ConfigProvider](https://github.com/DagonMetric/ng-config/blob/master/modules/ng-config/src/config-provider.ts)
 
 ## Feedback and Contributing
 
-Check out the [Contributing](https://github.com/DagonMetric/ng-config/blob/master/CONTRIBUTING.md) page to see the best places to log issues and start discussions.
+Check out the [Contributing](https://github.com/DagonMetric/ng-config/blob/master/CONTRIBUTING.md) page.
 
 ## License
 
