@@ -30,7 +30,7 @@ export class HttpConfigProviderModule {
      * Call this method to provide options for configuring the `HttpConfigProvider`.
      * @param options An option object for `HttpConfigProvider`.
      */
-    static init(options: HttpConfigProviderOptions): ModuleWithProviders<HttpConfigProviderModule> {
+    static configure(options: HttpConfigProviderOptions): ModuleWithProviders<HttpConfigProviderModule> {
         return {
             ngModule: HttpConfigProviderModule,
             providers: [
