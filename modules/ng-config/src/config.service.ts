@@ -14,6 +14,7 @@ import { map, mapTo, share, take, tap } from 'rxjs/operators';
 import { CONFIG_PROVIDER, ConfigProvider } from './config-provider';
 import { CONFIG_OPTIONS, ConfigOptions } from './config-options';
 import { ConfigSection, ConfigValue } from './config-value';
+import { Logger, NG_CONFIG_LOGGER } from './logger';
 import { equalDeep, mapOptionValues } from './util';
 
 @Injectable({
@@ -38,16 +39,34 @@ export class ConfigService {
     }
 
     private readonly sortedConfigProviders: ConfigProvider[];
+    private readonly logger: Logger;
 
     constructor(
         @Inject(CONFIG_PROVIDER) configProviders: ConfigProvider[],
         private readonly injector: Injector,
-        @Optional() @Inject(CONFIG_OPTIONS) options?: ConfigOptions
+        @Optional() @Inject(CONFIG_OPTIONS) options?: ConfigOptions,
+        @Optional() @Inject(NG_CONFIG_LOGGER) logger?: Logger
     ) {
         this.sortedConfigProviders = configProviders.reverse();
         this.options = options || {};
         this.optionsSuffix = this.options.optionsSuffix || 'Options';
         this.valueChanges = new EventEmitter<ConfigSection>();
+
+        if (logger) {
+            this.logger = logger;
+        } else {
+            this.logger = {
+                debug: (message: string, data: { [key: string]: unknown }) => {
+                    if (data) {
+                        // eslint-disable-next-line no-console
+                        console.log(`${message}, data: `, data);
+                    } else {
+                        // eslint-disable-next-line no-console
+                        console.log(message);
+                    }
+                }
+            };
+        }
 
         this.currentLoad = this.initLoad();
         this.subscribeCurrentLoad(false);
@@ -200,25 +219,11 @@ export class ConfigService {
         return normalizedKey;
     }
 
-    private log(msg: string, data?: unknown): void {
+    private log(msg: string, data?: { [key: string]: unknown }): void {
         if (!this.options.debug) {
             return;
         }
 
-        if (data) {
-            if (this.options.logger) {
-                this.options.logger.debug(`[ConfigService] ${msg}, data: `, data);
-            } else {
-                // eslint-disable-next-line no-console
-                console.log(`[ConfigService] ${msg}, data: `, data);
-            }
-        } else {
-            if (this.options.logger) {
-                this.options.logger.debug(`[ConfigService] ${msg}`);
-            } else {
-                // eslint-disable-next-line no-console
-                console.log(`[ConfigService] ${msg}`);
-            }
-        }
+        this.logger.debug(`[ConfigService] ${msg}`, data);
     }
 }
