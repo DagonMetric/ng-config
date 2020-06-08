@@ -16,7 +16,10 @@
     "ngb": "ngb",
     "lint": "eslint -c .eslintrc.json --ext .js,.ts .",
     "build": "ngb build --env.prod",
-    "test": "ng test"
+    "test": "ng test",
+    "firebase-functions:build": "tsc --project samples/firebase-functions/tsconfig-build.json",
+    "firebase-functions:serve": "npm run firebase-functions:build && firebase emulators:start --only functions",
+    "firebase-functions:deploy": "firebase deploy --only functions"
   },
   "dependencies": {
     "@angular/common": "^9.1.9",
