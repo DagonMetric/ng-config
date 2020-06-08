@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ViewEncapsulation } from '@angular/core';
 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -9,12 +9,18 @@ import { AppOptions } from './app-options';
 
 @Component({
     selector: 'app-root',
-    templateUrl: './app.component.html'
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnDestroy {
     loading?: boolean = false;
     appOptions?: AppOptions;
-    messages: string[] = [];
+    childOptions = {
+        key1: '',
+        key2: true
+    };
+    key1 = '';
 
     private readonly destroySubject = new Subject();
 
@@ -43,5 +49,7 @@ export class AppComponent implements OnDestroy {
 
     private populateConfig(): void {
         this.appOptions = this.configService.mapType(AppOptions);
+        this.childOptions = this.configService.mapObject('app:child', this.childOptions);
+        this.key1 = this.configService.getValue('key1') as string;
     }
 }
