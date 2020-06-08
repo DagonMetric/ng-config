@@ -21,14 +21,6 @@ export interface ConfigOptions {
      * Set true to log debug information.
      */
     debug?: boolean;
-
-    /**
-     * Custom logger for debug information.
-     */
-    logger?: {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        debug(message: string, optionalParam?: any): void;
-    };
 }
 
 export const CONFIG_OPTIONS = new InjectionToken<ConfigOptions>('ConfigOptions');
