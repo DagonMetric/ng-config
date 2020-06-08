@@ -1,12 +1,15 @@
 ## Features
 
-* Add `mapObject()` function to map config values with options object
-* Add `ensureInitialized()` function to ensure fetched data to be activated
+* Add `mapObject()` function in `ConfigService` to map config values with options object
+* Add `ensureInitialized()` function in `ConfigService` to ensure fetched data to be activated
 
 ## Changes
 
-* Rename `load(reload = true)` to `relead()`
-* Rename `map()` to `mapType()`
+* Rename `init({...})` to `configure(loadOnStartUp: boolean = true, options: ConfigOptions)` in `ConfigModule`
+* Rename `init({...})` to `configure({...})` in `HttpConfigProviderModule`
+* Rename `load(reload = true)` to `reload()` in `ConfigService`
+* Rename `map()` to `mapType()` in `ConfigService`
+* Change custom logger options to InjectionToken
 * Remove `ConfigPipe`
 * Other bug fixes and performance improvements
 * Update package dependencies
