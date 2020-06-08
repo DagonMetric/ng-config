@@ -15,3 +15,4 @@ export * from './config-provider';
 export * from './config.module';
 export * from './config.service';
 export * from './config-value';
+export * from './logger';
