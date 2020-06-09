@@ -19,7 +19,8 @@
     "test": "ng test",
     "demo-firebase-functions:build": "tsc --project samples/firebase-functions/tsconfig-build.json",
     "demo-firebase-functions:serve": "npm run demo-firebase-functions:build && firebase emulators:start --only functions",
-    "demo-firebase-functions:deploy": "firebase deploy --only functions"
+    "demo-firebase-functions:deploy": "firebase deploy --only functions",
+    "demo-app:serve": "ng serve"
   },
   "dependencies": {
     "@angular/common": "^9.1.9",
