@@ -8,13 +8,15 @@
     "build": "ng build"
   },
   "dependencies": {
+    "@angular/animations": "9.1.9",
     "@angular/common": "^9.1.9",
-    "@angular/compiler": "^9.1.9",
+    "@angular/compiler": "9.1.9",
     "@angular/core": "^9.1.9",
+    "@angular/forms": "^9.1.9",
     "@angular/platform-browser": "^9.1.9",
     "@angular/platform-browser-dynamic": "^9.1.9",
+    "@angular/router": "^9.1.9",
     "@dagonmetric/ng-config": "^4.0.0",
-    "core-js": "^2.6.9",
     "rxjs": "^6.5.5",
     "tslib": "^1.13.0",
     "zone.js": "^0.10.3"
@@ -25,6 +27,7 @@
     "@angular/compiler-cli": "^9.1.9",
     "@angular/language-service": "^9.1.9",
     "@types/node": "^14.0.11",
+    "ts-node": "~8.10.2",
     "typescript": "~3.8.3"
   }
 }
