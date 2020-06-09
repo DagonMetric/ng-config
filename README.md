@@ -3,7 +3,6 @@
 [![GitHub Actions Status](https://github.com/DagonMetric/ng-config/workflows/Main%20Workflow/badge.svg)](https://github.com/DagonMetric/ng-config/actions)
 [![Azure Pipelines Status](https://dev.azure.com/DagonMetric/ng-config/_apis/build/status/DagonMetric.ng-config?branchName=master)](https://dev.azure.com/DagonMetric/ng-config/_build?definitionId=9)
 [![codecov](https://codecov.io/gh/DagonMetric/ng-config/branch/master/graph/badge.svg)](https://codecov.io/gh/DagonMetric/ng-config)
-[![npm version](https://img.shields.io/npm/v/@dagonmetric/ng-config.svg)](https://www.npmjs.com/package/@dagonmetric/ng-config)
 [![Gitter](https://badges.gitter.im/DagonMetric/general.svg)](https://gitter.im/DagonMetric/general?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 The `ng-config` is a configuration and options service for Angular applications with flexible api and extendable config providers.
@@ -24,7 +23,9 @@ or yarn
 yarn add @dagonmetric/ng-config
 ```
 
-### Module Setup
+Latest npm package is [![npm version](https://img.shields.io/npm/v/@dagonmetric/ng-config.svg)](https://www.npmjs.com/package/@dagonmetric/ng-config)
+
+### Module Setup (app.module.ts)
 
 ```typescript
 import { ConfigModule } from '@dagonmetric/ng-config';
@@ -35,7 +36,10 @@ import { HttpConfigProviderModule } from '@dagonmetric/ng-config/http-config-pro
     // Other module imports
 
     // ng-config modules
-    ConfigModule.configure(),
+    ConfigModule.configure(true, {
+      debug: true,
+      optionsSuffix: 'Options'
+    }),
     HttpConfigProviderModule.configure({
         endpoint: '/api/v1/configuration'
     }),
@@ -44,6 +48,8 @@ import { HttpConfigProviderModule } from '@dagonmetric/ng-config/http-config-pro
 })
 export class AppModule { }
 ```
+
+Edit [app.module.ts in stackblitz](https://stackblitz.com/github/dagonmetric/ng-config/tree/master/samples/demo-app?file=src%2Fapp%2Fapp.module.ts)
 
 ### Usage
 
@@ -85,11 +91,12 @@ export class AppComponent {
 }
 ```
 
-See [samples/demo-app](https://github.com/DagonMetric/ng-config/tree/master/samples/demo-app) source code.
+Edit [app.component.ts in stackblitz](https://stackblitz.com/github/dagonmetric/ng-config/tree/master/samples/demo-app?file=src%2Fapp%2Fapp.component.ts)
 
-## Documentation
+## Samples & Documentations
 
-* [ng-config wiki](https://github.com/DagonMetric/ng-config/wiki)
+* Demo app [view source](https://github.com/DagonMetric/ng-config/tree/master/samples/demo-app) / [edit in stackblitz](https://stackblitz.com/github/dagonmetric/ng-config/tree/master/samples/demo-app)
+* Documentation wiki [ng-config wiki](https://github.com/DagonMetric/ng-config/wiki)
 
 ## Integrations
 
