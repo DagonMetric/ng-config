@@ -100,7 +100,7 @@ Edit [app.component.ts in stackblitz](https://stackblitz.com/github/dagonmetric/
 
 ## Integrations
 
-* [ng-config-firebase-remote-config](https://github.com/DagonMetric/ng-config-firebase-remote-config) - Firebase Remote Config implementation for [ConfigProvider](https://github.com/DagonMetric/ng-config/blob/master/modules/ng-config/src/config-provider.ts)
+* [ng-config-firebase-remote-config](https://github.com/DagonMetric/ng-config-firebase-remote-config) - Implements [ConfigProvider](https://github.com/DagonMetric/ng-config/blob/master/modules/ng-config/src/config-provider.ts) for [Firebase Remote Config](https://firebase.google.com/docs/remote-config/use-config-web)
 
 ## Feedback and Contributing
 
