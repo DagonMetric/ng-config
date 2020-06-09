@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 
+/**
+ * Optional custom logger for ng-config's debug information.
+ */
 @Injectable({
     providedIn: 'root'
 })

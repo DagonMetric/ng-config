@@ -1,4 +1,4 @@
-<header>
+<header class="toolbar">
     <h1>NG-CONFIG Demo</h1>
 </header>
 <main>
@@ -6,11 +6,11 @@
         <button type="button" (click)="reload()">RELOAD</button> <span *ngIf="loading">Loading...</span>
     </div>
     <section>
-        <p class="title">
+        <div class="title">
             <code>
                 configService.mapType(AppOptions)
             </code>
-        </p>
+        </div>
         <p>
             <code>// Output:</code>
         </p>
@@ -20,11 +20,11 @@
     </section>
 
     <section>
-        <p class="title">
+        <div class="title">
             <code>
                 configService.mapObject('app:child', childOptions)
             </code>
-        </p>
+        </div>
         <p>
             <code>// Output:</code>
         </p>
@@ -34,11 +34,11 @@
     </section>
 
     <section>
-        <p class="title">
+        <div class="title">
             <code>
                 configService.getValue('key1')
             </code>
-        </p>
+        </div>
         <p>
             <code>// Output:</code>
         </p>

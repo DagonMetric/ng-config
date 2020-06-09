@@ -25,10 +25,11 @@ export class AppComponent implements OnDestroy {
     private readonly destroySubject = new Subject();
 
     constructor(private readonly configService: ConfigService) {
-        this.populateConfig();
+        this.populateConfigValues();
 
+        // The event which will be triggered whenever configuration value changes
         this.configService.valueChanges.pipe(takeUntil(this.destroySubject)).subscribe(() => {
-            this.populateConfig();
+            this.populateConfigValues();
         });
     }
 
@@ -40,16 +41,25 @@ export class AppComponent implements OnDestroy {
     reload(): void {
         this.loading = true;
 
-        this.configService.reload().subscribe(() => {
-            {
-                this.loading = false;
-            }
-        });
+        // Call reload() to get fresh configuration values from providers
+        this.configService
+            .reload()
+            .pipe(takeUntil(this.destroySubject))
+            .subscribe(() => {
+                {
+                    this.loading = false;
+                }
+            });
     }
 
-    private populateConfig(): void {
-        this.appOptions = this.configService.mapType(AppOptions);
-        this.childOptions = this.configService.mapObject('app:child', this.childOptions);
+    private populateConfigValues(): void {
+        // Get with string key
         this.key1 = this.configService.getValue('key1') as string;
+
+        // Map with options class
+        this.appOptions = this.configService.mapType(AppOptions);
+
+        // Map with options object
+        this.childOptions = this.configService.mapObject('app:child', this.childOptions);
     }
 }
