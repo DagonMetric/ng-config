@@ -18,12 +18,15 @@ import { Logger, NG_CONFIG_LOGGER } from './logger';
 import { equalDeep, mapOptionValues } from './util';
 
 /**
- * The core configuration service.
+ * The core service for loading and getting configuration value from configuration providers.
  */
 @Injectable({
     providedIn: 'root'
 })
 export class ConfigService {
+    /**
+     * The event emitter for configuration value change event.
+     */
     readonly valueChanges: Observable<ConfigSection>;
 
     private readonly optionsSuffix: string;
@@ -75,6 +78,9 @@ export class ConfigService {
         this.subscribeCurrentLoad(false);
     }
 
+    /**
+     * Call this method if set `loadOnStartUp` to 'false' in `ConfigModule` for ensuring configurations are fetched and activated.
+     */
     ensureInitialized(): Observable<boolean> {
         if (this.activated) {
             return of(this.activated);
@@ -88,6 +94,9 @@ export class ConfigService {
         );
     }
 
+    /**
+     * Call this method to reload fresh configuration values from config providers.
+     */
     reload(): Observable<void> {
         this.currentLoad = this.initLoad();
         this.subscribeCurrentLoad(true);
@@ -95,10 +104,18 @@ export class ConfigService {
         return this.currentLoad.pipe(mapTo(void 0));
     }
 
+    /**
+     * Call this method t get loaded config value with a given string key.
+     * @param key The string key.
+     */
     getValue(key: string): ConfigValue {
         return this.getConfigValue(key, this.loadedConfig);
     }
 
+    /**
+     * Call thi method to map loaded configuration values to the instance of options class type.
+     * @param optionsClass The options class type to be mapped.
+     */
     mapType<T>(optionsClass: new () => T): T {
         const optionsObj = this.injector.get<T>(optionsClass, new optionsClass());
         const key = this.getKeyFromClassName(optionsClass.name);
@@ -107,6 +124,11 @@ export class ConfigService {
         return optionsObj;
     }
 
+    /**
+     *  Call thi method to map loaded configuration values to the options object.
+     * @param key The string key.
+     * @param optionsObj The options object to be mapped with configuration values.
+     */
     mapObject<T>(key: string, optionsObj: T): T {
         const cachedOptions = this.optionsRecord.get(key) as T;
 
