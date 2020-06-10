@@ -25,7 +25,7 @@ import { equalDeep, mapOptionValues } from './util';
 })
 export class ConfigService {
     /**
-     * The event emitter for configuration value change event.
+     * Use this property to subscribe the configuration value changes event.
      */
     readonly valueChanges: Observable<ConfigSection>;
 
@@ -106,7 +106,7 @@ export class ConfigService {
 
     /**
      * Call this method t get loaded config value with a given string key.
-     * @param key The string key.
+     * @param key The string key for configuration.
      */
     getValue(key: string): ConfigValue {
         return this.getConfigValue(key, this.loadedConfig);
