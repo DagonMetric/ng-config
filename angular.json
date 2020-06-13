@@ -24,7 +24,7 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "modules/ng-config/test.ts",
-            "tsConfig": "modules/ng-config/tsconfig-test.json",
+            "tsConfig": "modules/ng-config/tsconfig.test.json",
             "karmaConfig": "modules/ng-config/karma.conf.js",
             "codeCoverageExclude": [
               "**/test.ts",
