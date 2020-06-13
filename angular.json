@@ -85,12 +85,14 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/demo-app",
-            "index": "samples/demo-app/src/index.html",
+            "index": "samples/demo-app/src/index`.html",
             "main": "samples/demo-app/src/main.ts",
             "polyfills": "samples/demo-app/src/polyfills.ts",
             "tsConfig": "tsconfig.demo-app.json",
             "aot": true,
-            "assets": [],
+            "assets": [
+              "samples/demo-app/src/favicon.ico"
+            ],
             "styles": [],
             "scripts": []
           }
@@ -99,6 +101,21 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "demo-app:build"
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "samples/demo-app-e2e/protractor.conf.js",
+            "devServerTarget": "demo-app:serve"
+          },
+          "configurations": {
+            "ci": {
+              "protractorConfig": "samples/demo-app-e2e/protractor-ci.conf.js"
+            },
+            "production": {
+              "devServerTarget": "demo-app:serve:production"
+            }
           }
         }
       }
