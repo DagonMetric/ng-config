@@ -28,7 +28,7 @@
 
     "paths": {
       "@dagonmetric/ng-config": [ "./modules/ng-config" ],
-      "@dagonmetric/ng-config/http-config-provider": [ "./modules/ng-config/http-config-provider" ]
+      "@dagonmetric/ng-config/http-config": [ "./modules/ng-config/http-config" ]
     }
   }
 }

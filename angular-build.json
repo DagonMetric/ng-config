@@ -20,10 +20,10 @@
     },
     {
       "extends": "ngb:lib-default",
-      "name": "ng-config-http-config-provider",
-      "root": "modules/ng-config/http-config-provider",
+      "name": "ng-config-http-config",
+      "root": "modules/ng-config/http-config",
       "outputPath": "dist/packages/ng-config",
-      "libraryName": "ngConfig.httpConfigProvider",
+      "libraryName": "ngConfig.httpConfig",
       "externals": {
         "@dagonmetric/ng-config": "ngConfig"
       },

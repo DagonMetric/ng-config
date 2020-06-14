@@ -55,15 +55,15 @@
         }
       }
     },
-    "ng-config-http-config-provider": {
-      "root": "modules/ng-config/http-config-provider",
-      "sourceRoot": "modules/ng-config/http-config-provider/src",
+    "ng-config-http-config": {
+      "root": "modules/ng-config/http-config",
+      "sourceRoot": "modules/ng-config/http-config/src",
       "projectType": "library",
       "architect": {
         "build": {
           "builder": "@dagonmetric/angular-build:lib",
           "options": {
-            "extends": "file:angular-build.json:lib:ng-config-http-config-provider",
+            "extends": "file:angular-build.json:lib:ng-config-http-config",
             "outputPath": "dist/packages/ng-config"
           },
           "configurations": {

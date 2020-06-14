@@ -29,7 +29,7 @@ Latest npm package is [![npm version](https://img.shields.io/npm/v/@dagonmetric/
 
 ```typescript
 import { ConfigModule } from '@dagonmetric/ng-config';
-import { HttpConfigProviderModule } from '@dagonmetric/ng-config/http-config-provider';
+import { HttpConfigProviderModule } from '@dagonmetric/ng-config/http-config';
 
 @NgModule({
   imports: [

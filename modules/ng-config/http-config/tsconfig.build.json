@@ -19,7 +19,7 @@
     "skipTemplateCodegen": true,
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true,
-    "flatModuleOutFile": "http-config-provider.js",
-    "flatModuleId": "@dagonmetric/ng-config/http-config-provider"
+    "flatModuleOutFile": "http-config.js",
+    "flatModuleId": "@dagonmetric/ng-config/http-config"
   }
 }

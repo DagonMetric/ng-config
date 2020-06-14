@@ -5,7 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 // ng-config
 import { ConfigModule, NG_CONFIG_LOGGER } from '@dagonmetric/ng-config';
-import { HttpConfigProviderModule } from '@dagonmetric/ng-config/http-config-provider';
+import { HttpConfigProviderModule } from '@dagonmetric/ng-config/http-config';
 
 // Custom logger for ng-config
 import { CustomConfigLogger } from './custom-config-logger';
