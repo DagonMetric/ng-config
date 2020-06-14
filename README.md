@@ -15,6 +15,8 @@ The `ng-config` is a configuration and options service for Angular applications 
 * **`reload()`** - reload the fresh configuration values from config providers
 * **`valueChanges`** - configuration value changes event
 * **`ConfigProvider`** - extendable config provider interface and multiple config providers are supported
+* **`ConfigModule.configure(true, {...})`** - load configuration automatically at app starts
+* Latest version of Angular and compatible with server side rendering (SSR / Angular Universal)
 
 ## Get Started
 
