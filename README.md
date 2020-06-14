@@ -79,7 +79,14 @@ export class AppComponent {
     const appOptions = this.configService.mapType(AppOptions));
     console.log('appOptions: ', JSON.stringify(appOptions));
 
+    // Call reload to get the fresh config values from providers
+    // this.configService.reload().subscribe(() => {
+    //   console.log('Reloaded');
+    // });
+
     // Configuration value change detection
+    // This will only trigger when reload() is called and
+    // any value changes
     this.configService.valueChanges.subscribe(() => {
       const latestValue = this.configService.getValue('key1'));
       console.log('latest value: ', latestValue);
@@ -100,7 +107,7 @@ Edit [app.component.ts in stackblitz](https://stackblitz.com/github/dagonmetric/
 
 ## Integrations
 
-* [ng-config-firebase-remote-config](https://github.com/DagonMetric/ng-config-firebase-remote-config) - Implements [ConfigProvider](https://github.com/DagonMetric/ng-config/blob/master/modules/ng-config/src/config-provider.ts) for [Firebase Remote Config](https://firebase.google.com/docs/remote-config/use-config-web)
+* [ng-config-firebase-remote-config](https://github.com/DagonMetric/ng-config-firebase-remote-config) - Implements [ConfigProvider](https://github.com/DagonMetric/ng-config/blob/master/modules/ng-config/src/config-provider.ts) for Firebase Remote Config
 
 ## Feedback and Contributing
 
