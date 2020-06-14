@@ -7,6 +7,15 @@
 
 The `ng-config` is a configuration and options service for Angular applications with flexible api and extendable config providers.
 
+## Features
+
+* **`mapType(MyOptions)`** - map configuration values with options class
+* **`mapObject('myKey', myOptions)`** - map configuration values with options object
+* **`getValue('myKey')`** - get the raw configuration section value
+* **`reload()`** - reload the fresh configuration values from config providers
+* **`valueChanges`** - configuration value changes event
+* **`ConfigProvider`** - extendable config provider interface and multiple config providers are supported
+
 ## Get Started
 
 ### Installation
