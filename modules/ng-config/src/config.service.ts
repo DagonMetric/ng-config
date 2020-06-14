@@ -106,7 +106,7 @@ export class ConfigService {
 
     /**
      * Use this method to get loaded configuration value with a given string key.
-     * @param key The string key for configuration.
+     * @param key The config key string.
      */
     getValue(key: string): ConfigValue {
         return this.getConfigValue(key, this.loadedConfig);
@@ -126,7 +126,7 @@ export class ConfigService {
 
     /**
      * Use this method to map loaded configuration values to the options object.
-     * @param key The string key.
+     * @param key The config key string.
      * @param optionsObj The options object to be mapped with configuration values.
      */
     mapObject<T>(key: string, optionsObj: T): T {
