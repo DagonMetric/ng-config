@@ -7,7 +7,7 @@
 
     "paths": {
       "@dagonmetric/ng-config": [ "../../../dist/packages/ng-config" ]
-    },
+    }
   },
   "files": [
     "public_api.ts"
