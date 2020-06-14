@@ -17,7 +17,7 @@
       "dom"
     ],
     "baseUrl": "./",
-    "outDir": "./dist/out-tsc"
+    "outDir": "./out-tsc"
   },
   "angularCompilerOptions": {
     "enableIvy": true,
