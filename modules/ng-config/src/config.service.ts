@@ -18,7 +18,7 @@ import { Logger, NG_CONFIG_LOGGER } from './logger';
 import { equalDeep, mapOptionValues } from './util';
 
 /**
- * The core service for loading and getting configuration value from configuration providers.
+ * The core service for loading and getting configuration value the from configuration providers.
  */
 @Injectable({
     providedIn: 'root'
@@ -79,7 +79,7 @@ export class ConfigService {
     }
 
     /**
-     * Call this method if set `loadOnStartUp` to 'false' in `ConfigModule` for ensuring configurations are fetched and activated.
+     * Call this method to ensure configurations are fetched and activated.
      */
     ensureInitialized(): Observable<boolean> {
         if (this.activated) {
@@ -105,7 +105,7 @@ export class ConfigService {
     }
 
     /**
-     * Call this method t get loaded config value with a given string key.
+     * Use this method to get loaded configuration value with a given string key.
      * @param key The string key for configuration.
      */
     getValue(key: string): ConfigValue {
@@ -113,7 +113,7 @@ export class ConfigService {
     }
 
     /**
-     * Call thi method to map loaded configuration values to the instance of options class type.
+     * Use this method to map loaded configuration values to the instance of options class type.
      * @param optionsClass The options class type to be mapped.
      */
     mapType<T>(optionsClass: new () => T): T {
@@ -125,7 +125,7 @@ export class ConfigService {
     }
 
     /**
-     *  Call thi method to map loaded configuration values to the options object.
+     * Use this method to map loaded configuration values to the options object.
      * @param key The string key.
      * @param optionsObj The options object to be mapped with configuration values.
      */
