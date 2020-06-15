@@ -14,14 +14,12 @@
   "scripts": {
     "ng": "ng",
     "ngb": "ngb",
+    "tsc": "tsc",
     "lint": "eslint -c .eslintrc.json --ext .js,.ts .",
     "build": "ngb build --env.prod && ng build --prod",
     "test": "ng test",
     "serve": "ng serve",
-    "e2e": "ng e2e",
-    "demo-firebase-functions:build": "tsc --project samples/firebase-functions/tsconfig.build.json",
-    "demo-firebase-functions:serve": "npm run demo-firebase-functions:build && firebase emulators:start --only functions",
-    "demo-firebase-functions:deploy": "firebase deploy --only functions"
+    "e2e": "ng e2e"
   },
   "dependencies": {
     "@angular/common": "^9.1.11",
