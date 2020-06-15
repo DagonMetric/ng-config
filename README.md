@@ -120,6 +120,11 @@ Live edit [app.component.ts in stackblitz](https://stackblitz.com/github/dagonme
 
 * [ng-config-firebase-remote-config](https://github.com/DagonMetric/ng-config-firebase-remote-config) - Implements [ConfigProvider](https://github.com/DagonMetric/ng-config/blob/master/modules/ng-config/src/config-provider.ts) for Firebase Remote Config
 
+## Related Projects
+
+* [ng-log](https://github.com/DagonMetric/ng-log) - Vendor-agnostic logging, analytics and telemetry service abstractions and some implementations for Angular applications
+* [ng-cache](https://github.com/DagonMetric/ng-cache) - Caching service for Angular applications
+
 ## Feedback and Contributing
 
 Check out the [Contributing](https://github.com/DagonMetric/ng-config/blob/master/CONTRIBUTING.md) page.
