@@ -48,8 +48,7 @@ import { HttpConfigProviderModule } from '@dagonmetric/ng-config/http-config';
 
     // ng-config modules
     ConfigModule.configure(true, {
-      debug: true,
-      optionsSuffix: 'Options'
+      debug: true
     }),
     HttpConfigProviderModule.configure({
         endpoint: '/api/v1/configuration'
