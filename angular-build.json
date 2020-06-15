@@ -1,7 +1,8 @@
 {
   "$schema": "./node_modules/@dagonmetric/angular-build/src/schemas/schema.json#",
-  "libs": [{
-    "extends": "ngb:lib-default",
+  "libs": [
+    {
+      "extends": "ngb:lib-default",
       "name": "ng-config",
       "root": "modules/ng-config",
       "outputPath": "dist/packages/ng-config",
@@ -34,7 +35,24 @@
           "packageJsonCopy": true
         }
       }
+    },
+    {
+      "name": "firebase-demo-functions",
+      "root": "samples/firebase-functions",
+      "outputPath": "dist/firebase-functions",
+      "tsTranspilations": [{
+        "tsConfig": "tsconfig.build.json"
+      }],
+      "bundles": false,
+      "skip": true,
+      "envOverrides": {
+        "prod": {
+          "skip": false,
+          "copy": [
+            "package.json"
+          ]
+        }
+      }
     }
-  ],
-  "apps": []
+  ]
 }
