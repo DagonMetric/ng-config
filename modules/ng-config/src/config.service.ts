@@ -29,7 +29,6 @@ export class ConfigService {
      */
     readonly valueChanges: Observable<ConfigSection>;
 
-    private readonly optionsSuffix: string;
     private readonly options: ConfigOptions;
 
     private loading = false;
@@ -55,7 +54,6 @@ export class ConfigService {
     ) {
         this.sortedConfigProviders = configProviders.reverse();
         this.options = options || {};
-        this.optionsSuffix = this.options.optionsSuffix || 'Options';
         this.valueChanges = new EventEmitter<ConfigSection>();
 
         if (logger) {
@@ -114,11 +112,11 @@ export class ConfigService {
 
     /**
      * Use this method to map loaded configuration values to the instance of options class type.
+     * @param key The config key string.
      * @param optionsClass The options class type to be mapped.
      */
-    mapType<T>(optionsClass: new () => T): T {
+    mapType<T>(key: string, optionsClass: new () => T): T {
         const optionsObj = this.injector.get<T>(optionsClass, new optionsClass());
-        const key = this.getKeyFromClassName(optionsClass.name);
         this.mapObject(key, optionsObj);
 
         return optionsObj;
@@ -231,17 +229,6 @@ export class ConfigService {
         }
 
         return result;
-    }
-
-    private getKeyFromClassName(className: string): string {
-        let normalizedKey = className;
-        if (normalizedKey.length > this.optionsSuffix.length && normalizedKey.endsWith(this.optionsSuffix)) {
-            normalizedKey = normalizedKey.substr(0, normalizedKey.length - this.optionsSuffix.length);
-        }
-
-        normalizedKey = normalizedKey[0].toLowerCase() + normalizedKey.substr(1);
-
-        return normalizedKey;
     }
 
     private log(msg: string, data?: { [key: string]: unknown }): void {

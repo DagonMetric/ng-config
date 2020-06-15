@@ -13,11 +13,6 @@ import { InjectionToken } from '@angular/core';
  */
 export interface ConfigOptions {
     /**
-     * Options suffix for options class. Default is 'Options'.
-     */
-    optionsSuffix?: string;
-
-    /**
      * Set true to log debug information.
      */
     debug?: boolean;

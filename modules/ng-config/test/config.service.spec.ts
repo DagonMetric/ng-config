@@ -453,15 +453,15 @@ describe('ConfigService', () => {
                     }
                 });
 
-                void expect(configService.mapType(TransientOptions)).toEqual(expectedOptions);
+                void expect(configService.mapType('transient', TransientOptions)).toEqual(expectedOptions);
                 done();
             });
         });
 
         it(`should return new instances with 'TransientOptions'`, (done: DoneFn) => {
             configService.ensureInitialized().subscribe(() => {
-                const options1 = configService.mapType(TransientOptions);
-                const options2 = configService.mapType(TransientOptions);
+                const options1 = configService.mapType('transient', TransientOptions);
+                const options2 = configService.mapType('transient', TransientOptions);
 
                 void expect(options1 !== options2).toBeTruthy();
                 done();
@@ -470,8 +470,8 @@ describe('ConfigService', () => {
 
         it(`should return same instance with 'RootOptions'`, (done: DoneFn) => {
             configService.ensureInitialized().subscribe(() => {
-                const options1 = configService.mapType(RootOptions);
-                const options2 = configService.mapType(RootOptions);
+                const options1 = configService.mapType('root', RootOptions);
+                const options2 = configService.mapType('root', RootOptions);
 
                 void expect(options1 === options2).toBeTruthy();
                 done();
@@ -481,7 +481,7 @@ describe('ConfigService', () => {
         it(`should return default instance when no config section found`, (done: DoneFn) => {
             configService.ensureInitialized().subscribe(() => {
                 const expectedOptions = new NotMapped();
-                void expect(configService.mapType(NotMapped)).toEqual(expectedOptions);
+                void expect(configService.mapType('notMapped', NotMapped)).toEqual(expectedOptions);
                 done();
             });
         });

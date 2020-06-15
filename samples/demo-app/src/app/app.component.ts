@@ -57,7 +57,7 @@ export class AppComponent implements OnDestroy {
         this.key1 = this.configService.getValue('key1') as string;
 
         // Map with options class
-        this.appOptions = this.configService.mapType(AppOptions);
+        this.appOptions = this.configService.mapType('app', AppOptions);
 
         // Map with options object
         this.childOptions = this.configService.mapObject('app:child', this.childOptions);
