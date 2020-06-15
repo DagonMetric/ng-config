@@ -39,7 +39,7 @@
     {
       "name": "firebase-demo-functions",
       "root": "samples/firebase-functions",
-      "outputPath": "dist/firebase-functions",
+      "outputPath": "dist/functions",
       "tsTranspilations": [{
         "tsConfig": "tsconfig.build.json"
       }],
