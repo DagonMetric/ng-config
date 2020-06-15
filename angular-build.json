@@ -49,6 +49,11 @@
         "prod": {
           "skip": false,
           "copy": [
+            {
+              "from": "../../firebase.json",
+              "to": "../../dist/firebase.json"
+
+            },
             "package.json"
           ]
         }
