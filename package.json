@@ -15,7 +15,7 @@
     "ng": "ng",
     "ngb": "ngb",
     "lint": "eslint -c .eslintrc.json --ext .js,.ts .",
-    "build": "ngb build --env.prod",
+    "build": "ngb build --env.prod && ng build --prod",
     "test": "ng test",
     "e2e": "ng e2e",
     "demo-firebase-functions:build": "tsc --project samples/firebase-functions/tsconfig.build.json",
