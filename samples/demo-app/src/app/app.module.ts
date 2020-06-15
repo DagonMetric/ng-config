@@ -22,8 +22,7 @@ import { AppComponent } from './app.component';
         // ng-config imports
         //
         ConfigModule.configure(true, {
-            debug: true,
-            optionsSuffix: 'Options'
+            debug: true
         }),
         HttpConfigProviderModule.configure({
             endpoint: 'https://us-central1-ng-config-demo.cloudfunctions.net/configuration'
