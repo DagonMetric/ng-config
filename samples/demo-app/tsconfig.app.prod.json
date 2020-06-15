@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+
+    "paths": {
+      "@dagonmetric/ng-config": [ "../../dist/packages/ng-config" ],
+      "@dagonmetric/ng-config/http-config":  [ "../../dist/packages/ng-config/http-config" ]
+    }
+  }
+}
