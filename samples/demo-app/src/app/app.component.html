@@ -12,10 +12,24 @@
             </code>
         </div>
         <p>
-            <code>// Output:</code>
-        </p>
-        <p>
-            <code>{{appOptions | json}}</code>
+            <code>
+                <p>
+                    // Example:
+                    <br>
+                    const appOptions = configService.mapType('app', AppOptions);
+                    <br>
+                    console.log('appOptions: ', JSON.stringify(appOptions));
+                    <br>
+                    console.log('appOptions.name: ', appOptions.name);
+                </p>
+                <p>
+                    // Output:
+                    <br>
+                    appOptions: {{appOptions | json}}
+                    <br>
+                    appOptions.name: <span class="app-options-name">{{appOptions.name}}</span>
+                </p>
+            </code>
         </p>
     </section>
 
@@ -26,10 +40,24 @@
             </code>
         </div>
         <p>
-            <code>// Output:</code>
-        </p>
-        <p>
-            <code>{{childOptions | json}}</code>
+            <code>
+                <p>
+                    // Example:
+                    <br>
+                    childOptions = configService.mapObject('app:child', childOptions);
+                    <br>
+                    console.log('childOptions: ', JSON.stringify(childOptions));
+                    <br>
+                    console.log('childOptions.key1: ', childOptions.key1);
+                </p>
+                <p>
+                    // Output:
+                    <br>
+                    childOptions: {{childOptions | json}}
+                    <br>
+                    childOptions.key1: <span class="child-options-key1">{{childOptions.key1}}</span>
+                </p>
+            </code>
         </p>
     </section>
 
@@ -40,10 +68,20 @@
             </code>
         </div>
         <p>
-            <code>// Output:</code>
-        </p>
-        <p>
-            <code>{{key1}}</code>
+            <code>
+                <p>
+                    // Example:
+                    <br>
+                    const configValue = configService.getValue('key1');
+                    <br>
+                    console.log('configValue: ', configValue);
+                </p>
+                <p>
+                    // Output:
+                    <br>
+                    configValue: <span class="key1">{{key1}}</span>
+                </p>
+            </code>
         </p>
     </section>
 

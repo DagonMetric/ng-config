@@ -8,4 +8,8 @@ export class AppPage {
     getTitleText(): Promise<string> {
         return element(by.css('app-root header h1')).getText() as Promise<string>;
     }
+
+    getFirstSectionText(): Promise<string> {
+        return element(by.css('app-root section h1')).getText() as Promise<string>;
+    }
 }
