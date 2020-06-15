@@ -60,7 +60,7 @@ import { HttpConfigProviderModule } from '@dagonmetric/ng-config/http-config';
 export class AppModule { }
 ```
 
-Edit [app.module.ts in stackblitz](https://stackblitz.com/github/dagonmetric/ng-config/tree/master/samples/demo-app?file=src%2Fapp%2Fapp.module.ts)
+Live edit [app.module.ts in stackblitz](https://stackblitz.com/github/dagonmetric/ng-config/tree/master/samples/demo-app?file=src%2Fapp%2Fapp.module.ts)
 
 ### Usage
 
@@ -109,11 +109,11 @@ export class AppComponent {
 }
 ```
 
-Edit [app.component.ts in stackblitz](https://stackblitz.com/github/dagonmetric/ng-config/tree/master/samples/demo-app?file=src%2Fapp%2Fapp.component.ts)
+Live edit [app.component.ts in stackblitz](https://stackblitz.com/github/dagonmetric/ng-config/tree/master/samples/demo-app?file=src%2Fapp%2Fapp.component.ts)
 
 ## Samples & Documentations
 
-* Demo app [view source](https://github.com/DagonMetric/ng-config/tree/master/samples/demo-app) / [edit in stackblitz](https://stackblitz.com/github/dagonmetric/ng-config/tree/master/samples/demo-app)
+* Demo app [view source](https://github.com/DagonMetric/ng-config/tree/master/samples/demo-app) / [live edit in stackblitz](https://stackblitz.com/github/dagonmetric/ng-config/tree/master/samples/demo-app)
 * Documentation wiki [ng-config wiki](https://github.com/DagonMetric/ng-config/wiki)
 
 ## Integrations
