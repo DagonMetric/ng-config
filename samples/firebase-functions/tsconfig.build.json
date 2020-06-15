@@ -5,7 +5,7 @@
     "target": "es2017",
     "baseUrl": ".",
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "../../dist/firebase-functions"
   },
   "include": [
     "src"

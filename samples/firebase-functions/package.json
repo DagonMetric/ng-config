@@ -1,10 +1,10 @@
 {
-  "name": "ng-config-firebase-functions",
+  "name": "firebase-functions",
   "private": true,
   "engines": {
     "node": "10"
   },
-  "main": "dist/index.js",
+  "main": "index.js",
   "dependencies": {
     "cors": "^2.8.5",
     "firebase-admin": "^8.12.1",
