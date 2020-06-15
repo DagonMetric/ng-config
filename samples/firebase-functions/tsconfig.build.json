@@ -3,9 +3,11 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es2017",
+    "sourceMap": false,
+    "declaration": false,
     "baseUrl": ".",
     "rootDir": "src",
-    "outDir": "../../dist/firebase-functions"
+    "outDir": "../../dist/functions"
   },
   "include": [
     "src"

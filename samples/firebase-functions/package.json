@@ -1,5 +1,5 @@
 {
-  "name": "firebase-functions",
+  "name": "firebase-demo-functions",
   "private": true,
   "engines": {
     "node": "10"

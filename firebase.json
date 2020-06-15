@@ -1,8 +1,0 @@
-{
-  "functions": {
-    "source": "samples/firebase-functions",
-    "predeploy": [
-      "npm run demo-firebase-functions:build"
-    ]
-  }
-}
