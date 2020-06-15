@@ -5,7 +5,7 @@
     <div class="action-buttons">
         <button type="button" (click)="reload()">RELOAD</button> <span *ngIf="loading">Loading...</span>
     </div>
-    <section>
+    <section *ngIf="appOptions">
         <div class="title">
             <code>
                 configService.mapType('app', AppOptions)
@@ -33,7 +33,7 @@
         </p>
     </section>
 
-    <section>
+    <section *ngIf="childOptions">
         <div class="title">
             <code>
                 configService.mapObject('app:child', childOptions)
@@ -61,7 +61,7 @@
         </p>
     </section>
 
-    <section>
+    <section *ngIf="key1">
         <div class="title">
             <code>
                 configService.getValue('key1')
