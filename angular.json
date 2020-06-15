@@ -89,7 +89,7 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/demo-app",
-            "index": "samples/demo-app/src/index`.html",
+            "index": "samples/demo-app/src/index.html",
             "main": "samples/demo-app/src/main.ts",
             "polyfills": "samples/demo-app/src/polyfills.ts",
             "tsConfig": "samples/demo-app/tsconfig.app.json",
