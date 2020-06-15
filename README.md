@@ -9,8 +9,8 @@ The `ng-config` is a configuration and options service for Angular applications 
 
 ## Features
 
-* **`mapType(MyOptions)`** - map configuration values with options class
-* **`mapObject('myKey', myOptions)`** - map configuration values with options object
+* **`mapType(key, MyOptionsClass)`** - map configuration values with options class
+* **`mapObject(key, myOptionsObj)`** - map configuration values with options object
 * **`getValue('myKey')`** - get the raw configuration section value
 * **`reload()`** - reload the fresh configuration values from config providers
 * **`valueChanges`** - configuration value changes event
@@ -87,7 +87,7 @@ export class AppComponent {
     console.log('value: ', configValue);
 
     // Get with options class
-    const appOptions = this.configService.mapType(AppOptions));
+    const appOptions = this.configService.mapType('app', AppOptions));
     console.log('appOptions: ', JSON.stringify(appOptions));
 
     // Call reload to get the fresh config values from providers
@@ -102,7 +102,7 @@ export class AppComponent {
       const latestValue = this.configService.getValue('key1'));
       console.log('latest value: ', latestValue);
 
-      const lastestOptions = this.configService.mapType(AppOptions));
+      const lastestOptions = this.configService.mapType('app', AppOptions));
       console.log('lastest appOptions: ', lastestOptions);
     });
   }
