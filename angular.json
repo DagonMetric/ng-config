@@ -108,7 +108,6 @@
                   "with": "samples/demo-app/src/environments/environment.prod.ts"
                 }
               ],
-              "tsConfig": "samples/demo-app/tsconfig.app.prod.json",
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
