@@ -51,7 +51,7 @@
           "copy": [
             {
               "from": "../../firebase.json",
-              "to": "../../dist/firebase.json"
+              "to": "../firebase.json"
 
             },
             "package.json"
