@@ -2,6 +2,12 @@
     <h1>NG-CONFIG Demo</h1>
 </header>
 <main>
+    <div *ngIf="isProd">
+        <p>
+            The <code>ng-config</code> is a configuration and options service for Angular applications with flexible api and extendable config providers.
+        </p>
+        <h2>Live Demo</h2>
+    </div>
     <div class="action-buttons">
         <button type="button" (click)="reload()">RELOAD</button> <span *ngIf="loading">Loading...</span>
     </div>
@@ -86,3 +92,10 @@
     </section>
 
 </main>
+<footer *ngIf="isProd">
+    <h2>Resources</h2>
+    <ul>
+        <li><a href="https://github.com/DagonMetric/ng-config" target="_blank" rel="noopener">View source on GitHub</a></li>
+        <li><a href="https://stackblitz.com/github/dagonmetric/ng-config/tree/master/samples/demo-app" target="_blank" rel="noopener">Edit source on Stackblitz</a></li>
+    </ul>
+</footer>

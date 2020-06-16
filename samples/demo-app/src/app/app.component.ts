@@ -5,6 +5,8 @@ import { takeUntil } from 'rxjs/operators';
 
 import { ConfigService } from '@dagonmetric/ng-config';
 
+import { environment } from '../environments/environment';
+
 import { AppOptions } from './app-options';
 
 @Component({
@@ -22,9 +24,13 @@ export class AppComponent implements OnDestroy {
     };
     key1 = '';
 
+    isProd?: boolean;
+
     private readonly destroySubject = new Subject();
 
     constructor(private readonly configService: ConfigService) {
+        this.isProd = environment.production;
+
         this.populateConfigValues();
 
         // The event which will be triggered whenever configuration value changes

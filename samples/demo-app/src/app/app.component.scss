@@ -17,6 +17,17 @@ body {
     color: rgba(0,0,0,.87);
 }
 
+h1, h2 {
+    color: inherit;
+    display: block;
+    font-family: $font-family-base;
+}
+
+h2 {
+    font-weight: 500;
+    font-size: 20px;
+}
+
 header.toolbar {
     display: flex;
     padding: 0 $gap-width;
@@ -31,7 +42,6 @@ header.toolbar {
     color: #fff;
 
     h1 {
-        display: block;
         margin: 0;
         font: 500 20px/32px $font-family-base;
         letter-spacing: normal;
@@ -114,11 +124,25 @@ button {
 }
 
 footer {
-    padding: $gap-width;
+    margin: 0;
+    padding: 0 $gap-width $gap-width $gap-width;
 
-    h2 {
-        font-family: $font-family-base;
-        font-weight: 600;
-        font-size: 18px;
+    ul {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+
+        li {
+            display: block;
+        }
+
+        li + li {
+            margin-top: 8px;
+        }
+
+
     }
 }
