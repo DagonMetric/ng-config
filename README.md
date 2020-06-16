@@ -34,7 +34,7 @@ or yarn
 yarn add @dagonmetric/ng-config
 ```
 
-Latest npm package is [![npm version](https://img.shields.io/npm/v/@dagonmetric/ng-config.svg)](https://www.npmjs.com/package/@dagonmetric/ng-config)
+Latest npm package is [![npm version](https://badge.fury.io/js/%40dagonmetric%2Fng-config.svg)](https://www.npmjs.com/package/@dagonmetric/ng-config)
 
 ### Module Setup (app.module.ts)
 
