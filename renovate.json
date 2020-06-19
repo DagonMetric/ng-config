@@ -25,18 +25,6 @@
     },
     {
       "packagePatterns": [
-        "^@dagonmetric\/.*"
-      ],
-      "groupName": "dagonmetric"
-    },
-    {
-      "packagePatterns": [
-        "^@myanmartools\/.*"
-      ],
-      "groupName": "myanmartools"
-    },
-    {
-      "packagePatterns": [
         "^@types\/.*"
       ],
       "groupName": "types"
