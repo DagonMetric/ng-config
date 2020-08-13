@@ -1,0 +1,55 @@
+{
+  "$schema": "./node_modules/lib-tools/schemas/schema.json",
+  "projects": {
+    "ng-config": {
+      "root": "modules/ng-config",
+      "tasks": {
+        "build": {
+          "outputPath": "../../dist/packages/ng-config",
+          "script": {
+            "compilations": "auto",
+            "umdId": "ngConfig"
+          }
+        }
+      }
+    },
+    "ng-config-http-config": {
+      "root": "modules/ng-config/http-config",
+      "tasks": {
+        "build": {
+          "outputPath": "../../../dist/packages/ng-config",
+          "copy": [],
+          "script": {
+            "compilations": "auto",
+            "umdId": "ngConfig.httpConfig",
+            "externals": {
+              "@dagonmetric/ng-config": "ngConfig"
+            }
+          }
+        }
+      }
+    },
+    "firebase-demo-functions": {
+      "root": "samples/firebase-functions",
+      "tasks": {
+        "build": {
+          "outputPath": "../../dist/functions",
+          "copy": [
+            {
+              "from": "../../firebase.json",
+              "to": "../firebase.json"
+            },
+            "package.json"
+          ],
+          "script": {
+            "compilations": [{
+              "declaration": false
+            }],
+            "tsConfig": "tsconfig.build.json",
+            "addToPackageJson": false
+          }
+        }
+      }
+    }
+  }
+}
