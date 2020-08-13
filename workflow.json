@@ -10,6 +10,27 @@
             "compilations": "auto",
             "umdId": "ngConfig"
           }
+        },
+        "test": {
+          "testIndexFile": "test.ts",
+          "tsConfig": "tsconfig.test.json",
+          "envOverrides": {
+            "ci": {
+              "codeCoverageExclude": [
+                "**/test.ts",
+                "**/index.ts",
+                "**/public_api.ts"
+              ],
+              "reporters": [
+                "junit",
+                "coverage-istanbul"
+              ],
+              "browsers": [
+                "ChromeHeadlessCI"
+              ],
+              "singleRun": true
+            }
+          }
         }
       }
     },
