@@ -16,7 +16,8 @@
     "ngb": "ngb",
     "tsc": "tsc",
     "lint": "eslint -c .eslintrc.json --ext .js,.ts .",
-    "build": "lib build --env.prod && ng build --prod",
+    "build": "lib build --env.prod",
+    "build:samples": "ng build --prod",
     "test": "ng test",
     "serve": "ng serve",
     "e2e": "ng e2e"
