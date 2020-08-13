@@ -57,7 +57,7 @@
     "firebase-admin": "^9.0.0",
     "firebase-functions": "^3.9.1",
     "firebase-functions-test": "^0.2.1",
-    "jasmine-core": "^3.5.0",
+    "jasmine-core": "^3.6.0",
     "jasmine-spec-reporter": "~5.0.2",
     "karma": "~5.1.1",
     "karma-chrome-launcher": "~3.1.0",
