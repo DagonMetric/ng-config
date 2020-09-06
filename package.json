@@ -25,7 +25,7 @@
   "dependencies": {
     "@angular/common": "^10.0.9",
     "@angular/core": "^10.0.9",
-    "rxjs": "^6.6.2",
+    "rxjs": "^6.6.3",
     "tslib": "~2.0.1"
   },
   "devDependencies": {
