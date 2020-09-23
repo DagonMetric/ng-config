@@ -62,6 +62,7 @@
             },
             "package.json"
           ],
+          ""
           "script": {
             "compilations": [{
               "declaration": false
