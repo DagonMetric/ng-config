@@ -32,19 +32,7 @@
     {
       "packagePatterns": ["^jasmine.*"],
       "groupName": "jasmine"
-    },
-    {
-      "packagePatterns": ["^karma.*"],
-      "groupName": "karma"
-    },
-    {
-      "packagePatterns": ["^protractor.*"],
-      "groupName": "protractor"
-    },
-    {
-      "packageNames": ["typescript"],
-      "automerge": false
-    }
+    }    
   ],
   "suppressNotifications": ["prIgnoreNotification", "prEditNotification", "onboardingClose"]
 }
