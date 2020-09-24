@@ -20,7 +20,7 @@
     "build:samples": "ng build --prod",
     "test": "lib test --env.ci=true",
     "serve": "ng serve",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e -c=ci"
   },
   "dependencies": {
     "@angular/common": "^10.1.3",
