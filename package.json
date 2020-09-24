@@ -16,7 +16,7 @@
     "lib": "lib",
     "tsc": "tsc",
     "lint": "eslint -c .eslintrc.json --ext .js,.ts .",
-    "build": "lib build --env.prod",
+    "build": "lib build --env.prod && npm run build:samples",
     "build:samples": "ng build --prod",
     "test": "lib test --env.ci=true",
     "serve": "ng serve",
