@@ -23,7 +23,7 @@ jobs:
         npm run build
         npm run lint --if-present
         npm run test --if-present
-        npm run e2e --if-present -- -c=ci
+        npm run e2e --if-present
     - uses: codecov/codecov-action@v1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
