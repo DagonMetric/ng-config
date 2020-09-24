@@ -1,6 +1,5 @@
 import { ConfigSection, ConfigValue } from './config-value';
 
-// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function mapOptionValues(options: ConfigSection, configSection: ConfigSection): void {
     const keys = Object.keys(options);
     for (const key of keys) {
@@ -75,7 +74,6 @@ export function mapOptionValues(options: ConfigSection, configSection: ConfigSec
     }
 }
 
-// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function equalDeep(a: ConfigValue, b: ConfigValue): boolean {
     if (a === null && b === null) {
         return true;

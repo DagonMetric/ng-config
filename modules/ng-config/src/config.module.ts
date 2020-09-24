@@ -11,7 +11,6 @@ import { APP_INITIALIZER, ModuleWithProviders, NgModule } from '@angular/core';
 import { ConfigService } from './config.service';
 import { CONFIG_OPTIONS, ConfigOptions } from './config-options';
 
-// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function configAppInitializerFactory(configService: ConfigService): () => Promise<boolean> {
     const res = async () => configService.ensureInitialized().toPromise();
 
@@ -30,7 +29,7 @@ export class ConfigModule {
      * @param loadOnStartUp If `true` configuration values are loaded at app starts. Default is `true`.
      * @param options Option object for `ConfigService`.
      */
-    static configure(loadOnStartUp: boolean = true, options: ConfigOptions = {}): ModuleWithProviders<ConfigModule> {
+    static configure(loadOnStartUp = true, options: ConfigOptions = {}): ModuleWithProviders<ConfigModule> {
         return {
             ngModule: ConfigModule,
             providers: [
