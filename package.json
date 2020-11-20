@@ -13,8 +13,7 @@
   "homepage": "https://github.com/Dagonmetric/ng-config",
   "scripts": {
     "ng": "ng",
-    "lib": "lib",
-    "tsc": "tsc",
+    "lib": "lib",    
     "lint": "eslint -c .eslintrc.json --ext .js,.ts .",
     "build": "lib build --env.prod && npm run build:samples",
     "build:samples": "ng build --prod",
