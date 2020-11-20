@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [14.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -24,11 +24,11 @@ jobs:
         npm run lint --if-present
         npm run test --if-present
         npm run e2e --if-present
-    - uses: codecov/codecov-action@v1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        file: ./coverage/ng-config/lcov.info
-        flags: unit
-        # fail_ci_if_error: true #optional (default = false)
       env:
         CI: true
+    # - uses: codecov/codecov-action@v1
+    #   with:
+    #     token: ${{ secrets.CODECOV_TOKEN }}
+    #     file: ./coverage/ng-config/lcov.info
+    #     flags: unit
+
