@@ -39,6 +39,6 @@ jobs:
       - task: PublishPipelineArtifact@1
         inputs:
           artifactName: 'release-notes'
-          targetPath: 'release-notes/$(packageVersion)/'
+          targetPath: release-notes/v$(packageVersion)
         condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'refs/tags/'))
         displayName: 'Publish release notes'
