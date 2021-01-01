@@ -2,6 +2,7 @@
 
 | Date (UTC) | Version |  |  |
 | :-- | :-- | :--: | :-- |
+| 2021-01-01 | 4.3.2 | [release notes](v4.3.2/README.md)/[npm](https://www.npmjs.com/package/@dagonmetric/ng-config/v/4.3.2) | - |
 | 2020-10-01 | 4.3.1 | [release notes](v4.3.1/README.md)/[npm](https://www.npmjs.com/package/@dagonmetric/ng-config/v/4.3.1) | - |
 | 2020-09-24 | 4.3.0 | [release notes](v4.3.0/README.md)/[npm](https://www.npmjs.com/package/@dagonmetric/ng-config/v/4.3.0) | - |
 | 2020-06-25 | 4.2.2 | [release notes](v4.2.2/README.md)/[npm](https://www.npmjs.com/package/@dagonmetric/ng-config/v/4.2.2) | - |
