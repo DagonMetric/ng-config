@@ -20,15 +20,15 @@ jobs:
     - name: npm install, build, lint and test
       run: |
         npm ci
-        npm run build
         npm run lint --if-present
+        npm run build        
         npm run test --if-present
         npm run e2e --if-present
       env:
         CI: true
-    # - uses: codecov/codecov-action@v1
-    #   with:
-    #     token: ${{ secrets.CODECOV_TOKEN }}
-    #     file: ./coverage/ng-config/lcov.info
-    #     flags: unit
+    - uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./coverage/ng-config/lcov.info
+        flags: unit
 
