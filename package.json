@@ -38,7 +38,7 @@
     "@types/cors": "^2.8.10",
     "@types/jasmine": "^3.6.3",
     "@types/jasminewd2": "^2.0.8",
-    "@types/node": "^14.14.28",
+    "@types/node": "^14.14.29",
     "@typescript-eslint/eslint-plugin": "^4.15.1",
     "@typescript-eslint/parser": "^4.15.1",
     "cors": "^2.8.5",
