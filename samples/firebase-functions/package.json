@@ -2,7 +2,7 @@
   "name": "firebase-demo-functions",
   "private": true,
   "engines": {
-    "node": "10"
+    "node": "14"
   },
   "main": "index.js",
   "dependencies": {
